@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 
 // contexts
@@ -14,7 +14,7 @@ import { isSelf } from "../../../utils/users";
 // styles
 import styles from "./styles.module.css";
 
-function Message({ date, sender, message }) {
+function Message({ date, sender, message, join }) {
   const { languageState } = useLanguage();
 
   const { messageT } = useMemo(() => {
@@ -22,11 +22,8 @@ function Message({ date, sender, message }) {
   }, [languageState]);
 
   const sent = useCallback(() => {
-    console.log(date);
-    console.log(new Date().getTime());
     if (date) {
       const { count, type } = parseSent(date);
-      console.log(count);
       switch (type) {
         case "hours": {
           if (count === 1)
@@ -53,17 +50,25 @@ function Message({ date, sender, message }) {
       <div className="appear flex flex-col gap-2">
         <div className="flex items-end justify-start gap-2">
           <p className={styles.message}>{message}</p>
-          <img
-            className="w-10 h-10 rounded-full cursor-pointer"
-            src={
-              sender !== null && sender && sender.photo ? sender.photo : noPhoto
-            }
-            alt={sender !== null && sender ? sender.name : ""}
-          />
+          {!join ? (
+            <img
+              className="w-10 h-10 rounded-full cursor-pointer"
+              src={
+                sender !== null && sender && sender.photo
+                  ? sender.photo
+                  : noPhoto
+              }
+              alt={sender !== null && sender ? sender.name : ""}
+            />
+          ) : (
+            <div className="w-10 h-10"></div>
+          )}
         </div>
-        <span className="italic text-placeholder-dark text-sm ml-5">
-          {sent()}
-        </span>
+        {!join ? (
+          <span className="italic text-placeholder-dark text-sm ml-5">
+            {sent()}
+          </span>
+        ) : null}
       </div>
     </div>
   );
@@ -75,4 +80,17 @@ Message.propTypes = {
   message: PropTypes.string,
 };
 
-export default Message;
+const MessageMemo = memo((props) => <Message {...props} />, arePropsEqual);
+
+function arePropsEqual(oldProps, newProps) {
+  return (
+    oldProps.join === newProps.join &&
+    oldProps.date === newProps.date &&
+    oldProps.sender === newProps.sender &&
+    oldProps.message === newProps.message
+  );
+}
+
+MessageMemo.displayName = "Message";
+
+export default MessageMemo;

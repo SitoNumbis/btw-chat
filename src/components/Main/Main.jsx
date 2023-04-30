@@ -47,7 +47,6 @@ function Main({ socket }) {
   useEffect(() => {
     if (socket) {
       socket.on("message", (message) => {
-        console.log(message);
         setMessages({
           type: "new-message",
           message,
@@ -70,14 +69,12 @@ function Main({ socket }) {
   const [minuteOut, setMinuteOut] = useState(false);
 
   useEffect(() => {
-    console.log("tick start");
     setTimeout(() => {
-      console.log("tick ends");
       setMinuteOut(!minuteOut);
       setMessages({
         type: "plus-minute",
       });
-    }, 5000);
+    }, 60000);
   }, [minuteOut]);
 
   return (
