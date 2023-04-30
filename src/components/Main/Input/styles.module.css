@@ -1,0 +1,21 @@
+.button {
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.input {
+  outline: none;
+  background: none;
+}
+
+.div {
+  transition: all 500ms ease;
+}
+
+.div:hover {
+  box-shadow: 3px 2px 4px 0px black;
+}
+
+.input::placeholder {
+  @apply text-placeholder-dark;
+}

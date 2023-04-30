@@ -1,0 +1,16 @@
+{
+  "es": {
+    "main": {
+      "input": {
+        "placeholder": "Escribe algo..."
+      },
+      "message": {
+        "lessThanMin": "<1 min",
+        "agoMin": "hace [result] min",
+        "agoMins": "hace [result] mins",
+        "agoHour": "hace [result] hour",
+        "agoHours": "hace [result] hours"
+      }
+    }
+  }
+}

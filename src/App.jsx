@@ -1,6 +1,12 @@
-import React, { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import io from "socket.io-client";
 import loadable from "@loadable/component";
+
+// css
+import { css } from "@emotion/css";
+
+// image
+import image from "./assets/images/image.jpg";
 
 // components
 const Main = loadable(() => import("./components/Main/Main"));
@@ -11,12 +17,17 @@ function App() {
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
-
+    localStorage.setItem("chat-user-name", "Sito");
     return () => newSocket.close();
   }, []);
 
   return (
-    <div>
+    <div
+      className={css({
+        backgroundImage: `url("${image}")`,
+        backgroundSize: "cover",
+      })}
+    >
       <Suspense>
         <Main socket={socket} />
       </Suspense>

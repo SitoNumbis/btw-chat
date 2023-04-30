@@ -1,0 +1,11 @@
+.messages {
+  height: calc(100vh - 120px);
+  @apply flex flex-col gap-5;
+}
+
+.main {
+  background-color: #22233388;
+  backdrop-filter: blur(10px);
+  width: calc(100vw - 250px);
+  @apply min-h-screen flex flex-col p-10;
+}
