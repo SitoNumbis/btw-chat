@@ -1,5 +1,15 @@
 {
   "es": {
+    "sidebar": {
+      "single": "Chats simples"
+    },
+    "buttonsArias": {
+      "closeSidebar": "Cerrar menú lateral"
+    },
+    "navbar": {
+      "links": {},
+      "action": {}
+    },
     "main": {
       "input": {
         "placeholder": "Escribe algo..."

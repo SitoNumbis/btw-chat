@@ -1,11 +1,30 @@
 .messages {
   height: calc(100vh - 120px);
-  @apply flex flex-col gap-5 overflow-auto;
+  @apply flex flex-col gap-5 overflow-auto px-10 pt-10;
 }
 
 .main {
-  background-color: #22233388;
   backdrop-filter: blur(10px);
-  width: calc(100vw - 250px);
-  @apply min-h-screen flex flex-col p-10;
+  min-height: 100vh;
+  height: 100vh;
+  @apply flex flex-col w-full;
+}
+
+.inputContainer {
+  @apply px-10;
+}
+
+@media (max-width: 850px) {
+  .messages,
+  .inputContainer {
+    @apply pl-2;
+  }
+
+  .inputContainer {
+    @apply pr-2;
+  }
+
+  .main {
+    @apply pl-8;
+  }
 }

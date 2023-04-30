@@ -1,0 +1,24 @@
+.sidebar {
+  min-width: 350px;
+  width: 350px;
+  min-height: 100vh;
+  height: 100vh;
+  backdrop-filter: blur(10px);
+  transition: all 500ms ease;
+}
+
+.closeButton {
+  display: none;
+}
+
+@media (max-width: 850px) {
+  .closeButton {
+    display: initial;
+  }
+
+  .sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

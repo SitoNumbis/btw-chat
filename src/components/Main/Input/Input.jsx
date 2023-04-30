@@ -1,6 +1,9 @@
 import { useCallback, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 
+// @emotion/css
+import { css } from "@emotion/css";
+
 // contexts
 import { useLanguage } from "../../../context/LanguageProvider";
 
@@ -38,7 +41,13 @@ function Input({ onSend }) {
         className={`w-full text-white ${styles.input}`}
       />
       <button
-        className={`absolute right-3 text-placeholder-dark hover:text-primary transition font-semibold ${styles.button}`}
+        className={`absolute right-3 text-placeholder-dark transition font-semibold ${
+          styles.button
+        } ${css({
+          ":hover": {
+            color: localStorage.getItem("chat-text-primary"),
+          },
+        })}`}
         onClick={onSubmit}
       >
         Send

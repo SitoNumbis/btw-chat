@@ -1,5 +1,5 @@
-export const isSelf = (name) => {
-  const localUser = localStorage.getItem("chat-user-name");
-  if (localUser === name) return true;
+export const isSelf = (id) => {
+  const localUser = localStorage.getItem("chat-user-id");
+  if (localUser === id) return true;
   return false;
 };

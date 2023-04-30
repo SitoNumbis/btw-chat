@@ -7,6 +7,9 @@ import React, {
   useMemo,
 } from "react";
 
+// @emotion/css
+import { css } from "@emotion/css";
+
 import PropTypes from "prop-types";
 import loadable from "@loadable/component";
 
@@ -16,6 +19,7 @@ import styles from "./styles.module.css";
 // components
 const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
+const Navbar = loadable(() => import("./Navbar/Navbar"));
 
 function Main({ socket }) {
   const messagesReducer = (state, action) => {
@@ -60,7 +64,7 @@ function Main({ socket }) {
       socket.emit("message", {
         message,
         date: new Date().getTime(),
-        sender: { name: "Tester" },
+        sender: { name: "Tester", id: localStorage.getItem("chat-user-id") },
       });
     },
     [socket]
@@ -78,13 +82,32 @@ function Main({ socket }) {
   }, [minuteOut]);
 
   return (
-    <div className={styles.main}>
+    <div
+      className={`${styles.main} ${css({
+        backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
+      })}`}
+    >
+      <Navbar />
       <div className={styles.messages}>
-        {messages.map((message) => (
-          <Message key={message.date} {...message} />
-        ))}
+        {messages.map((message, i) => {
+          if (i === 0 && messages.length === 0)
+            return <Message key={message.date} {...message} />;
+          else {
+            if (i !== 0 && i < messages.length - 1)
+              return (
+                <Message
+                  key={message.date}
+                  {...message}
+                  join={message.sender.id === messages[i - 1].sender.id}
+                />
+              );
+            else return <Message key={message.date} {...message} />;
+          }
+        })}
       </div>
-      <Input onSend={sendMessage} />
+      <div className={styles.inputContainer}>
+        <Input onSend={sendMessage} />
+      </div>
     </div>
   );
 }

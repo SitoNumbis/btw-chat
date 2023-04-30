@@ -1,6 +1,9 @@
 import { memo, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 
+// @emotion/css
+import { css } from "@emotion/css";
+
 // contexts
 import { useLanguage } from "../../../context/LanguageProvider";
 
@@ -42,14 +45,34 @@ function Message({ date, sender, message, join }) {
   }, [date, messageT]);
 
   const user = useCallback(() => {
-    if (sender !== null && sender) return isSelf(sender.name);
+    console.log(sender);
+    if (sender !== null && sender) return isSelf(sender.id);
   }, [sender]);
 
+  console.log(join);
+
   return (
-    <div className={`w-full flex ${user() ? "justify-end" : "justify-start"}`}>
+    <div
+      className={`w-full flex ${user() ? "justify-end" : "justify-start"} ${css(
+        { marginBottom: join ? "-16px" : "" }
+      )}`}
+    >
       <div className="appear flex flex-col gap-2">
-        <div className="flex items-end justify-start gap-2">
-          <p className={styles.message}>{message}</p>
+        <div
+          className={`flex items-end justify-start gap-2 ${
+            user() ? "flex-row" : "flex-row-reverse"
+          }`}
+        >
+          <p
+            className={`${styles.message} ${css({
+              backgroundColor: user()
+                ? `${localStorage.getItem("chat-secondary-bg")}99`
+                : `${localStorage.getItem("chat-other-bg")}99`,
+              color: localStorage.getItem("chat-text-basic"),
+            })} `}
+          >
+            {message}
+          </p>
           {!join ? (
             <img
               className="w-10 h-10 rounded-full cursor-pointer"
@@ -75,6 +98,7 @@ function Message({ date, sender, message, join }) {
 }
 
 Message.propTypes = {
+  join: PropTypes.bool,
   date: PropTypes.number,
   sender: PropTypes.object,
   message: PropTypes.string,
