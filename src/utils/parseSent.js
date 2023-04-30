@@ -6,8 +6,7 @@ export const parseSent = (sentDate) => {
   const now = new Date();
   const subs = now.getTime() - sentDate;
   // checking minutes
-  const minutes = Math.floor(subs / 1000 / 60);
-  console.log(subs / 1000 / 60 / 60, subs);
+  const minutes = Math.floor(subs / 1000 / 60)
   if (minutes < 60) return { count: minutes, type: "minutes" };
 
   // checking hours

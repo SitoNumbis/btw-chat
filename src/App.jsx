@@ -1,6 +1,13 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import loadable from "@loadable/component";
+import config from "./config";
+
+// services
+import { validateBasicKey } from "./services/auth";
+
+// utils
+import { logoutUser, userLogged } from "./utils/auth";
 
 // components
 const Notification = loadable(() =>
@@ -14,17 +21,40 @@ const Auth = loadable(() => import("./layouts/Auth/Auth"));
 const Chat = loadable(() => import("./views/Chat/Chat"));
 const SignIn = loadable(() => import("./views/Auth/SignIn"));
 const SignUp = loadable(() => import("./views/Auth/SignUp"));
+const SignOut = loadable(() => import("./views/Auth/SignOut"));
 const ResetPassword = loadable(() => import("./views/Auth/ResetPassword"));
 const EmailValidation = loadable(() => import("./views/Auth/EmailValidation"));
 
 function App() {
+  const fetch = async () => {
+    try {
+      const value = await validateBasicKey();
+      if (!value) {
+        logoutUser();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else localStorage.setItem(config.userCookie, value);
+    } catch (err) {
+      if (String(err) !== "AxiosError: Network Error") {
+        logoutUser();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    }
+  };
+
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    localStorage.setItem("chat-user-name", "Sito");
     localStorage.setItem("chat-main-bg", "#222333");
     localStorage.setItem("chat-secondary-bg", "#1b1b2b");
     localStorage.setItem("chat-other-bg", "#222222");
     localStorage.setItem("chat-text-primary", "#Fb2b2b");
     localStorage.setItem("chat-text-basic", "#ffffff");
+    if (userLogged()) fetch();
+    setLoading(false);
   }, []);
 
   return (
@@ -32,37 +62,42 @@ function App() {
       <Notification />
       <BrowserRouter>
         <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <Suspense>
-                <Chat />
-              </Suspense>
-            }
-          />
-          <Route
-            exact
-            path="/auth"
-            element={
-              <Suspense>
-                <Auth />
-              </Suspense>
-            }
-          >
-            <Route index element={<SignIn />} />
-            <Route exact path="/auth/sign-up" element={<SignUp />} />
+          {localStorage.getItem(config.userCookie) === null ? (
             <Route
               exact
-              path="/auth/reset-password"
-              element={<ResetPassword />}
-            />
+              path="/auth"
+              element={
+                <Suspense>
+                  <Auth />
+                </Suspense>
+              }
+            >
+              <Route index element={<SignIn />} />
+              <Route exact path="/auth/sign-up" element={<SignUp />} />
+              <Route
+                exact
+                path="/auth/reset-password"
+                element={<ResetPassword />}
+              />
+              <Route
+                exact
+                path="/auth/email-validation"
+                element={<EmailValidation />}
+              />
+            </Route>
+          ) : (
             <Route
               exact
-              path="/auth/email-validation"
-              element={<EmailValidation />}
+              path="/"
+              element={
+                <Suspense>
+                  <Chat />
+                </Suspense>
+              }
             />
-          </Route>
+          )}
+          <Route exact path="/sign-out" element={<SignOut />} />
+          <Route path="*" element={<div>404</div>} />
         </Routes>
       </BrowserRouter>
     </Suspense>

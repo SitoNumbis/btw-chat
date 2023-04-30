@@ -45,11 +45,8 @@ function Message({ date, sender, message, join }) {
   }, [date, messageT]);
 
   const user = useCallback(() => {
-    console.log(sender);
-    if (sender !== null && sender) return isSelf(sender.id);
+    if (sender !== null && sender) return isSelf(sender.user);
   }, [sender]);
-
-  console.log(join);
 
   return (
     <div
@@ -81,7 +78,7 @@ function Message({ date, sender, message, join }) {
                   ? sender.photo
                   : noPhoto
               }
-              alt={sender !== null && sender ? sender.name : ""}
+              alt={sender !== null && sender ? sender.user : ""}
             />
           ) : (
             <div className="w-10 h-10"></div>

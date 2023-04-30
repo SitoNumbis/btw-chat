@@ -15,6 +15,7 @@ import loadable from "@loadable/component";
 
 // styles
 import styles from "./styles.module.css";
+import config from "../../config";
 
 // components
 const Input = loadable(() => import("./Input/Input"));
@@ -51,14 +52,11 @@ function Main({ socket }) {
   useEffect(() => {
     if (socket) {
       socket.on("message", (message) => {
+        console.info("receiving messages");
         setMessages({
           type: "new-message",
           message,
         });
-      });
-
-      socket.on("user-logged", (user) => {
-        localStorage.setItem("chat-user-id", user.id);
       });
     }
   }, [socket]);
@@ -70,17 +68,15 @@ function Main({ socket }) {
         body: JSON.stringify({
           message,
           date: new Date().getTime(),
-          target: "",
+          target: localStorage.getItem(config.userCookie),
           sender: {
-            name: "Tester",
-            id: localStorage.getItem("chat-user-id"),
+            user: localStorage.getItem(config.userCookie),
           },
         }),
         headers: {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
     } catch (err) {
       console.error(err);
     }
@@ -106,15 +102,16 @@ function Main({ socket }) {
       <Navbar />
       <div className={styles.messages}>
         {messages.map((message, i) => {
+          console.log(i, message.sender.user);
           if (i === 0 && messages.length === 0)
             return <Message key={message.date} {...message} />;
           else {
-            if (i !== 0 && i < messages.length - 1)
+            if (i < messages.length - 1)
               return (
                 <Message
                   key={message.date}
                   {...message}
-                  join={message.sender.id === messages[i - 1].sender.id}
+                  join={message.sender.user === messages[i + 1].sender.user}
                 />
               );
             else return <Message key={message.date} {...message} />;

@@ -23,6 +23,9 @@
         "type": "password",
         "notEmpty": "Debes introducir tu contraseña",
         "wrong": "Contraseña incorrecta"
+      },
+      "remember": {
+        "label": "Recordar contraseña"
       }
     },
     "errors": {

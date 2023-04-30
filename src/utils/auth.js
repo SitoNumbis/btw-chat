@@ -62,10 +62,11 @@ export const userLogged = () =>
   // @ts-ignore
   getCookie(config.basicKeyCookie).length > 0;
 
-export const logoutUser = () =>
+export const logoutUser = () => {
   // @ts-ignore
   deleteCookie(config.basicKeyCookie);
-
+  localStorage.removeItem(config.userCookie);
+};
 export const userData = () => {
   let user = {};
   // @ts-ignore
@@ -90,11 +91,9 @@ export const logUser = (remember, user, apps) => {
   // @ts-ignore
   if (remember) {
     localStorage.setItem(config.userCookie, user);
-    localStorage.setItem(config.appsCookie, JSON.stringify(apps));
   }
   // @ts-ignore
   else {
     localStorage.setItem(config.userCookie, user);
-    localStorage.setItem(config.appsCookie, JSON.stringify(apps));
   }
 };

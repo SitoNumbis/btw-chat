@@ -46,7 +46,7 @@ function Sidebar({ socket, open, onClose }) {
       className={`${styles.sidebar} ${css({
         transform: open ? "translateX(0)" : "translateX(-320px)",
       })} relative z-10 px-4 py-4 ${css({
-        backgroundColor: `${localStorage.getItem("chat-secondary-bg")}BB`,
+        backgroundColor: `${localStorage.getItem("chat-other-bg")}CC`,
       })}`}
     >
       <div className="flex w-full justify-between items-center">

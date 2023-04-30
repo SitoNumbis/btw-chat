@@ -72,6 +72,10 @@ function SignIn() {
 
   const [remember, setRemember] = useState(false);
 
+  const toggleRemember = useCallback(() => {
+    setRemember(!remember);
+  }, [remember]);
+
   const [password, setPassword] = useState("");
   const handlePassword = useCallback(
     (e) => {
@@ -128,6 +132,7 @@ function SignIn() {
           response.data.token
         );
         logUser(remember, user.split("@")[0], apps || {});
+
         setTimeout(() => {
           if (userLogged()) window.location.href = "/";
         }, 100);
@@ -200,7 +205,21 @@ function SignIn() {
               input={inputs.password}
               helperText={passwordHelperText}
             />
-            <div></div>
+            <div
+              className={`cursor-pointer flex items-center gap-2 ${css({
+                color: localStorage.getItem("chat-text-basic"),
+              })}`}
+            >
+              <input
+                value={remember}
+                onChange={toggleRemember}
+                id="remember"
+                type="checkbox"
+              />
+              <label className="cursor-pointer" htmlFor="remember">
+                {inputs.remember.label}
+              </label>
+            </div>
             <PrimaryButton>{buttons.signIn}</PrimaryButton>
           </form>
         ) : null}

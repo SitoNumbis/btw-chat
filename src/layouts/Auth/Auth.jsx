@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 function Auth() {
   return (
-    <div>
+    <div className="overflow-hidden">
       <Outlet />
     </div>
   );

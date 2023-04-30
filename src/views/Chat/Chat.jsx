@@ -7,6 +7,7 @@ import { css } from "@emotion/css";
 
 // image
 import image from "../../assets/images/image.jpg";
+import config from "../../config";
 
 // components
 const Main = loadable(() => import("../../components/Main/Main"));
@@ -17,6 +18,11 @@ function Chat() {
 
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
+
+    newSocket.on("connect", () => {
+      console.log("connect", localStorage.getItem(config.userCookie));
+      newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
+    });
     setSocket(newSocket);
     return () => newSocket.close();
   }, []);
