@@ -1,0 +1,19 @@
+.simple-input {
+  transition: all 500ms ease;
+  padding: 5px 20px;
+  border-radius: 50px;
+}
+
+.simple-input-left-icon {
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  @apply absolute;
+}
+
+.simple-input-right-icon {
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  @apply absolute;
+}

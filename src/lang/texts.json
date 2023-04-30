@@ -1,10 +1,35 @@
 {
   "es": {
+    "auth": {
+      "signIn": {
+        "title": "Entrar a BTW"
+      }
+    },
     "sidebar": {
       "single": "Chats simples"
     },
     "buttonsArias": {
       "closeSidebar": "Cerrar menú lateral"
+    },
+    "inputs": {
+      "user": {
+        "label": "Usuario",
+        "type": "text",
+        "notEmpty": "Debes introducir tu usuario",
+        "notFound": "No se ha encontrado ese usuario"
+      },
+      "password": {
+        "label": "Contraseña",
+        "type": "password",
+        "notEmpty": "Debes introducir tu contraseña",
+        "wrong": "Contraseña incorrecta"
+      }
+    },
+    "errors": {
+      "notConnected": "No tienes conexión con el servidor"
+    },
+    "buttons": {
+      "signIn": "Iniciar sesión"
     },
     "navbar": {
       "links": {},

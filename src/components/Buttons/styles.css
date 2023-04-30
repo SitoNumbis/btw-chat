@@ -1,0 +1,5 @@
+.primary-button {
+  transition: all 500ms ease;
+  padding: 5px 20px;
+  border-radius: 50px;
+}
