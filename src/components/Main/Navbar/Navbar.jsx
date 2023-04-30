@@ -17,14 +17,13 @@ function Navbar({ socket }) {
   }, [languageState]);
 
   return (
-    <div className={`${styles.navbar} z-10`}>
-      <div className="justify-between items-center w-full">
-
-      </div>
+    <div className={`${styles.navbar} z-10 flex flex-col px-4`}>
+      <div className="justify-between items-center w-full h-full"></div>
       <hr
         className={`${css({
           width: "100%",
-        })} mx-auto my-3 border-placeholder-dark`}
+          marginBottom: "2px",
+        })} mx-auto mt-3 border-placeholder-dark`}
       />
     </div>
   );

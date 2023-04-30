@@ -56,19 +56,35 @@ function Main({ socket }) {
           message,
         });
       });
+
+      socket.on("user-logged", (user) => {
+        localStorage.setItem("chat-user-id", user.id);
+      });
     }
   }, [socket]);
 
-  const sendMessage = useCallback(
-    (message) => {
-      socket.emit("message", {
-        message,
-        date: new Date().getTime(),
-        sender: { name: "Tester", id: localStorage.getItem("chat-user-id") },
+  const sendMessage = useCallback(async (message) => {
+    try {
+      const response = await fetch("http://localhost:3000/send-message", {
+        method: "POST",
+        body: JSON.stringify({
+          message,
+          date: new Date().getTime(),
+          target: "",
+          sender: {
+            name: "Tester",
+            id: localStorage.getItem("chat-user-id"),
+          },
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-    },
-    [socket]
-  );
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   const [minuteOut, setMinuteOut] = useState(false);
 

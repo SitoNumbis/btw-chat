@@ -20,7 +20,6 @@ function App() {
     const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
     localStorage.setItem("chat-user-name", "Sito");
-    localStorage.setItem("chat-user-id", v4());
     localStorage.setItem("chat-main-bg", "#222333");
     localStorage.setItem("chat-secondary-bg", "#1b1b2b");
     localStorage.setItem("chat-other-bg", "#222222");
