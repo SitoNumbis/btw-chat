@@ -17,6 +17,9 @@ import loadable from "@loadable/component";
 import styles from "./styles.module.css";
 import config from "../../config";
 
+// services
+import { sendMessage as sendMessageRemote } from "../../services/chat/post";
+
 // components
 const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
@@ -63,20 +66,16 @@ function Main({ socket }) {
 
   const sendMessage = useCallback(async (message) => {
     try {
-      const response = await fetch("http://localhost:3000/send-message", {
-        method: "POST",
-        body: JSON.stringify({
-          message,
-          date: new Date().getTime(),
-          target: localStorage.getItem(config.userCookie),
-          sender: {
-            user: localStorage.getItem(config.userCookie),
-          },
-        }),
-        headers: {
-          "Content-Type": "application/json",
+      const response = await sendMessageRemote({
+        message,
+        date: new Date().getTime(),
+        target: localStorage.getItem(config.userCookie),
+        sender: {
+          user: localStorage.getItem(config.userCookie),
         },
       });
+      const data = await response.json();
+      console.log(data);
     } catch (err) {
       console.error(err);
     }

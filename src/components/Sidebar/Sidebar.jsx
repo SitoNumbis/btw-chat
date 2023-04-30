@@ -39,7 +39,7 @@ function Sidebar({ socket, open, onClose }) {
   useEffect(() => {
     if (width < 850) onClose(false);
     else onClose(true);
-  }, [width]);
+  }, [width, onClose]);
 
   return (
     <div
@@ -58,6 +58,7 @@ function Sidebar({ socket, open, onClose }) {
           {sidebar.single}
         </h2>
         <button
+          tabIndex={-1}
           className={`${styles.closeButton} ${css({
             transition: "all 500ms ease",
             color: localStorage.getItem("chat-text-basic"),
