@@ -1,0 +1,4 @@
+.emptyChats {
+  height: 45px;
+  @apply px-12 flex items-center justify-between gap-3 mt-1;
+}

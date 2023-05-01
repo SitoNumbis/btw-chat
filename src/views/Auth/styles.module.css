@@ -1,7 +1,7 @@
 .signIn {
   width: 500px;
   height: 420px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(4px);
   @apply flex flex-col items-start justify-start p-10 rounded-sm gap-3;
 }
 

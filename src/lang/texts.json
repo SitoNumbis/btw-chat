@@ -6,7 +6,10 @@
       }
     },
     "sidebar": {
-      "single": "Chats simples"
+      "single": "Chats simples",
+      "goToSearch": "Presiona en la lupa para buscar a otros viajeros",
+      "typeToSearch": "Escribe para buscar a otros viajeros",
+      "error": "Error al cargar las conversaciones"
     },
     "buttonsArias": {
       "closeSidebar": "Cerrar menú lateral",

@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { LanguageProvider } from "./context/LanguageProvider";
@@ -12,6 +11,7 @@ import App from "./App.jsx";
 
 // styles
 import "./index.css";
+import "./assets/animations/spin.css";
 import "./assets/animations/appear.css";
 import "./assets/animations/entrance.css";
 import "./assets/animations/expand.css";

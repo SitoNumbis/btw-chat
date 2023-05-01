@@ -1,7 +1,8 @@
 .simple-input {
   transition: all 500ms ease;
-  padding: 5px 20px;
-  border-radius: 50px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 1px;
 }
 
 .simple-input-left-icon {

@@ -9,6 +9,9 @@ import { css } from "@emotion/css";
 import image from "../../assets/images/image.jpg";
 import config from "../../config";
 
+// services
+import { fetchChat } from "../../services/chat/post";
+
 // components
 const Main = loadable(() => import("../../components/Main/Main"));
 const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
@@ -79,6 +82,26 @@ function Chat() {
     [openSidebar, setOpenSidebar]
   );
 
+  const [loading, setLoading] = useState(true);
+  const [errorLoadingPerson, setErrorLoadingPerson] = useState(false);
+
+  const fetchPerson = async (name) => {
+    setErrorLoadingPerson(false);
+    setLoading(true);
+    try {
+      const response = await fetchChat(name);
+      console.log(response);
+      if (response.status !== 200 && response.status !== 204) {
+        console.error(response.statusText);
+        setErrorLoadingPerson(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorLoadingPerson(true);
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="flex entrance w-full">
       <img
@@ -95,7 +118,14 @@ function Chat() {
         })}
       />
       <Suspense>
-        <Sidebar open={openSidebar} onClose={toggleSidebar} socket={socket} />
+        <Sidebar
+          error={errorLoadingPerson}
+          fetchPerson={fetchPerson}
+          loading={loading}
+          open={openSidebar}
+          onClose={toggleSidebar}
+          socket={socket}
+        />
         <div
           className={`flex flex-col flex-1 ${css({
             transition: "all 500ms ease",

@@ -1,4 +1,4 @@
-import React, {
+import {
   memo,
   useEffect,
   useCallback,
@@ -23,6 +23,7 @@ import {
   faSearch,
   faUser,
   faUserGroup,
+  faSadCry,
 } from "@fortawesome/free-solid-svg-icons";
 
 // @emotion/css
@@ -37,19 +38,31 @@ import styles from "./styles.module.css";
 import config from "../../config";
 
 // components
-const Input = loadable(() => import("../Inputs/Input"));
+import Loading from "../Loading/Loading";
+const EmptyChats = loadable(() => import("./EmptyChats/EmptyChats"));
+const SearchInput = loadable(() => import("./SearchInput/SearchInput"));
 const ActionButton = loadable(() => import("./ActionButton/ActionButton"));
 
-function Sidebar({ socket, open, onClose }) {
+function Sidebar({ socket, error, loading, fetchPerson, open, onClose }) {
   const { languageState } = useLanguage();
 
   const { width } = useScreenSize();
 
-  const { buttonsArias, sidebar, inputs } = useMemo(() => {
+  const chatsReducer = (oldState, action) => {
+    const { type } = action;
+    switch (type) {
+      default:
+        return oldState;
+    }
+  };
+
+  const [chats, setChats] = useReducer(chatsReducer, []);
+
+  const { buttonsArias, inputs, sidebar } = useMemo(() => {
     return {
       buttonsArias: languageState.texts.buttonsArias,
-      sidebar: languageState.texts.sidebar,
       inputs: languageState.texts.inputs,
+      sidebar: languageState.texts.sidebar,
     };
   }, [languageState]);
 
@@ -71,6 +84,18 @@ function Sidebar({ socket, open, onClose }) {
     const action = node.id.split("-")[1];
     setSeeing(action);
   }, []);
+
+  useEffect(() => {
+    if (seeing === "search")
+      setTimeout(() => {
+        const inputRef = document.getElementById("search-user");
+        if (inputRef !== null) inputRef.focus();
+      }, 500);
+  }, [seeing]);
+
+  useEffect(() => {
+    fetchPerson(searchInput);
+  }, [searchInput]);
 
   return (
     <div
@@ -151,31 +176,27 @@ function Sidebar({ socket, open, onClose }) {
       <div>
         {seeing === "search" ? (
           <div>
-            <div className="appear">
-              <Input
-                id="search"
-                type="search"
-                leftIcon={
-                  <button className={css({ marginLeft: "10px" })}>
-                    <FontAwesomeIcon icon={faSearch} />
-                  </button>
-                }
-                input={inputs.search}
-                value={searchInput}
-                onChange={handleSearchInput}
-                className={`!rounded-none ${css({
-                  height: "45px",
-                  color: localStorage.getItem("chat-text-basic"),
-                  background: localStorage.getItem("chat-main-bg"),
-                  paddingLeft: "45px!important",
-                })}`}
-              />
-            </div>
+            <SearchInput
+              value={searchInput}
+              onChange={handleSearchInput}
+              input={inputs.search}
+            />
           </div>
         ) : null}
         {seeing === "simple" ? <div></div> : null}
         {seeing === "multi" ? <div></div> : null}
       </div>
+      {!chats.length && !searchInput.length && !loading && !error ? (
+        <EmptyChats searching={seeing === "search"} />
+      ) : null}{" "}
+      {error ? (
+        <div className="flex flex-col px-12 p-5 gap-2 appear">
+          <FontAwesomeIcon icon={faSadCry} className="text-l-error text-4xl" />
+          <p className="text-l-error">{sidebar.error}</p>
+        </div>
+      ) : null}
+      {console.log(loading)}
+      {loading ? <Loading /> : null}
     </div>
   );
 }
@@ -184,6 +205,9 @@ Sidebar.propTypes = {
   socket: PropTypes.object,
   open: PropTypes.bool,
   onClose: PropTypes.func,
+  loading: PropTypes.bool,
+  fetchPerson: PropTypes.func,
+  error: PropTypes.bool,
 };
 
 export default Sidebar;

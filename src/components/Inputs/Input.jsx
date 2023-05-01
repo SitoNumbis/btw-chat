@@ -48,8 +48,9 @@ function Input({
           type={type ? type : input.type}
           placeholder={input.placeholder}
           className={`simple-input w-full ${css({
-            paddingLeft: leftIcon ? "30px !important" : "20px",
-            paddingRight: rightIcon ? "30px !important" : "20px",
+            paddingLeft: leftIcon ? "30px" : "20px",
+            paddingRight: rightIcon ? "30px" : "20px",
+            background: `${localStorage.getItem("chat-other-bg")}AA`,
             ":focus": {
               borderColor: localStorage.getItem("chat-text-primary"),
               boxShadow: `0px 0px 0 2px ${localStorage.getItem(

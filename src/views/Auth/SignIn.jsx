@@ -173,7 +173,7 @@ function SignIn() {
           <form
             onSubmit={handleSubmit}
             className={`${styles.signIn} appear ${css({
-              backgroundColor: `${localStorage.getItem("chat-secondary-bg")}88`,
+              backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
             })}`}
           >
             <h2

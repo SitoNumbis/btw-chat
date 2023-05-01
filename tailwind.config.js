@@ -25,6 +25,7 @@ export default {
       "dark-drawer-background": "#222222ce",
       "light-drawer-background": "#e3e3e3ce",
       error: "#CC0000",
+      "l-error": "#e15454",
       warning: "#FF8800",
       success: "#007733",
       info: "#0099CC",
