@@ -15,17 +15,20 @@ function Input({
   leftIcon,
   rightIcon,
   helperText,
+  className,
 }) {
   return (
     <div className="w-full flex flex-col gap-2">
-      <label
-        className={`${css({
-          color: localStorage.getItem("chat-text-basic"),
-        })}`}
-        htmlFor="user"
-      >
-        {input.label}
-      </label>
+      {input.label && input.label.length ? (
+        <label
+          className={`${css({
+            color: localStorage.getItem("chat-text-basic"),
+          })}`}
+          htmlFor={id}
+        >
+          {input.label}
+        </label>
+      ) : null}
       <div
         className={`relative w-full ${css({
           ":hover": {
@@ -66,7 +69,7 @@ function Input({
             ":focus + .simple-input-right-icon": {
               color: `${localStorage.getItem("chat-text-primary")} !important`,
             },
-          })}`}
+          })} ${className}`}
         />
         {leftIcon ? (
           <div
@@ -89,7 +92,7 @@ function Input({
           </div>
         ) : null}
       </div>
-      {helperText.length ? (
+      {helperText && helperText.length ? (
         <p className="appear bg-error text-white rounded-2xl px-3 py-1">
           {helperText}
         </p>
@@ -113,6 +116,7 @@ Input.propTypes = {
   leftIcon: PropTypes.any,
   rightIcon: PropTypes.any,
   helperText: PropTypes.string,
+  className: PropTypes.string,
 };
 
 const InputMemo = memo((props) => <Input {...props} />, arePropsEqual);
@@ -126,7 +130,8 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.onChange === newProps.onChange &&
     oldProps.leftIcon === newProps.leftIcon &&
     oldProps.rightIcon === newProps.rightIcon &&
-    oldProps.helperText === newProps.helperText
+    oldProps.helperText === newProps.helperText &&
+    oldProps.className === newProps.className
   );
 }
 

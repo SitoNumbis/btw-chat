@@ -30,6 +30,10 @@
       },
       "remember": {
         "label": "Recordar contraseña"
+      },
+      "search": {
+        "label": "",
+        "placeholder": "Escribe para buscar..."
       }
     },
     "errors": {

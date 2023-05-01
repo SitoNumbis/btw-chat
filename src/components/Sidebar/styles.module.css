@@ -7,15 +7,14 @@
   transition: transform 500ms ease;
 }
 
-.actionButtonRow {
-  margin-top: -12px;
-  @apply flex items-center justify-around w-full h-10;
+.userRow {
+  height: 45px;
+  @apply flex w-full justify-between items-center px-4 pb-4;
 }
 
-.actionButton {
-  flex: 1;
-  transition: all 500ms ease;
-  @apply h-full;
+.actionButtonRow {
+  height: 45px;
+  @apply flex items-center justify-around w-full;
 }
 
 .closeButton {

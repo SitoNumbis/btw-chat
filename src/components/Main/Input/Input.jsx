@@ -31,7 +31,9 @@ function Input({ onSend }) {
   return (
     <form
       onSubmit={onSubmit}
-      className={`relative w-full h-10 bg-dark-background2 flex items-center justify-between p-3 rounded-sm ${styles.div}`}
+      className={`relative w-full h-10 ${css({
+        background: localStorage.getItem("chat-main-bg"),
+      })} flex items-center justify-between p-3 rounded-sm ${styles.div}`}
     >
       <input
         type="text"
