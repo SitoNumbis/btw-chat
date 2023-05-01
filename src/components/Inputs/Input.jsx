@@ -50,6 +50,7 @@ function Input({
           className={`simple-input w-full ${css({
             paddingLeft: leftIcon ? "30px" : "20px",
             paddingRight: rightIcon ? "30px" : "20px",
+            color: localStorage.getItem("chat-text-basic"),
             background: `${localStorage.getItem("chat-other-bg")}AA`,
             ":focus": {
               borderColor: localStorage.getItem("chat-text-primary"),

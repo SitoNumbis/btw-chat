@@ -90,11 +90,12 @@ function Chat() {
     setLoading(true);
     try {
       const response = await fetchChat(name);
-      console.log(response);
       if (response.status !== 200 && response.status !== 204) {
         console.error(response.statusText);
         setErrorLoadingPerson(true);
       }
+      const { list } = await response.json();
+      console.log(list);
     } catch (err) {
       console.error(err);
       setErrorLoadingPerson(true);

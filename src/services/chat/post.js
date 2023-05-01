@@ -17,13 +17,16 @@ export const sendMessage = async (message) => {
 /**
  *
  * @param {String} user
- * @param {String} person
+ 
  * @returns
  */
-export const fetchChat = async (user, person) => {
+export const fetchChat = async (target) => {
   const response = await fetch("http://localhost:3000/fetch-chats", {
     method: "POST",
-    body: JSON.stringify({ user, person }),
+    body: JSON.stringify({
+      user: localStorage.getItem("chat-user-id"),
+      target,
+    }),
     headers: {
       "Content-Type": "application/json",
     },

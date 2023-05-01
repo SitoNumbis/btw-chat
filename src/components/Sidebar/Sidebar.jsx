@@ -195,7 +195,6 @@ function Sidebar({ socket, error, loading, fetchPerson, open, onClose }) {
           <p className="text-l-error">{sidebar.error}</p>
         </div>
       ) : null}
-      {console.log(loading)}
       {loading ? <Loading /> : null}
     </div>
   );
