@@ -9,7 +9,11 @@
       "single": "Chats simples"
     },
     "buttonsArias": {
-      "closeSidebar": "Cerrar menú lateral"
+      "closeSidebar": "Cerrar menú lateral",
+      "openSidebar": "Abrir menú lateral",
+      "showSimpleChats": "Mostrar chats simples",
+      "showMultiChats": "Mostrar chats grupales",
+      "showSearch": "Buscar usuario"
     },
     "inputs": {
       "user": {

@@ -84,16 +84,20 @@ export const userData = () => {
 /**
  * If remember is true, it stores user data to localStorage, otherwise it stores it in sessionStorage
  * @param {boolean} remember - a boolean value that determines whether the user should be remembered or not.
- * @param {string} user - The user object that you want to store in the browser.
- * @param {string[]} apps - User apps
+ * @param {object} user - The user object that you want to store in the browser.
+ 
  */
-export const logUser = (remember, user, apps) => {
+export const logUser = (remember, user) => {
   // @ts-ignore
   if (remember) {
-    localStorage.setItem(config.userCookie, user);
+    localStorage.setItem(config.userCookie, user.user);
+    localStorage.setItem(config.userNameCookie, user.name);
+    localStorage.setItem(config.userIdCookie, user.id);
   }
   // @ts-ignore
   else {
-    localStorage.setItem(config.userCookie, user);
+    localStorage.setItem(config.userCookie, user.user);
+    localStorage.setItem(config.userNameCookie, user.name);
+    localStorage.setItem(config.userIdCookie, user.id);
   }
 };

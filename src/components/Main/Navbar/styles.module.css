@@ -1,6 +1,12 @@
 .navbar {
-  height: 60px;
-  min-height: 60px;
+  height: 70px;
+  min-height: 70px;
   min-width: 100%;
-  @apply flex;
+  @apply flex px-10;
+}
+
+@media (max-width: 850px) {
+  .navbar {
+    @apply pl-2 pr-2;
+  }
 }

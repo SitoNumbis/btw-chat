@@ -125,13 +125,13 @@ function SignIn() {
       try {
         const response = await login(user, password, remember);
         const data = response.data;
-        const { apps } = data;
+
         createCookie(
           config.basicKeyCookie,
           response.data.expiration,
           response.data.token
         );
-        logUser(remember, user.split("@")[0], apps || {});
+        logUser(remember, data);
 
         setTimeout(() => {
           if (userLogged()) window.location.href = "/";

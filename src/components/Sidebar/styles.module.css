@@ -4,7 +4,18 @@
   min-height: 100vh;
   height: 100vh;
   backdrop-filter: blur(10px);
+  transition: transform 500ms ease;
+}
+
+.actionButtonRow {
+  margin-top: -12px;
+  @apply flex items-center justify-around w-full h-10;
+}
+
+.actionButton {
+  flex: 1;
   transition: all 500ms ease;
+  @apply h-full;
 }
 
 .closeButton {
