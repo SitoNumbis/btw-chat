@@ -7,6 +7,7 @@ export default {
       white: "#f0f0f0",
       "white-hover": "#c2c7cc",
       "placeholder-dark": "#636362",
+      "dark": "#2e2e2e",
       "dark-background2": "#222333",
       "dark-background": "#1b1b2b",
       "light-background2": "#f0f0f0",

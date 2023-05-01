@@ -115,15 +115,17 @@ function SignIn() {
         userRef?.focus();
         return setUserHelperText(inputs.user.notEmpty);
       }
+
       if (!password.length) {
         const passwordRef = document.getElementById("password");
         passwordRef?.focus();
         return setPasswordHelperText(inputs.password.notEmpty);
       }
+
       setLoading(true);
 
       try {
-        const response = await login(user, password, remember);
+        const response = await login(user.split("@")[0], password, remember);
         const data = response.data;
 
         createCookie(

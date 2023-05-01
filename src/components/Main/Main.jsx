@@ -25,7 +25,7 @@ const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
 
-function Main({ socket }) {
+function Main({ socket, selectedChat }) {
   const messagesReducer = (state, action) => {
     const { type } = action;
     switch (type) {
@@ -64,22 +64,25 @@ function Main({ socket }) {
     }
   }, [socket]);
 
-  const sendMessage = useCallback(async (message) => {
-    try {
-      const response = await sendMessageRemote({
-        message,
-        date: new Date().getTime(),
-        target: localStorage.getItem(config.userCookie),
-        sender: {
-          user: localStorage.getItem(config.userCookie),
-        },
-      });
-      const data = await response.json();
-      console.log(data);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+  const sendMessage = useCallback(
+    async (message) => {
+      try {
+        const response = await sendMessageRemote({
+          message,
+          date: new Date().getTime(),
+          target: selectedChat?.user,
+          sender: {
+            user: localStorage.getItem(config.userCookie),
+          },
+        });
+        const data = await response.json();
+        console.log(data);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [selectedChat]
+  );
 
   const [minuteOut, setMinuteOut] = useState(false);
 
@@ -98,7 +101,7 @@ function Main({ socket }) {
         backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
       })}`}
     >
-      <Navbar />
+      <Navbar selectedChat={selectedChat} />
       <div className={styles.messages}>
         {messages.map((message, i) => {
           console.log(i, message.sender.user);
@@ -126,6 +129,12 @@ function Main({ socket }) {
 
 Main.propTypes = {
   socket: PropTypes.object,
+  selectedChat: PropTypes.shape({
+    photo: PropTypes.string,
+    user: PropTypes.string,
+    name: PropTypes.string,
+    bio: PropTypes.string,
+  }),
 };
 
 export default Main;

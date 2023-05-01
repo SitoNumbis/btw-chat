@@ -41,9 +41,12 @@ const ActionButton = loadable(() => import("./ActionButton/ActionButton"));
 function Sidebar({
   socket,
   chats,
+  searchChats,
+  multiChats,
   error,
   loading,
   fetchPerson,
+  selectChat,
   open,
   onClose,
 }) {
@@ -90,11 +93,27 @@ function Sidebar({
     fetchPerson(searchInput);
   }, [searchInput]);
 
-  const selectChat = useCallback(() => {}, []);
+  const printSearchChats = useCallback(() => {
+    return searchChats.map((chat, i) => (
+      <ChatPerson
+        index={i}
+        key={chat.id}
+        {...chat}
+        selectChat={selectChat}
+        searching
+      />
+    ));
+  }, [searchChats, selectChat]);
 
   const printChats = useCallback(() => {
     return chats.map((chat, i) => (
-      <ChatPerson index={i} key={chat.id} {...chat} selectChat={selectChat} />
+      <ChatPerson
+        index={i}
+        key={chat.id}
+        {...chat}
+        selectChat={selectChat}
+        searching={false}
+      />
     ));
   }, [chats, selectChat]);
 
@@ -182,24 +201,48 @@ function Sidebar({
               onChange={handleSearchInput}
               input={inputs.search}
             />
+            {loading ? (
+              <Loading />
+            ) : (
+              <div className="appear">{printSearchChats()}</div>
+            )}
+            {!searchChats.length && searchInput.length && !loading && !error ? (
+              <Empty />
+            ) : null}
+            {!searchChats.length &&
+            !searchInput.length &&
+            !loading &&
+            !error ? (
+              <EmptyChats searching />
+            ) : null}
           </div>
         ) : null}
-        {seeing === "simple" ? <div></div> : null}
-        {seeing === "multi" ? <div></div> : null}
+        {seeing === "simple" ? (
+          <div>
+            {loading ? (
+              <Loading />
+            ) : (
+              <div className="appear">{printChats()}</div>
+            )}
+            {!chats.length && !loading && !error ? (
+              <EmptyChats searching={false} />
+            ) : null}
+          </div>
+        ) : null}
+        {seeing === "multi" ? (
+          <div>
+            {!multiChats.length && !loading && !error ? (
+              <EmptyChats searching={false} />
+            ) : null}
+          </div>
+        ) : null}
       </div>
-      {!chats.length && !searchInput.length && !loading && !error ? (
-        <EmptyChats searching={seeing === "search"} />
-      ) : null}{" "}
-      {!chats.length && searchInput.length && !loading && !error ? (
-        <Empty />
-      ) : null}
       {error ? (
         <div className="flex flex-col px-12 p-5 gap-2 appear">
           <FontAwesomeIcon icon={faSadCry} className="text-l-error text-4xl" />
           <p className="text-l-error">{sidebar.error}</p>
         </div>
       ) : null}
-      {loading ? <Loading /> : <div>{printChats()}</div>}
     </div>
   );
 }
@@ -209,9 +252,28 @@ Sidebar.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   loading: PropTypes.bool,
+  selectChat: PropTypes.func,
   fetchPerson: PropTypes.func,
   error: PropTypes.bool,
   chats: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      user: PropTypes.string,
+      id: PropTypes.string,
+      bio: PropTypes.string,
+      photo: PropTypes.string,
+    })
+  ),
+  searchChats: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      user: PropTypes.string,
+      id: PropTypes.string,
+      bio: PropTypes.string,
+      photo: PropTypes.string,
+    })
+  ),
+  multiChats: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       user: PropTypes.string,

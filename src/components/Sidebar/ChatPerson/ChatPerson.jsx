@@ -11,8 +11,17 @@ import noPhoto from "../../../assets/images/no-photo.webp";
 import { parseSent } from "../../../utils/parseSent";
 
 function ChatPerson(props) {
-  const { photo, user, name, state, lastMessage, bio, index, selectChat } =
-    props;
+  const {
+    photo,
+    user,
+    name,
+    state,
+    lastMessage,
+    bio,
+    index,
+    selectChat,
+    searching,
+  } = props;
 
   const printState = useCallback(() => {
     switch (state) {
@@ -24,8 +33,8 @@ function ChatPerson(props) {
   }, [state]);
 
   const handleClick = useCallback(() => {
-    selectChat(user);
-  }, [user]);
+    selectChat(user, searching);
+  }, [user, selectChat, searching]);
 
   return (
     <button
@@ -76,6 +85,7 @@ ChatPerson.propTypes = {
   bio: PropTypes.string,
   index: PropTypes.number,
   selectChat: PropTypes.func,
+  searching: PropTypes.bool,
 };
 
 const ChatPersonMemo = memo(

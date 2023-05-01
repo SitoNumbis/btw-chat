@@ -22,10 +22,12 @@ function Chat() {
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
 
-    newSocket.on("connect", () => {
+    newSocket.on("connect", (data) => {
+      console.log(data);
       console.log("connect", localStorage.getItem(config.userCookie));
       newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
     });
+
     setSocket(newSocket);
     return () => newSocket.close();
   }, []);
@@ -115,6 +117,8 @@ function Chat() {
   };
 
   const [chats, setChats] = useReducer(chatsReducer, []);
+  const [searchChats, setSearchChats] = useReducer(chatsReducer, []);
+  const [multiChats, setMultiChats] = useReducer(chatsReducer, []);
 
   const fetchPerson = async (name) => {
     setErrorLoadingPerson(false);
@@ -126,13 +130,30 @@ function Chat() {
         setErrorLoadingPerson(true);
       }
       const { list } = await response.json();
-      setChats({ type: "add", list });
+      if (name && name.length) setSearchChats({ type: "add", list });
+      else setChats({ type: "add", list });
     } catch (err) {
       console.error(err);
       setErrorLoadingPerson(true);
     }
     setLoading(false);
   };
+
+  const [selectedChat, setSelectedChat] = useState(undefined);
+
+  const selectChat = useCallback(
+    (user, searching) => {
+      console.log(user);
+      if (searching) {
+        const found = searchChats.find((localUser) => localUser.user === user);
+        setSelectedChat(found);
+      } else {
+        const found = chats.find((localUser) => localUser.user === user);
+        setSelectedChat(found);
+      }
+    },
+    [chats, searchChats, multiChats]
+  );
 
   return (
     <div className="flex entrance w-full">
@@ -152,8 +173,11 @@ function Chat() {
       <Suspense>
         <Sidebar
           chats={chats}
+          multiChats={multiChats}
+          searchChats={searchChats}
           error={errorLoadingPerson}
           fetchPerson={fetchPerson}
+          selectChat={selectChat}
           loading={loading}
           open={openSidebar}
           onClose={toggleSidebar}
@@ -164,7 +188,11 @@ function Chat() {
             transition: "all 500ms ease",
           })}`}
         >
-          <Main open={openSidebar} socket={socket} />
+          <Main
+            selectedChat={selectedChat}
+            open={openSidebar}
+            socket={socket}
+          />
         </div>
       </Suspense>
     </div>
