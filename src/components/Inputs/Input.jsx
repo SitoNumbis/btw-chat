@@ -99,7 +99,7 @@ function Input({
           {helperText}
         </p>
       ) : (
-        <div className="mt-3"></div>
+        <div className=""></div>
       )}
     </div>
   );

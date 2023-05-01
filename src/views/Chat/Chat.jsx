@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, useCallback } from "react";
+import { useState, useEffect, Suspense, useReducer, useCallback } from "react";
 import io from "socket.io-client";
 import loadable from "@loadable/component";
 
@@ -85,6 +85,37 @@ function Chat() {
   const [loading, setLoading] = useState(true);
   const [errorLoadingPerson, setErrorLoadingPerson] = useState(false);
 
+  const chatsReducer = (oldState, action) => {
+    const { type } = action;
+    switch (type) {
+      case "add": {
+        const { list, from } = action;
+        const newOldState = [...oldState];
+        if (from === "back") {
+          list.forEach((user) => {
+            const found = newOldState.find(
+              (localUser) => localUser.id === user.id
+            );
+            if (!found) newOldState.push(user);
+          });
+          return newOldState;
+        } else {
+          list.forEach((user) => {
+            const found = newOldState.find(
+              (localUser) => localUser.id === user.id
+            );
+            if (!found) newOldState.push(user);
+          });
+          return newOldState;
+        }
+      }
+      default:
+        return oldState;
+    }
+  };
+
+  const [chats, setChats] = useReducer(chatsReducer, []);
+
   const fetchPerson = async (name) => {
     setErrorLoadingPerson(false);
     setLoading(true);
@@ -95,7 +126,7 @@ function Chat() {
         setErrorLoadingPerson(true);
       }
       const { list } = await response.json();
-      console.log(list);
+      setChats({ type: "add", list });
     } catch (err) {
       console.error(err);
       setErrorLoadingPerson(true);
@@ -120,6 +151,7 @@ function Chat() {
       />
       <Suspense>
         <Sidebar
+          chats={chats}
           error={errorLoadingPerson}
           fetchPerson={fetchPerson}
           loading={loading}

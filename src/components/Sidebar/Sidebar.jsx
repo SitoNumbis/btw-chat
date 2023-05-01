@@ -1,11 +1,4 @@
-import {
-  memo,
-  useEffect,
-  useCallback,
-  useState,
-  useReducer,
-  useMemo,
-} from "react";
+import { memo, useEffect, useCallback, useState, useMemo } from "react";
 import loadable from "@loadable/component";
 
 import useScreenSize from "use-screen-witdh";
@@ -39,24 +32,24 @@ import config from "../../config";
 
 // components
 import Loading from "../Loading/Loading";
+const Empty = loadable(() => import("./EmptyChats/Empty"));
+const ChatPerson = loadable(() => import("./ChatPerson/ChatPerson"));
 const EmptyChats = loadable(() => import("./EmptyChats/EmptyChats"));
 const SearchInput = loadable(() => import("./SearchInput/SearchInput"));
 const ActionButton = loadable(() => import("./ActionButton/ActionButton"));
 
-function Sidebar({ socket, error, loading, fetchPerson, open, onClose }) {
+function Sidebar({
+  socket,
+  chats,
+  error,
+  loading,
+  fetchPerson,
+  open,
+  onClose,
+}) {
   const { languageState } = useLanguage();
 
   const { width } = useScreenSize();
-
-  const chatsReducer = (oldState, action) => {
-    const { type } = action;
-    switch (type) {
-      default:
-        return oldState;
-    }
-  };
-
-  const [chats, setChats] = useReducer(chatsReducer, []);
 
   const { buttonsArias, inputs, sidebar } = useMemo(() => {
     return {
@@ -96,6 +89,14 @@ function Sidebar({ socket, error, loading, fetchPerson, open, onClose }) {
   useEffect(() => {
     fetchPerson(searchInput);
   }, [searchInput]);
+
+  const selectChat = useCallback(() => {}, []);
+
+  const printChats = useCallback(() => {
+    return chats.map((chat, i) => (
+      <ChatPerson index={i} key={chat.id} {...chat} selectChat={selectChat} />
+    ));
+  }, [chats, selectChat]);
 
   return (
     <div
@@ -189,13 +190,16 @@ function Sidebar({ socket, error, loading, fetchPerson, open, onClose }) {
       {!chats.length && !searchInput.length && !loading && !error ? (
         <EmptyChats searching={seeing === "search"} />
       ) : null}{" "}
+      {!chats.length && searchInput.length && !loading && !error ? (
+        <Empty />
+      ) : null}
       {error ? (
         <div className="flex flex-col px-12 p-5 gap-2 appear">
           <FontAwesomeIcon icon={faSadCry} className="text-l-error text-4xl" />
           <p className="text-l-error">{sidebar.error}</p>
         </div>
       ) : null}
-      {loading ? <Loading /> : null}
+      {loading ? <Loading /> : <div>{printChats()}</div>}
     </div>
   );
 }
@@ -207,6 +211,15 @@ Sidebar.propTypes = {
   loading: PropTypes.bool,
   fetchPerson: PropTypes.func,
   error: PropTypes.bool,
+  chats: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      user: PropTypes.string,
+      id: PropTypes.string,
+      bio: PropTypes.string,
+      photo: PropTypes.string,
+    })
+  ),
 };
 
 export default Sidebar;

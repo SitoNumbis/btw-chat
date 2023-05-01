@@ -1,3 +1,5 @@
+import config from "../../config";
+
 /**
  *
  * @param {object} message
@@ -24,7 +26,7 @@ export const fetchChat = async (target) => {
   const response = await fetch("http://localhost:3000/fetch-chats", {
     method: "POST",
     body: JSON.stringify({
-      user: localStorage.getItem("chat-user-id"),
+      user: localStorage.getItem(config.userIdCookie),
       target,
     }),
     headers: {

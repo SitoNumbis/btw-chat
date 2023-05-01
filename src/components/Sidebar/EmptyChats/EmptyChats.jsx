@@ -35,4 +35,15 @@ EmptyChats.propTypes = {
   searching: PropTypes.bool,
 };
 
-export default EmptyChats;
+const EmptyChatsMemo = memo(
+  (props) => <EmptyChats {...props} />,
+  arePropsEqual
+);
+
+function arePropsEqual(oldProps, newProps) {
+  return oldProps.searching === newProps.searching;
+}
+
+EmptyChatsMemo.displayName = "EmptyChats";
+
+export default EmptyChatsMemo;
