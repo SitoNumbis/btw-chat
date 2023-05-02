@@ -59,7 +59,7 @@ function Input({ onSend }) {
 }
 
 Input.propTypes = {
-  onSend: PropTypes,
+  onSend: PropTypes.func,
 };
 
 export default Input;
