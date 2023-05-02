@@ -5,6 +5,9 @@
         "title": "Entrar a BTW"
       }
     },
+    "aux": {
+      "you": "Tú: "
+    },
     "sidebar": {
       "single": "Chats simples",
       "goToSearch": "Presiona en la lupa para buscar a otros viajeros",
@@ -58,8 +61,10 @@
         "lessThanMin": "<1 min",
         "agoMin": "hace [result] min",
         "agoMins": "hace [result] mins",
-        "agoHour": "hace [result] hour",
-        "agoHours": "hace [result] hours"
+        "agoHour": "hace [result] horas",
+        "agoHours": "hace [result] horas",
+        "agoDay": "hace [result] día",
+        "agoDays": "hace [result] días"
       }
     }
   }

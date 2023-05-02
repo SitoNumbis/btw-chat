@@ -1,14 +1,20 @@
-import { memo, useCallback } from "react";
+import { memo, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
 import { css } from "@emotion/css";
 
+// contexts
+import { useLanguage } from "../../../context/LanguageProvider";
+
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
 
 // utils
-import { parseSent } from "../../../utils/parseSent";
+import { parseSentAsDate } from "../../../utils/parseSent";
+
+// config
+import config from "../../../config";
 
 function ChatPerson(props) {
   const {
@@ -36,17 +42,47 @@ function ChatPerson(props) {
     selectChat(user, searching);
   }, [user, selectChat, searching]);
 
+  const { languageState } = useLanguage();
+
+  const { aux, messageT } = useMemo(() => {
+    return {
+      aux: languageState.texts.aux,
+      messageT: languageState.texts.main.message,
+    };
+  }, [languageState]);
+
+  const printDate = useCallback(
+    (date) => {
+      if (date) return parseSentAsDate(date, messageT);
+    },
+    [messageT]
+  );
+
   const printLastMessage = useCallback(() => {
-    console.log(lastMessage);
-    /* {lastMessage && lastMessage.length > 34 ? "..." : ""} */
-  }, [lastMessage]);
+    return (
+      <div className="w-full flex items-center justify-between">
+        <p>
+          {`${
+            lastMessage.sender.user === localStorage.getItem(config.userCookie)
+              ? aux.you
+              : ""
+          }${
+            lastMessage.message && lastMessage.message.length > 18
+              ? `${lastMessage.message.substring(0, 18)}...`
+              : lastMessage.message
+          }`}
+        </p>
+        <p>{printDate(lastMessage?.date)}</p>
+      </div>
+    );
+  }, [lastMessage, aux, printDate]);
 
   return (
     <button
       type="button"
       onClick={handleClick}
       className={`flex items-center justify-start px-4 py-3 w-full gap-3 cursor-pointer ${
-        index === 0 ? "-mt-3" : ""
+        index === 0 ? "-mt-0" : ""
       } ${css({
         transition: "all 500ms ease",
         ":hover": {
@@ -70,12 +106,11 @@ function ChatPerson(props) {
           </p>
           {printState()}
         </div>
-        <p className={`text-placeholder-dark italic text-left`}>
-          {lastMessage ? printLastMessage() : bio.substring(0, 34)}
-          {!lastMessage && bio && bio.length > 34 ? "..." : ""}
-        </p>
+        <div className={`!text-placeholder-dark !italic !text-left`}>
+          {lastMessage ? printLastMessage() : <p>bio.substring(0, 22)</p>}
+          {!lastMessage && bio && bio.length > 22 ? "..." : ""}
+        </div>
       </div>
-      <div className="flex flex-col"></div>
     </button>
   );
 }
@@ -85,7 +120,7 @@ ChatPerson.propTypes = {
   name: PropTypes.string,
   user: PropTypes.string,
   state: PropTypes.string,
-  lastMessage: PropTypes.string,
+  lastMessage: PropTypes.object,
   bio: PropTypes.string,
   index: PropTypes.number,
   selectChat: PropTypes.func,

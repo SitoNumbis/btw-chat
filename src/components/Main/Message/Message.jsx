@@ -11,7 +11,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 import noPhoto from "../../../assets/images/no-photo.webp";
 
 // utils
-import { parseSent } from "../../../utils/parseSent";
+import { parseSentAsDate} from "../../../utils/parseSent";
 import { isSelf } from "../../../utils/users";
 
 // styles
@@ -25,23 +25,7 @@ function Message({ date, sender, message, join }) {
   }, [languageState]);
 
   const sent = useCallback(() => {
-    if (date) {
-      const { count, type } = parseSent(date);
-      switch (type) {
-        case "hours": {
-          if (count === 1)
-            return messageT.agoHour.replace("[result]", String(count));
-          else return messageT.agoHours.replace("[result]", String(count));
-        }
-        default: {
-          // minutes
-          if (count === 0) return messageT.lessThanMin;
-          else if (count === 1)
-            return messageT.agoMin.replace("[result]", String(count));
-          else return messageT.agoMins.replace("[result]", String(count));
-        }
-      }
-    }
+    if (date) return parseSentAsDate(date, messageT);
   }, [date, messageT]);
 
   const user = useCallback(() => {
