@@ -20,8 +20,6 @@ function Navbar({ socket, selectedChat }) {
     return { navbar: languageState.texts.navbar };
   }, [languageState]);
 
-  console.log(selectedChat);
-
   return (
     <div className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
       <div className="flex gap-3 items-center w-full h-full">

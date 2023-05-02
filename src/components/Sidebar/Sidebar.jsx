@@ -98,8 +98,9 @@ function Sidebar({
   }, [seeing]);
 
   useEffect(() => {
-    fetchPerson(searchInput);
-  }, [searchInput]);
+    if (seeing === "simple" || seeing === "multi") fetchPerson();
+    else fetchPerson(searchInput);
+  }, [searchInput, seeing]);
 
   const printSearchChats = useCallback(() => {
     return searchChats.map((chat, i) => (

@@ -27,7 +27,7 @@ export const sendMessage = async (message) => {
 export const fetchMessages = async (target, sender, page = 1, count = 20) => {
   const response = await fetch("http://localhost:3000/fetch-messages", {
     method: "POST",
-    body: JSON.stringify({target, sender, page, count}),
+    body: JSON.stringify({ target, sender, page, count }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -45,7 +45,7 @@ export const fetchChat = async (target) => {
   const response = await fetch("http://localhost:3000/fetch-chats", {
     method: "POST",
     body: JSON.stringify({
-      user: localStorage.getItem(config.userIdCookie),
+      user: localStorage.getItem(config.userCookie),
       target,
     }),
     headers: {

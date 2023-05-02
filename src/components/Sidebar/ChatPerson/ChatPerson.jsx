@@ -36,6 +36,11 @@ function ChatPerson(props) {
     selectChat(user, searching);
   }, [user, selectChat, searching]);
 
+  const printLastMessage = useCallback(() => {
+    console.log(lastMessage);
+    /* {lastMessage && lastMessage.length > 34 ? "..." : ""} */
+  }, [lastMessage]);
+
   return (
     <button
       type="button"
@@ -66,8 +71,7 @@ function ChatPerson(props) {
           {printState()}
         </div>
         <p className={`text-placeholder-dark italic text-left`}>
-          {lastMessage ? lastMessage.substring(0, 34) : bio.substring(0, 34)}
-          {lastMessage && lastMessage.length > 34 ? "..." : ""}
+          {lastMessage ? printLastMessage() : bio.substring(0, 34)}
           {!lastMessage && bio && bio.length > 34 ? "..." : ""}
         </p>
       </div>

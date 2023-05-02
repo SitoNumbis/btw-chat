@@ -144,11 +144,9 @@ function Main({ socket, selectedChat }) {
       <Navbar selectedChat={selectedChat} />
       <div className={styles.messages}>
         {messages.map((message, i) => {
-          console.log(i, message);
           if (i === 0 && messages.length === 0)
             return <Message key={message.date} {...message} />;
           else {
-            console.log(messages, i);
             if (i < messages.length - 1)
               return (
                 <Message

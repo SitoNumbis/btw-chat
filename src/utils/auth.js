@@ -88,7 +88,6 @@ export const userData = () => {
  
  */
 export const logUser = (remember, user) => {
-  console.log(user);
   // @ts-ignore
   if (remember) {
     localStorage.setItem(config.userCookie, user.user);
