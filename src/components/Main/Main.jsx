@@ -141,16 +141,16 @@ function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
         backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
       })}`}
     >
+      {" "}
+      <Navbar
+        toggleSidebar={toggleSidebar}
+        sidebar={sidebar}
+        selectedChat={selectedChat}
+      />
       {selectedChat ? (
         <>
-          <Navbar
-            toggleSidebar={toggleSidebar}
-            sidebar={sidebar}
-            selectedChat={selectedChat}
-          />
-
           <div className={styles.messages}>
-            <p className="text-placeholder-dark italic m-auto">
+            <p className="text-placeholder-dark italic mx-auto">
               {selectedChat?.bio}
             </p>
             {messages.map((message, i) => {

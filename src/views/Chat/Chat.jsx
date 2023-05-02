@@ -134,7 +134,6 @@ function Chat() {
         setErrorLoadingPerson(true);
       }
       const { list } = await response.json();
-      console.log(list);
       if (name && name.length) setSearchChats({ type: "add", list });
       else setChats({ type: "add", list });
     } catch (err) {

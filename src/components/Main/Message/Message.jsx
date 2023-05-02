@@ -47,7 +47,7 @@ function Message({ date, sender, message, join }) {
           <p
             className={`${styles.message} ${css({
               backgroundColor: user()
-                ? `${localStorage.getItem("chat-secondary-bg")}99`
+                ? `${localStorage.getItem("chat-text-primary")}33`
                 : `${localStorage.getItem("chat-other-bg")}99`,
               color: localStorage.getItem("chat-text-basic"),
             })} `}

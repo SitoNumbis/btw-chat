@@ -4,6 +4,7 @@ import { LanguageProvider } from "./context/LanguageProvider";
 import { NotificationProvider } from "./context/NotificationProvider";
 
 // font
+import "@fontsource/roboto";
 import "@fontsource/poppins";
 
 // App
