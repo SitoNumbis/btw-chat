@@ -12,6 +12,9 @@ import config from "../../config";
 // services
 import { fetchChat } from "../../services/chat/post";
 
+// styles
+import styles from "./styles.module.css";
+
 // components
 const Main = loadable(() => import("../../components/Main/Main"));
 const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
@@ -79,6 +82,7 @@ function Chat() {
   const toggleSidebar = useCallback(
     (to) => {
       if (typeof to === "boolean") return setOpenSidebar(to);
+
       return setOpenSidebar(!openSidebar);
     },
     [openSidebar, setOpenSidebar]
@@ -156,7 +160,7 @@ function Chat() {
   );
 
   return (
-    <div className="flex entrance w-full">
+    <div className={`flex entrance w-full h-screen ${styles.main}`}>
       <img
         src={image}
         alt="background"
@@ -170,31 +174,35 @@ function Chat() {
           left: 0,
         })}
       />
-      <Suspense>
-        <Sidebar
-          chats={chats}
-          multiChats={multiChats}
-          searchChats={searchChats}
-          error={errorLoadingPerson}
-          fetchPerson={fetchPerson}
-          selectChat={selectChat}
-          loading={loading}
-          open={openSidebar}
-          onClose={toggleSidebar}
-          socket={socket}
-        />
-        <div
-          className={`flex flex-col flex-1 ${css({
-            transition: "all 500ms ease",
-          })}`}
-        >
-          <Main
-            selectedChat={selectedChat}
+      <div className={`${styles.bg}`}>
+        {" "}
+        <Suspense>
+          <Sidebar
+            chats={chats}
+            multiChats={multiChats}
+            searchChats={searchChats}
+            error={errorLoadingPerson}
+            fetchPerson={fetchPerson}
+            selectChat={selectChat}
+            loading={loading}
             open={openSidebar}
+            onClose={toggleSidebar}
             socket={socket}
           />
-        </div>
-      </Suspense>
+          <div
+            className={`flex flex-col flex-1 ${css({
+              transition: "all 500ms ease",
+            })}`}
+          >
+            <Main
+              selectedChat={selectedChat}
+              sidebar={openSidebar}
+              toggleSidebar={toggleSidebar}
+              socket={socket}
+            />
+          </div>
+        </Suspense>
+      </div>
     </div>
   );
 }

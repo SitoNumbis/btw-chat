@@ -1,12 +1,12 @@
 .messages {
-  height: calc(100vh - 120px);
+  height: calc(100% - 120px);
   @apply flex flex-col gap-5 overflow-auto px-10 pt-10;
 }
 
 .main {
   backdrop-filter: blur(10px);
-  min-height: 100vh;
-  height: 100vh;
+  height: 100%;
+  border-radius: 0px 5px 5px 0;
   @apply flex flex-col w-full;
 }
 
@@ -17,14 +17,11 @@
 @media (max-width: 850px) {
   .messages,
   .inputContainer {
-    @apply pl-2;
-  }
-
-  .inputContainer {
-    @apply pr-2;
+    @apply pr-2 pl-0;
   }
 
   .main {
-    @apply pl-8;
+    border-radius: 0;
+    @apply pl-2;
   }
 }

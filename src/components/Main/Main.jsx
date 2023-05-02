@@ -28,7 +28,7 @@ const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
 
-function Main({ socket, selectedChat }) {
+function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
   const messagesReducer = (state, action) => {
     const { type } = action;
     switch (type) {
@@ -141,33 +141,43 @@ function Main({ socket, selectedChat }) {
         backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
       })}`}
     >
-      <Navbar selectedChat={selectedChat} />
-      <div className={styles.messages}>
-        {messages.map((message, i) => {
-          if (i === 0 && messages.length === 0)
-            return <Message key={message.date} {...message} />;
-          else {
-            if (i < messages.length - 1)
-              return (
-                <Message
-                  key={message.date}
-                  {...message}
-                  join={message.sender.user === messages[i + 1].sender.user}
-                />
-              );
-            else return <Message key={message.date} {...message} />;
-          }
-        })}
-      </div>
-      <div className={styles.inputContainer}>
-        <Input onSend={sendMessage} />
-      </div>
+      {selectedChat ? (
+        <>
+          <Navbar
+            toggleSidebar={toggleSidebar}
+            sidebar={sidebar}
+            selectedChat={selectedChat}
+          />
+          <div className={styles.messages}>
+            {messages.map((message, i) => {
+              if (i === 0 && messages.length === 0)
+                return <Message key={message.date} {...message} />;
+              else {
+                if (i < messages.length - 1)
+                  return (
+                    <Message
+                      key={message.date}
+                      {...message}
+                      join={message.sender.user === messages[i + 1].sender.user}
+                    />
+                  );
+                else return <Message key={message.date} {...message} />;
+              }
+            })}
+          </div>
+          <div className={styles.inputContainer}>
+            <Input onSend={sendMessage} />
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
 
 Main.propTypes = {
   socket: PropTypes.object,
+  sidebar: PropTypes.bool,
+  toggleSidebar: PropTypes.func,
   selectedChat: PropTypes.shape({
     photo: PropTypes.string,
     user: PropTypes.string,

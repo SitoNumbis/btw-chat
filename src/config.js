@@ -2,6 +2,7 @@ const {
   VITE_API_URL,
   // cookies
   VITE_USER_COOKIE,
+  VITE_USER_STATE_COOKIE,
   VITE_USER_ID_COOKIE,
   VITE_USER_NAME_COOKIE,
   VITE_USER_PHOTO_COOKIE,
@@ -16,6 +17,7 @@ const config = {
   // cookie
   language: VITE_LANGUAGE,
   userCookie: VITE_USER_COOKIE,
+  userStateCookie: VITE_USER_STATE_COOKIE,
   userIdCookie: VITE_USER_ID_COOKIE,
   userNameCookie: VITE_USER_NAME_COOKIE,
   userPhotoCookie: VITE_USER_PHOTO_COOKIE,

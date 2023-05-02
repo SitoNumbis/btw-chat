@@ -93,11 +93,13 @@ export const logUser = (remember, user) => {
     localStorage.setItem(config.userCookie, user.user);
     localStorage.setItem(config.userNameCookie, user.name);
     localStorage.setItem(config.userIdCookie, user.id);
+    localStorage.setItem(config.userStateCookie, user.state);
   }
   // @ts-ignore
   else {
     localStorage.setItem(config.userCookie, user.user);
     localStorage.setItem(config.userNameCookie, user.name);
     localStorage.setItem(config.userIdCookie, user.id);
+    localStorage.setItem(config.userStateCookie, user.state);
   }
 };

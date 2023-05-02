@@ -126,10 +126,19 @@ function Sidebar({
     ));
   }, [chats, selectLocalChat]);
 
+  const printState = useMemo(() => {
+    switch (localStorage.getItem(config.userStateCookie)) {
+      case "disconnected":
+        return <span className="w-3 h-3 rounded-full bg-l-error"></span>;
+      default:
+        return <span className="w-3 h-3 rounded-full bg-success"></span>;
+    }
+  }, []);
+
   return (
     <div
       className={`${styles.sidebar} ${css({
-        transform: open ? "translateX(0)" : "translateX(-320px)",
+        transform: open ? "translateX(0)" : "translateX(-360px)",
       })} relative z-10 py-4 ${css({
         backgroundColor: `${localStorage.getItem("chat-other-bg")}CC`,
       })}`}
@@ -151,6 +160,7 @@ function Sidebar({
           >
             {localStorage.getItem(config.userNameCookie)}
           </h2>
+          {printState}
         </div>
         <button
           tabIndex={-1}

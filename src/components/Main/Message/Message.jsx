@@ -11,7 +11,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 import noPhoto from "../../../assets/images/no-photo.webp";
 
 // utils
-import { parseSentAsDate} from "../../../utils/parseSent";
+import { parseSentAsDate } from "../../../utils/parseSent";
 import { isSelf } from "../../../utils/users";
 
 // styles
@@ -65,7 +65,7 @@ function Message({ date, sender, message, join }) {
               alt={sender !== null && sender ? sender.user : ""}
             />
           ) : (
-            <div className="w-10 h-10"></div>
+            <div className="min-w-10 min-h-10 w-10 h-10"></div>
           )}
         </div>
         {!join ? (

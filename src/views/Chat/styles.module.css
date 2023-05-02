@@ -1,0 +1,13 @@
+.bg {
+  @apply flex h-full w-full rounded-sm;
+}
+
+.main {
+  @apply p-10;
+}
+
+@media (max-width: 850px) {
+  .main {
+    padding: 0;
+  }
+}

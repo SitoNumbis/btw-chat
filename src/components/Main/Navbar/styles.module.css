@@ -5,8 +5,16 @@
   @apply flex px-10;
 }
 
+.closeButton {
+  display: none;
+}
+
 @media (max-width: 850px) {
   .navbar {
     @apply pl-2 pr-2;
+  }
+
+  .closeButton {
+    display: inline;
   }
 }
