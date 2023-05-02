@@ -15,7 +15,7 @@ import md5 from "md5";
 export const validateBasicKey = async (type) => {
   const response = await axios.post(
     // @ts-ignore
-    `${config.apiUrl}auth/${type === "admin" ? "is-admin" : "validate"}`,
+    `${config.apiUrl}/auth/${type === "admin" ? "is-admin" : "validate"}`,
     {},
     {
       headers: {
@@ -38,7 +38,7 @@ export const validateBasicKey = async (type) => {
 export const login = async (user, password, remember) => {
   const response = await axios.post(
     // @ts-ignore
-    `${config.apiUrl}auth/login`,
+    `${config.apiUrl}/auth/login`,
     { user, password: md5(password), remember },
     {
       headers: getAuth,
@@ -55,7 +55,7 @@ export const login = async (user, password, remember) => {
 export const signOutUser = async (user) => {
   const response = await axios.post(
     // @ts-ignore
-    `${config.apiUrl}auth/sign-out`,
+    `${config.apiUrl}/auth/sign-out`,
     { user },
     {
       headers: {
@@ -76,7 +76,7 @@ export const signOutUser = async (user) => {
 export const passwordRecovery = async (email) => {
   const response = await axios.post(
     // @ts-ignore
-    `${config.apiUrl}user/password-reset`,
+    `${config.apiUrl}/user/password-reset`,
     { email },
     {
       headers: getAuth,

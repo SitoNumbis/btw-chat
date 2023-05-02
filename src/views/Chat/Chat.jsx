@@ -23,7 +23,9 @@ function Chat() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io(config.apiSocketUrl, {
+      transports: ["polling"],
+    });
 
     newSocket.on("connect", (data) => {
       console.log(data);

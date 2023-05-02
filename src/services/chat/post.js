@@ -6,7 +6,7 @@ import config from "../../config";
  * @returns
  */
 export const sendMessage = async (message) => {
-  const response = await fetch("http://localhost:3000/send-message", {
+  const response = await fetch(`${config.apiUrl}/send-message`, {
     method: "POST",
     body: JSON.stringify(message),
     headers: {
@@ -21,11 +21,11 @@ export const sendMessage = async (message) => {
  * @param {string} target
  * @param {string} sender
  * @param {number} page
- * @param {number} count
+ * @param {number} counts
  * @returns
  */
 export const fetchMessages = async (target, sender, page = 1, count = 20) => {
-  const response = await fetch("http://localhost:3000/fetch-messages", {
+  const response = await fetch(`${config.apiUrl}/fetch-messages`, {
     method: "POST",
     body: JSON.stringify({ target, sender, page, count }),
     headers: {
@@ -42,7 +42,7 @@ export const fetchMessages = async (target, sender, page = 1, count = 20) => {
  * @returns
  */
 export const fetchChat = async (target) => {
-  const response = await fetch("http://localhost:3000/fetch-chats", {
+  const response = await fetch(`${config.apiUrl}/fetch-chats`, {
     method: "POST",
     body: JSON.stringify({
       user: localStorage.getItem(config.userCookie),
