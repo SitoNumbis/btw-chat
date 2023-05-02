@@ -148,7 +148,11 @@ function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
             sidebar={sidebar}
             selectedChat={selectedChat}
           />
+
           <div className={styles.messages}>
+            <p className="text-placeholder-dark italic m-auto">
+              {selectedChat?.bio}
+            </p>
             {messages.map((message, i) => {
               if (i === 0 && messages.length === 0)
                 return <Message key={message.date} {...message} />;

@@ -1,6 +1,6 @@
 .messages {
   height: calc(100% - 120px);
-  @apply flex flex-col gap-5 overflow-auto px-10 pt-10;
+  @apply flex flex-col gap-5 overflow-auto px-10 pt-1 pb-2;
 }
 
 .main {

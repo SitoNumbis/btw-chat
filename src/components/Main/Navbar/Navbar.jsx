@@ -73,7 +73,6 @@ function Navbar({ socket, selectedChat, sidebar, toggleSidebar }) {
           marginBottom: "10px",
         })} mx-auto mt-3 border-dark`}
       />
-      <p className="text-placeholder-dark italic m-auto">{selectedChat?.bio}</p>
     </div>
   );
 }
