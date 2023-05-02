@@ -18,7 +18,10 @@ import styles from "./styles.module.css";
 import config from "../../config";
 
 // services
-import { sendMessage as sendMessageRemote } from "../../services/chat/post";
+import {
+  sendMessage as sendMessageRemote,
+  fetchMessages as fetchMessagesRemote,
+} from "../../services/chat/post";
 
 // components
 const Input = loadable(() => import("./Input/Input"));
@@ -32,6 +35,17 @@ function Main({ socket, selectedChat }) {
       case "init": {
         const { list } = action;
         return list;
+      }
+      case "add": {
+        const { messages } = action;
+        const toReturn = [...state];
+        messages.forEach((message) => {
+          const found = toReturn.find(
+            (localMessage) => localMessage.date === message.date
+          );
+          if (!found) toReturn.push(message);
+        });
+        return toReturn;
       }
       case "plus-minute": {
         const newState = state.map((item) => {
@@ -51,15 +65,36 @@ function Main({ socket, selectedChat }) {
   };
 
   const [messages, setMessages] = useReducer(messagesReducer, []);
+  const [page, setPage] = useState(0);
+
+  const fetchMessages = useCallback(
+    async (target, sender) => {
+      try {
+        const response = await fetchMessagesRemote(target, sender, page, 20);
+        const data = await response.json();
+        const { list } = data;
+        setMessages({
+          type: "add",
+          messages: list,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [page]
+  );
+
+  useEffect(() => {
+    if (selectedChat && localStorage.getItem(config.userCookie) !== null)
+      fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
+  }, [selectedChat]);
 
   useEffect(() => {
     if (socket) {
-      socket.on("message", (message) => {
+      socket.on("message", (conversation) => {
         console.info("receiving messages");
-        setMessages({
-          type: "new-message",
-          message,
-        });
+        const { target, sender } = conversation;
+        fetchMessages(target, sender);
       });
     }
   }, [socket]);
@@ -67,14 +102,19 @@ function Main({ socket, selectedChat }) {
   const sendMessage = useCallback(
     async (message) => {
       try {
-        const response = await sendMessageRemote({
+        const parsedMessage = {
           message,
           date: new Date().getTime(),
           target: selectedChat?.user,
           sender: {
             user: localStorage.getItem(config.userCookie),
           },
+        };
+        setMessages({
+          type: "add",
+          messages: [parsedMessage],
         });
+        const response = await sendMessageRemote(parsedMessage);
         const data = await response.json();
         console.log(data);
       } catch (err) {
@@ -104,10 +144,11 @@ function Main({ socket, selectedChat }) {
       <Navbar selectedChat={selectedChat} />
       <div className={styles.messages}>
         {messages.map((message, i) => {
-          console.log(i, message.sender.user);
+          console.log(i, message);
           if (i === 0 && messages.length === 0)
             return <Message key={message.date} {...message} />;
           else {
+            console.log(messages, i);
             if (i < messages.length - 1)
               return (
                 <Message

@@ -72,6 +72,14 @@ function Sidebar({
     else onClose(true);
   }, [width]);
 
+  const selectLocalChat = useCallback(
+    (user, searching) => {
+      if (width < 850) onClose(false);
+      selectChat(user, searching);
+    },
+    [width, selectChat, onClose]
+  );
+
   const [seeing, setSeeing] = useState("simple");
 
   const handleSeeing = useCallback((e) => {
@@ -99,11 +107,11 @@ function Sidebar({
         index={i}
         key={chat.id}
         {...chat}
-        selectChat={selectChat}
+        selectChat={selectLocalChat}
         searching
       />
     ));
-  }, [searchChats, selectChat]);
+  }, [searchChats, selectLocalChat]);
 
   const printChats = useCallback(() => {
     return chats.map((chat, i) => (
@@ -111,11 +119,11 @@ function Sidebar({
         index={i}
         key={chat.id}
         {...chat}
-        selectChat={selectChat}
+        selectChat={selectLocalChat}
         searching={false}
       />
     ));
-  }, [chats, selectChat]);
+  }, [chats, selectLocalChat]);
 
   return (
     <div

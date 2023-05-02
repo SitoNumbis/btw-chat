@@ -18,6 +18,25 @@ export const sendMessage = async (message) => {
 
 /**
  *
+ * @param {string} target
+ * @param {string} sender
+ * @param {number} page
+ * @param {number} count
+ * @returns
+ */
+export const fetchMessages = async (target, sender, page = 1, count = 20) => {
+  const response = await fetch("http://localhost:3000/fetch-messages", {
+    method: "POST",
+    body: JSON.stringify({target, sender, page, count}),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response;
+};
+
+/**
+ *
  * @param {String} user
  
  * @returns
