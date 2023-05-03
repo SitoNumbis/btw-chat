@@ -51,7 +51,8 @@
     },
     "navbar": {
       "links": {},
-      "action": {}
+      "action": {},
+      "title": "Beyond the World chat"
     },
     "main": {
       "input": {

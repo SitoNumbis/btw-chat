@@ -98,7 +98,7 @@ function ChatPerson(props) {
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between w-full">
           <p
-            className={`font-semibold ${css({
+            className={`${css({
               color: localStorage.getItem("chat-text-basic"),
             })}`}
           >

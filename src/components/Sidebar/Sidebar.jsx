@@ -156,7 +156,7 @@ function Sidebar({
           <h2
             className={`${css({
               color: localStorage.getItem("chat-text-basic"),
-            })} font-semibold text-md`}
+            })} text-md`}
           >
             {localStorage.getItem(config.userNameCookie)}
           </h2>

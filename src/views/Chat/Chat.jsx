@@ -183,7 +183,7 @@ function Chat() {
       <img
         src={imageBG}
         alt="space-background"
-        onLoad={pickColor}
+        /* onLoad={pickColor} */
         className={css({
           objectFit: "cover",
           width: "100%",

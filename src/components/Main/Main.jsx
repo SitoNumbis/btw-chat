@@ -135,6 +135,16 @@ function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
     }, 60000);
   }, [minuteOut]);
 
+  const [settings, setSettings] = useState(true);
+
+  const goToSettings = useCallback(() => {
+    setSettings(true);
+  }, [setSettings]);
+
+  useEffect(() => {
+    if (selectedChat) setSettings(false);
+  }, [selectedChat]);
+
   return (
     <div
       className={`${styles.main} ${css({
@@ -143,8 +153,8 @@ function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
     >
       {" "}
       <Navbar
+        goToSettings={goToSettings}
         toggleSidebar={toggleSidebar}
-        sidebar={sidebar}
         selectedChat={selectedChat}
       />
       {selectedChat ? (

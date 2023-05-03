@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faGear } from "@fortawesome/free-solid-svg-icons";
 
 // @emotion/css
 import { css } from "@emotion/css";
@@ -17,7 +17,7 @@ import styles from "./styles.module.css";
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
 
-function Navbar({ socket, selectedChat, sidebar, toggleSidebar }) {
+function Navbar({ socket, selectedChat, goToSettings, toggleSidebar }) {
   const { languageState } = useLanguage();
 
   const { navbar, buttonsArias } = useMemo(() => {
@@ -38,34 +38,59 @@ function Navbar({ socket, selectedChat, sidebar, toggleSidebar }) {
 
   return (
     <div className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
-      <div className="flex gap-3 items-center w-full h-full">
+      <div className="flex gap-3 items-center w-full h-full justify-between">
+        <div className="flex gap-3 items-center w-full h-full">
+          <button
+            tabIndex={-1}
+            className={`${styles.closeButton} ${css({
+              transition: "all 500ms ease",
+              color: localStorage.getItem("chat-text-basic"),
+              ":hover": {
+                color: localStorage.getItem("chat-text-primary"),
+              },
+            })} font-bold text-xl`}
+            onClick={toggleSidebar}
+            aria-label={buttonsArias.openSidebar}
+          >
+            <FontAwesomeIcon icon={faBars} />
+          </button>
+          {selectedChat ? (
+            <>
+              <img
+                className="w-10 h-10 rounded-full cursor-pointer"
+                src={selectedChat?.photo ? selectedChat?.photo : noPhoto}
+                alt={selectedChat?.user ? selectedChat?.user : ""}
+              />
+              <p
+                className={`font-semibold ${css({
+                  color: localStorage.getItem("chat-text-basic"),
+                })}`}
+              >
+                {selectedChat?.name}
+              </p>
+              {printState()}
+            </>
+          ) : (
+            <h2
+              className={`${css({
+                color: localStorage.getItem("chat-text-basic"),
+              })}`}
+            >
+              {navbar.title}
+            </h2>
+          )}
+        </div>
         <button
-          tabIndex={-1}
-          className={`${styles.closeButton} ${css({
-            transition: "all 500ms ease",
+          onClick={goToSettings}
+          className={`appear transition ${css({
             color: localStorage.getItem("chat-text-basic"),
             ":hover": {
               color: localStorage.getItem("chat-text-primary"),
             },
-          })} font-bold text-xl`}
-          onClick={toggleSidebar}
-          aria-label={buttonsArias.openSidebar}
-        >
-          <FontAwesomeIcon icon={faBars} />
-        </button>
-        <img
-          className="w-10 h-10 rounded-full cursor-pointer"
-          src={selectedChat?.photo ? selectedChat?.photo : noPhoto}
-          alt={selectedChat?.user ? selectedChat?.user : ""}
-        />
-        <p
-          className={`font-semibold ${css({
-            color: localStorage.getItem("chat-text-basic"),
           })}`}
         >
-          {selectedChat?.name}
-        </p>
-        {printState()}
+          <FontAwesomeIcon icon={faGear} />
+        </button>
       </div>
       <hr
         className={`${css({
@@ -88,6 +113,7 @@ Navbar.propTypes = {
     bio: PropTypes.string,
     state: PropTypes.string,
   }),
+  goToSettings: PropTypes.func,
 };
 
 export default Navbar;
