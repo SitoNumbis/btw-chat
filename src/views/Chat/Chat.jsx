@@ -153,6 +153,7 @@ function Chat() {
 
   const selectChat = useCallback(
     (user, searching) => {
+      if (!user) return setSelectedChat(undefined);
       if (searching) {
         const found = searchChats.find((localUser) => localUser.user === user);
         setSelectedChat(found);
@@ -223,6 +224,7 @@ function Chat() {
             })}`}
           >
             <Main
+              selectChat={selectChat}
               selectedChat={selectedChat}
               sidebar={openSidebar}
               toggleSidebar={toggleSidebar}

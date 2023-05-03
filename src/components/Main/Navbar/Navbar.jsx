@@ -17,7 +17,13 @@ import styles from "./styles.module.css";
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
 
-function Navbar({ socket, selectedChat, goToSettings, toggleSidebar }) {
+function Navbar({
+  socket,
+  selectedChat,
+  settings,
+  goToSettings,
+  toggleSidebar,
+}) {
   const { languageState } = useLanguage();
 
   const { navbar, buttonsArias } = useMemo(() => {
@@ -82,10 +88,15 @@ function Navbar({ socket, selectedChat, goToSettings, toggleSidebar }) {
         </div>
         <button
           onClick={goToSettings}
-          className={`appear transition ${css({
-            color: localStorage.getItem("chat-text-basic"),
+          className={`appear  ${css({
+            transition: "all 500ms ease",
+            color: !settings
+              ? localStorage.getItem("chat-text-basic")
+              : localStorage.getItem("chat-text-primary"),
+            transform: settings ? "rotate(-45deg)" : "",
             ":hover": {
               color: localStorage.getItem("chat-text-primary"),
+              transform: "rotate(-45deg)",
             },
           })}`}
         >
@@ -113,6 +124,7 @@ Navbar.propTypes = {
     bio: PropTypes.string,
     state: PropTypes.string,
   }),
+  settings: PropTypes.bool,
   goToSettings: PropTypes.func,
 };
 

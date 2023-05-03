@@ -10,8 +10,8 @@
     },
     "sidebar": {
       "single": "Chats simples",
-      "goToSearch": "Presiona en la lupa para buscar a otros viajeros",
-      "typeToSearch": "Escribe para buscar a otros viajeros",
+      "goToSearch": "Presiona en la lupa para buscar a otros personajes",
+      "typeToSearch": "Escribe para buscar a otros personajes",
       "error": "Error al cargar las conversaciones",
       "empty": "No se encontraron usuarios"
     },

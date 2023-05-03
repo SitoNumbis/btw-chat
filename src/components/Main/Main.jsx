@@ -1,4 +1,4 @@
-import React, {
+import {
   memo,
   useCallback,
   useState,
@@ -28,7 +28,7 @@ const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
 
-function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
+function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const messagesReducer = (state, action) => {
     const { type } = action;
     switch (type) {
@@ -139,6 +139,7 @@ function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
 
   const goToSettings = useCallback(() => {
     setSettings(true);
+    selectChat(undefined);
   }, [setSettings]);
 
   useEffect(() => {
@@ -153,6 +154,7 @@ function Main({ socket, selectedChat, sidebar, toggleSidebar }) {
     >
       {" "}
       <Navbar
+        settings={settings}
         goToSettings={goToSettings}
         toggleSidebar={toggleSidebar}
         selectedChat={selectedChat}
@@ -192,6 +194,7 @@ Main.propTypes = {
   socket: PropTypes.object,
   sidebar: PropTypes.bool,
   toggleSidebar: PropTypes.func,
+  selectChat: PropTypes.func,
   selectedChat: PropTypes.shape({
     photo: PropTypes.string,
     user: PropTypes.string,
