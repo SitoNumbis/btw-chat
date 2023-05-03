@@ -34,6 +34,7 @@ import { login } from "../../services/auth";
 import config from "../../config";
 
 // components
+import Loading from "../../components/Loading/Loading";
 const Input = loadable(() => import("../../components/Inputs/Input"));
 const PrimaryButton = loadable(() =>
   import("../../components/Buttons/Primary")
@@ -66,7 +67,7 @@ function SignIn() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [remember, setRemember] = useState(false);
 
@@ -164,6 +165,7 @@ function SignIn() {
     )
       .then((base64) => {
         setImageBG(base64);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -177,6 +179,13 @@ function SignIn() {
         src={imageBG}
         alt="space-wallpaper"
       />
+      {loading ? (
+        <Loading
+          className={`absolute z-10 w-full h-screen items-center ${css({
+            backdropFilter: "blur(4px)",
+          })}`}
+        />
+      ) : null}
       <div
         className={`z-10 w-full min-h-screen entrance flex items-center justify-center ${css(
           {

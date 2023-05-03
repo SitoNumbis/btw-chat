@@ -18,6 +18,7 @@ import styles from "./styles.module.css";
 import { loadImage } from "../../utils/services";
 
 // components
+import Loading from "../../components/Loading/Loading";
 const Main = loadable(() => import("../../components/Main/Main"));
 const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
 
@@ -93,6 +94,7 @@ function Chat() {
   );
 
   const [loading, setLoading] = useState(true);
+  const [loadingF, setLoadingF] = useState(true);
   const [errorLoadingPerson, setErrorLoadingPerson] = useState(false);
 
   const chatsReducer = (oldState, action) => {
@@ -172,6 +174,7 @@ function Chat() {
     )
       .then((base64) => {
         setImageBG(base64);
+        setLoadingF(false);
       })
       .catch((error) => {
         console.error(error);
@@ -193,8 +196,14 @@ function Chat() {
           left: 0,
         })}
       />
+      {loadingF ? (
+        <Loading
+          className={`absolute z-10 w-full h-screen items-center ${css({
+            backdropFilter: "blur(4px)",
+          })}`}
+        />
+      ) : null}
       <div className={`${styles.bg}`}>
-        {" "}
         <Suspense>
           <Sidebar
             chats={chats}

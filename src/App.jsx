@@ -55,7 +55,7 @@ function App() {
     localStorage.setItem("chat-text-primary", "#Fb2b2b");
     localStorage.setItem("chat-text-basic", "#ffffff");
     if (userLogged()) fetch();
-    else window.location.href = "/auth";
+    // else window.location.href = "/auth";
     setLoading(false);
   }, []);
 
