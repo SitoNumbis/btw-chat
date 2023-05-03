@@ -24,6 +24,7 @@ import {
 } from "../../services/chat/post";
 
 // components
+import Loading from "../../components/Loading/Loading";
 const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
@@ -64,11 +65,13 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     }
   };
 
+  const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useReducer(messagesReducer, []);
   const [page, setPage] = useState(0);
 
   const fetchMessages = useCallback(
     async (target, sender) => {
+      setLoading(true);
       try {
         const response = await fetchMessagesRemote(target, sender, page, 20);
         const data = await response.json();
@@ -80,6 +83,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       } catch (err) {
         console.error(err);
       }
+      setLoading(false);
     },
     [page]
   );
@@ -165,21 +169,29 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
             <p className="text-placeholder-dark italic mx-auto">
               {selectedChat?.bio}
             </p>
-            {messages.map((message, i) => {
-              if (i === 0 && messages.length === 0)
-                return <Message key={message.date} {...message} />;
-              else {
-                if (i < messages.length - 1)
-                  return (
-                    <Message
-                      key={message.date}
-                      {...message}
-                      join={message.sender.user === messages[i + 1].sender.user}
-                    />
-                  );
-                else return <Message key={message.date} {...message} />;
-              }
-            })}
+            {loading ? (
+              <Loading />
+            ) : (
+              <>
+                {messages.map((message, i) => {
+                  if (i === 0 && messages.length === 0)
+                    return <Message key={message.date} {...message} />;
+                  else {
+                    if (i < messages.length - 1)
+                      return (
+                        <Message
+                          key={message.date}
+                          {...message}
+                          join={
+                            message.sender.user === messages[i + 1].sender.user
+                          }
+                        />
+                      );
+                    else return <Message key={message.date} {...message} />;
+                  }
+                })}
+              </>
+            )}
           </div>
           <div className={styles.inputContainer}>
             <Input onSend={sendMessage} />
