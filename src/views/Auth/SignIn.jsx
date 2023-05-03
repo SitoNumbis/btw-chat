@@ -21,13 +21,11 @@ import { css } from "@emotion/css";
 import { useLanguage } from "../../context/LanguageProvider";
 import { useNotification } from "../../context/NotificationProvider";
 
-// images
-import authBG from "../../assets/images/auth.webp";
-
 // styles
 import styles from "./styles.module.css";
 
 // utils
+import { loadImage } from "../../utils/services";
 import { logUser, userLogged } from "../../utils/auth";
 
 // services
@@ -156,11 +154,27 @@ function SignIn() {
     setShowPassword(!showPassword);
   }, [showPassword]);
 
+  const [imageBG, setImageBG] = useState(
+    "https://ik.imagekit.io/lgqp0wffgtp/tr:q-1/Beyon_the_world/Chat/auth_vNlQJ5l45.webp?updatedAt=1683111316564"
+  );
+
+  useEffect(() => {
+    loadImage(
+      "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Chat/auth_vNlQJ5l45.webp?updatedAt=1683111316564"
+    )
+      .then((base64) => {
+        setImageBG(base64);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <div className="min-h-screen w-full">
       <img
         className="w-full h-full object-cover absolute top-0 left-0"
-        src={authBG}
+        src={imageBG}
         alt="space-wallpaper"
       />
       <div

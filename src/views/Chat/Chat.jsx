@@ -5,8 +5,7 @@ import loadable from "@loadable/component";
 // css
 import { css } from "@emotion/css";
 
-// image
-import image from "../../assets/images/image.jpg";
+// config
 import config from "../../config";
 
 // services
@@ -14,6 +13,9 @@ import { fetchChat } from "../../services/chat/post";
 
 // styles
 import styles from "./styles.module.css";
+
+// utils
+import { loadImage } from "../../utils/services";
 
 // components
 const Main = loadable(() => import("../../components/Main/Main"));
@@ -160,11 +162,27 @@ function Chat() {
     [chats, searchChats, multiChats]
   );
 
+  const [imageBG, setImageBG] = useState(
+    "https://ik.imagekit.io/lgqp0wffgtp/tr:q-1/Beyon_the_world/Chat/image_12QNJKZ2w.jpg?updatedAt=1683111900098"
+  );
+
+  useEffect(() => {
+    loadImage(
+      "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Chat/image_12QNJKZ2w.jpg?updatedAt=1683111900098"
+    )
+      .then((base64) => {
+        setImageBG(base64);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <div className={`flex entrance w-full h-screen ${styles.main}`}>
       <img
-        src={image}
-        alt="background"
+        src={imageBG}
+        alt="space-background"
         onLoad={pickColor}
         className={css({
           objectFit: "cover",

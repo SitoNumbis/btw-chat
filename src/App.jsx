@@ -17,6 +17,7 @@ const Notification = loadable(() =>
 // layouts
 const Auth = loadable(() => import("./layouts/Auth/Auth"));
 
+const NotFound = loadable(() => import("./views/NotFound/NotFound"));
 // views
 const Chat = loadable(() => import("./views/Chat/Chat"));
 const SignIn = loadable(() => import("./views/Auth/SignIn"));
@@ -54,6 +55,7 @@ function App() {
     localStorage.setItem("chat-text-primary", "#Fb2b2b");
     localStorage.setItem("chat-text-basic", "#ffffff");
     if (userLogged()) fetch();
+    else window.location.href = "/auth";
     setLoading(false);
   }, []);
 
@@ -97,7 +99,7 @@ function App() {
             />
           )}
           <Route exact path="/sign-out" element={<SignOut />} />
-          <Route path="*" element={<div>404</div>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </Suspense>
