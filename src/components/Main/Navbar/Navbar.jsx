@@ -1,9 +1,11 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 // @emotion/css
 import { css } from "@emotion/css";
@@ -100,8 +102,33 @@ function Navbar({
             },
           })}`}
         >
-          <FontAwesomeIcon icon={faGear} />
+          <FontAwesomeIcon
+            className={`appear  ${css({
+              transition: "all 500ms ease",
+              color: !settings
+                ? localStorage.getItem("chat-text-basic")
+                : localStorage.getItem("chat-text-primary"),
+              transform: settings ? "rotate(-45deg)" : "",
+              ":hover": {
+                color: localStorage.getItem("chat-text-primary"),
+              },
+            })}`}
+            icon={faGear}
+          />
         </button>
+        <Link
+          to="/sign-out"
+          className={`appear relative flex items-center justify-center ${css({
+            paddingBottom: "3px",
+            transition: "all 500ms ease",
+            color: localStorage.getItem("chat-text-basic"),
+            ":hover": {
+              color: localStorage.getItem("chat-text-primary"),
+            },
+          })}`}
+        >
+          <FontAwesomeIcon icon={faArrowRightFromBracket} />
+        </Link>
       </div>
       <hr
         className={`${css({
