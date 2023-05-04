@@ -34,7 +34,7 @@ function App() {
       if (!value) {
         logoutUser();
         setTimeout(() => {
-          window.location.reload();
+          window.location.href = "/auth";
         }, 1000);
       } else localStorage.setItem(config.userCookie, value);
     } catch (err) {

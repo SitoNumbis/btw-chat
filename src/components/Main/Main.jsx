@@ -28,6 +28,7 @@ import Loading from "../../components/Loading/Loading";
 const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
+const Settings = loadable(() => import("./Settings/Settings"));
 
 function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const messagesReducer = (state, action) => {
@@ -156,48 +157,54 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
       })}`}
     >
-      {" "}
       <Navbar
         settings={settings}
         goToSettings={goToSettings}
         toggleSidebar={toggleSidebar}
         selectedChat={selectedChat}
       />
-      {selectedChat ? (
+      {!settings ? (
         <>
-          <div className={styles.messages}>
-            <p className="text-placeholder-dark italic mx-auto">
-              {selectedChat?.bio}
-            </p>
-            {loading ? (
-              <Loading />
-            ) : (
-              <>
-                {messages.map((message, i) => {
-                  if (i === 0 && messages.length === 0)
-                    return <Message key={message.date} {...message} />;
-                  else {
-                    if (i < messages.length - 1)
-                      return (
-                        <Message
-                          key={message.date}
-                          {...message}
-                          join={
-                            message.sender.user === messages[i + 1].sender.user
-                          }
-                        />
-                      );
-                    else return <Message key={message.date} {...message} />;
-                  }
-                })}
-              </>
-            )}
-          </div>
-          <div className={styles.inputContainer}>
-            <Input onSend={sendMessage} />
-          </div>
+          {selectedChat ? (
+            <>
+              <div className={styles.messages}>
+                <p className="text-placeholder-dark italic mx-auto">
+                  {selectedChat?.bio}
+                </p>
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <>
+                    {messages.map((message, i) => {
+                      if (i === 0 && messages.length === 0)
+                        return <Message key={message.date} {...message} />;
+                      else {
+                        if (i < messages.length - 1)
+                          return (
+                            <Message
+                              key={message.date}
+                              {...message}
+                              join={
+                                message.sender.user ===
+                                messages[i + 1].sender.user
+                              }
+                            />
+                          );
+                        else return <Message key={message.date} {...message} />;
+                      }
+                    })}
+                  </>
+                )}
+              </div>
+              <div className={styles.inputContainer}>
+                <Input onSend={sendMessage} />
+              </div>
+            </>
+          ) : null}
         </>
-      ) : null}
+      ) : (
+        <Settings />
+      )}
     </div>
   );
 }

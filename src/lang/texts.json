@@ -1,5 +1,9 @@
 {
   "es": {
+    "states": {
+      "disconnected": "Desconectado",
+      "connected": "Conectado"
+    },
     "auth": {
       "justWannaTry": "¿Solo quieres probar la aplicación?",
       "new": "¿No tienes cuenta?",
