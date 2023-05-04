@@ -7,7 +7,7 @@ import { css } from "@emotion/css";
 // styles
 import "./styles.css";
 
-function Primary({ children, ariaLabel, onClick, type }) {
+function Secondary({ children, ariaLabel, onClick, type }) {
   return (
     <button
       aria-label={ariaLabel}
@@ -15,7 +15,8 @@ function Primary({ children, ariaLabel, onClick, type }) {
       type={type}
       className={`button ${css({
         color: localStorage.getItem("chat-text-basic"),
-        background: localStorage.getItem("chat-text-primary"),
+        border: "1px solid",
+        borderColor: `${localStorage.getItem("chat-text-primary")}99`,
         ":hover": {
           color: localStorage.getItem("chat-text-basic"),
           background: `${localStorage.getItem("chat-text-primary")}99`,
@@ -27,18 +28,18 @@ function Primary({ children, ariaLabel, onClick, type }) {
   );
 }
 
-Primary.defaultProps = {
-  type: "submit",
+Secondary.defaultProps = {
+  type: "button",
 };
 
-Primary.propTypes = {
+Secondary.propTypes = {
   type: PropTypes.string,
   children: PropTypes.any,
   ariaLabel: PropTypes.string,
   onClick: PropTypes.func,
 };
 
-const PrimaryMemo = memo((props) => <Primary {...props} />, arePropsEqual);
+const SecondaryMemo = memo((props) => <Secondary {...props} />, arePropsEqual);
 
 function arePropsEqual(oldProps, newProps) {
   return (
@@ -49,6 +50,6 @@ function arePropsEqual(oldProps, newProps) {
   );
 }
 
-PrimaryMemo.displayName = "Primary";
+SecondaryMemo.displayName = "Secondary";
 
-export default PrimaryMemo;
+export default SecondaryMemo;

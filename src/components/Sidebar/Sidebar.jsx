@@ -1,5 +1,6 @@
 import { memo, useEffect, useCallback, useState, useMemo } from "react";
 import loadable from "@loadable/component";
+import debounce from "lodash.debounce";
 
 import useScreenSize from "use-screen-witdh";
 
@@ -97,9 +98,15 @@ function Sidebar({
       }, 500);
   }, [seeing]);
 
+  // Define a function to handle the search when the user types
+  const handleSearch = debounce((searchText) => {
+    // Call the server search function with the current search text
+    fetchPerson(searchText);
+  }, 500); // Wait 500ms before calling the server search function
+
   useEffect(() => {
     if (seeing === "simple" || seeing === "multi") fetchPerson();
-    else fetchPerson(searchInput);
+    else handleSearch(searchInput);
   }, [searchInput, seeing]);
 
   const printSearchChats = useCallback(() => {

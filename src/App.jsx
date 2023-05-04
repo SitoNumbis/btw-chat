@@ -30,6 +30,7 @@ function App() {
   const fetch = async () => {
     try {
       const value = await validateBasicKey();
+
       if (!value) {
         logoutUser();
         setTimeout(() => {
@@ -64,6 +65,7 @@ function App() {
       <Notification />
       <BrowserRouter>
         <Routes>
+          {console.log(localStorage.getItem(config.userCookie))}
           {localStorage.getItem(config.userCookie) === null ? (
             <Route
               exact
@@ -76,6 +78,7 @@ function App() {
             >
               <Route index element={<SignIn />} />
               <Route exact path="/auth/sign-up" element={<SignUp />} />
+              <Route exact path="/auth/sign-in-as-guest" element={<SignUp />} />
               <Route
                 exact
                 path="/auth/reset-password"

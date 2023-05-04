@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { Base64 } from "js-base64";
 import loadable from "@loadable/component";
+import { Link } from "react-router-dom";
 
 // some-javascript-utils
-import { createCookie, getCookie } from "some-javascript-utils/browser";
+import { createCookie } from "some-javascript-utils/browser";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -57,6 +58,17 @@ function SignIn() {
 
   const { languageState } = useLanguage();
 
+  const { auth, aux, buttons, buttonsArias, inputs, errors } = useMemo(() => {
+    return {
+      aux: languageState.texts.aux,
+      auth: languageState.texts.auth,
+      buttons: languageState.texts.buttons,
+      buttonsArias: languageState.texts.buttonsArias,
+      inputs: languageState.texts.inputs,
+      errors: languageState.texts.errors,
+    };
+  }, [languageState]);
+
   const [user, setUser] = useState("");
   const handleUser = useCallback(
     (e) => {
@@ -82,15 +94,6 @@ function SignIn() {
     },
     [setPassword]
   );
-
-  const { auth, buttons, inputs, errors } = useMemo(() => {
-    return {
-      auth: languageState.texts.auth,
-      buttons: languageState.texts.buttons,
-      inputs: languageState.texts.inputs,
-      errors: languageState.texts.errors,
-    };
-  }, [languageState]);
 
   const [showForm, setShowForm] = useState(false);
 
@@ -145,8 +148,8 @@ function SignIn() {
         else if (String(err) === "AxiosError: Network Error")
           showNotification("error", errors.notConnected);
         else showNotification("error", String(err));
+        setLoading(false);
       }
-      setLoading(false);
     },
     [inputs, password, user, errors, remember, showNotification]
   );
@@ -245,7 +248,39 @@ function SignIn() {
                 {inputs.remember.label}
               </label>
             </div>
-            <PrimaryButton>{buttons.signIn}</PrimaryButton>
+            <PrimaryButton ariaLabel={buttonsArias.signIn}>
+              {buttons.signIn}
+            </PrimaryButton>
+            <p
+              className={css({
+                color: localStorage.getItem("chat-text-basic"),
+              })}
+            >
+              {auth.new}{" "}
+              <Link
+                to="/auth/sign-up"
+                className={`underline transition ${css({
+                  color: localStorage.getItem("chat-text-basic"),
+                  ":hover": {
+                    color: localStorage.getItem("chat-text-primary"),
+                  },
+                })}`}
+              >
+                {buttons.signUp}
+              </Link>{" "}
+              {aux.or}{" "}
+              <Link
+                to="/auth/sign-in-as-guest"
+                className={`underline transition ${css({
+                  color: localStorage.getItem("chat-text-basic"),
+                  ":hover": {
+                    color: localStorage.getItem("chat-text-primary"),
+                  },
+                })}`}
+              >
+                {buttons.signInAsGuest}
+              </Link>
+            </p>
           </form>
         ) : null}
       </div>

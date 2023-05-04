@@ -1,11 +1,23 @@
 {
   "es": {
     "auth": {
+      "justWannaTry": "¿Solo quieres probar la aplicación?",
+      "new": "¿No tienes cuenta?",
+      "alreadyIn": "¿Ya tienes cuenta?",
       "signIn": {
         "title": "Entrar a BTW"
+      },
+      "guest": {
+        "start": "Se ha creado la cuenta de invitado correctamente. Esta cuenta solo dura un día. Se eliminará si cierras la sesión",
+        "error": "Ha ocurrido un error al crear la cuenta de invitado"
+      },
+      "signUp": {
+        "sub": "Beyond the World",
+        "content": "Comenzar el viaje al multiverso"
       }
     },
     "aux": {
+      "or": "o",
       "you": "Tú: "
     },
     "sidebar": {
@@ -20,7 +32,12 @@
       "openSidebar": "Abrir menú lateral",
       "showSimpleChats": "Mostrar chats simples",
       "showMultiChats": "Mostrar chats grupales",
-      "showSearch": "Buscar usuario"
+      "showSearch": "Buscar usuario",
+      "signIn": "Iniciar sesión",
+      "signUp": "Crear cuenta",
+      "signInAsGuest": "Entrar como invitado",
+      "begin": "Comenzar a usar BTW Chat",
+      "retry": "Reintentar operación"
     },
     "inputs": {
       "user": {
@@ -47,7 +64,11 @@
       "notConnected": "No tienes conexión con el servidor"
     },
     "buttons": {
-      "signIn": "Iniciar sesión"
+      "signIn": "Iniciar sesión",
+      "signUp": "Crear cuenta",
+      "signInAsGuest": "Entrar como invitado",
+      "begin": "Comenzar",
+      "retry": "Reintentar"
     },
     "navbar": {
       "links": {},
