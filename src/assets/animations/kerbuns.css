@@ -1,0 +1,44 @@
+.kenburns {
+  animation: move 40s infinite;
+  /* Add infinite to loop. */
+
+  -ms-animation: move 40s infinite;
+  -webkit-animation: move 40s infinite;
+  -moz-animation: move 40s infinite;
+}
+
+@keyframes move {
+  0% {
+    -webkit-transform-origin: bottom left;
+    -moz-transform-origin: bottom left;
+    -ms-transform-origin: bottom left;
+    -o-transform-origin: bottom left;
+    transform-origin: bottom left;
+    transform: scale(1);
+    -ms-transform: scale(1);
+    /* IE 9 */
+
+    -webkit-transform: scale(1);
+    /* Safari and Chrome */
+
+    -o-transform: scale(1);
+    /* Opera */
+
+    -moz-transform: scale(1);
+    /* Firefox */
+  }
+  100% {
+    transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    /* IE 9 */
+
+    -webkit-transform: scale(1.2);
+    /* Safari and Chrome */
+
+    -o-transform: scale(1.2);
+    /* Opera */
+
+    -moz-transform: scale(1.2);
+    /* Firefox */
+  }
+}

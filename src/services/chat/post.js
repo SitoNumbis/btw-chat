@@ -1,3 +1,6 @@
+// some-javascript-utils
+import { getCookie } from "some-javascript-utils/browser";
+
 import config from "../../config";
 
 /**
@@ -11,6 +14,7 @@ export const sendMessage = async (message) => {
     body: JSON.stringify(message),
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
     },
   });
   return response;
@@ -30,6 +34,7 @@ export const fetchMessages = async (target, sender, page = 1, count = 20) => {
     body: JSON.stringify({ target, sender, page, count }),
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
     },
   });
   return response;
@@ -50,6 +55,7 @@ export const fetchChat = async (target) => {
     }),
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
     },
   });
   return response;

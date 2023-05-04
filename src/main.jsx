@@ -12,6 +12,7 @@ import App from "./App.jsx";
 
 // styles
 import "./index.css";
+import "./assets/animations/kerbuns.css";
 import "./assets/animations/spin.css";
 import "./assets/animations/appear.css";
 import "./assets/animations/entrance.css";

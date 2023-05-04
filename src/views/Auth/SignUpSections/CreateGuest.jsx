@@ -57,7 +57,6 @@ function CreateGuest() {
     };
   }, [languageState]);
 
-  const [user, setUser] = useState("");
   const [loading, setLoading] = useState(true);
 
   const init = async () => {
@@ -70,10 +69,9 @@ function CreateGuest() {
         response.data.expiration,
         response.data.token
       );
-      logUser(false, { ...data, user: data.guest });
+      logUser(false, { ...data, user: data.guest, name: data.guest });
     } catch (err) {
       console.error(err);
-
       if (String(err) === "AxiosError: Network Error")
         showNotification("error", errors.notConnected);
       else showNotification("error", String(err));
@@ -89,9 +87,11 @@ function CreateGuest() {
     <div className="w-full h-screen flex items-center justify-center">
       {loading ? (
         <Loading
-          className={`w-full h-full items-center justify-center flex ${css({
-            background: localStorage.getItem("chat-main-bg"),
-          })}`}
+          className={`z-10 w-full h-full items-center justify-center flex ${css(
+            {
+              background: localStorage.getItem("chat-main-bg"),
+            }
+          )}`}
         />
       ) : (
         <div

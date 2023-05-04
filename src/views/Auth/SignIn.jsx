@@ -178,7 +178,7 @@ function SignIn() {
   return (
     <div className="min-h-screen w-full">
       <img
-        className="w-full h-full object-cover absolute top-0 left-0"
+        className="w-full h-full object-cover absolute top-0 left-0 kenburns"
         src={imageBG}
         alt="space-wallpaper"
       />
