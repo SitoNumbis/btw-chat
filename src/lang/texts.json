@@ -1,6 +1,7 @@
 {
   "es": {
     "states": {
+      "connecting": "Conectando",
       "disconnected": "Desconectado",
       "connected": "Conectado"
     },

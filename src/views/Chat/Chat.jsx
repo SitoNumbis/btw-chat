@@ -19,6 +19,7 @@ import { loadImage } from "../../utils/services";
 
 // components
 import Loading from "../../components/Loading/Loading";
+
 const Main = loadable(() => import("../../components/Main/Main"));
 const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
 
@@ -26,9 +27,8 @@ function Chat() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io(config.apiSocketUrl, {
-      transports: ["polling"],
-    });
+    console.log(config.apiSocketUrl);
+    const newSocket = io(config.apiSocketUrl, { transports: ["polling"] });
 
     newSocket.on("connect", (data) => {
       console.log(data);

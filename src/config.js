@@ -1,5 +1,6 @@
 const {
   VITE_API_URL,
+  VITE_API_SOCKET_URL,
   // cookies
   VITE_USER_COOKIE,
   VITE_USER_STATE_COOKIE,
@@ -16,6 +17,7 @@ const {
 
 const config = {
   apiUrl: VITE_API_URL,
+  apiSocketUrl: VITE_API_SOCKET_URL,
   // cookie
   language: VITE_LANGUAGE,
   userCookie: VITE_USER_COOKIE,

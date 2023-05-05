@@ -33,6 +33,9 @@ import config from "../../config";
 
 // components
 import Loading from "../Loading/Loading";
+const ConnectionState = loadable(() =>
+  import("../ConnectionState/ConnectionState")
+);
 const Empty = loadable(() => import("./EmptyChats/Empty"));
 const ChatPerson = loadable(() => import("./ChatPerson/ChatPerson"));
 const EmptyChats = loadable(() => import("./EmptyChats/EmptyChats"));
@@ -219,6 +222,7 @@ function Sidebar({
           width: "100%",
         })} mx-auto my-0 border-placeholder-dark`}
       /> */}
+      <ConnectionState socket={socket} />
       <div>
         {seeing === "search" ? (
           <div>
@@ -263,10 +267,22 @@ function Sidebar({
           </div>
         ) : null}
       </div>
+
       {error ? (
         <div className="flex flex-col px-12 p-5 gap-2 appear">
           <FontAwesomeIcon icon={faSadCry} className="text-l-error text-4xl" />
           <p className="text-l-error">{sidebar.error}</p>
+          <button
+            onClick={reconnect}
+            className={`w-10 h-10 rounded-full ${css({
+              transition: "all 500ms ease",
+              ":hover": {
+                background: localStorage.getItem("chat-main-bg"),
+              },
+            })}`}
+          >
+            <FontAwesomeIcon icon={faRotateLeft} />
+          </button>
         </div>
       ) : null}
     </div>

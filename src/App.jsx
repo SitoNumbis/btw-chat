@@ -30,7 +30,6 @@ function App() {
   const fetch = async () => {
     try {
       const value = await validateBasicKey();
-      console.log(value);
       if (!value) {
         logoutUser();
         setTimeout(() => {
