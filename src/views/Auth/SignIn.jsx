@@ -176,7 +176,7 @@ function SignIn() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen w-full relative overflow-hidden">
       <img
         className="w-full h-full object-cover absolute top-0 left-0 kenburns"
         src={imageBG}
@@ -197,92 +197,91 @@ function SignIn() {
           }
         )}`}
       >
-        {showForm ? (
-          <form
-            onSubmit={handleSubmit}
-            className={`${styles.signIn} appear ${css({
-              backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
+        <form
+          onSubmit={handleSubmit}
+          className={`${styles.signIn} appear ${css({
+            display: !showForm ? "none" : "",
+            backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
+          })}`}
+        >
+          <h2
+            className={`text-5xl font-bold ${css({
+              color: localStorage.getItem("chat-text-basic"),
             })}`}
           >
-            <h2
-              className={`text-5xl font-bold ${css({
+            {auth.signIn.title}
+          </h2>
+          <Input
+            id="user"
+            value={user}
+            onChange={handleUser}
+            leftIcon={<FontAwesomeIcon icon={faUser} />}
+            input={inputs.user}
+            helperText={userHelperText}
+          />
+          <Input
+            id="password"
+            value={password}
+            onChange={handlePassword}
+            leftIcon={<FontAwesomeIcon icon={faLock} />}
+            rightIcon={
+              <button onClick={toggleShowPassword} type="button">
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
+            }
+            type={showPassword ? "text" : "password"}
+            input={inputs.password}
+            helperText={passwordHelperText}
+          />
+          <div
+            className={`cursor-pointer flex items-center gap-2 ${css({
+              color: localStorage.getItem("chat-text-basic"),
+            })}`}
+          >
+            <input
+              value={remember}
+              onChange={toggleRemember}
+              id="remember"
+              type="checkbox"
+            />
+            <label className="cursor-pointer" htmlFor="remember">
+              {inputs.remember.label}
+            </label>
+          </div>
+          <PrimaryButton ariaLabel={buttonsArias.signIn}>
+            {buttons.signIn}
+          </PrimaryButton>
+          <p
+            className={css({
+              color: localStorage.getItem("chat-text-basic"),
+            })}
+          >
+            {auth.new}{" "}
+            <Link
+              to="/auth/sign-up"
+              className={`underline transition ${css({
                 color: localStorage.getItem("chat-text-basic"),
+                ":hover": {
+                  color: localStorage.getItem("chat-text-primary"),
+                },
               })}`}
             >
-              {auth.signIn.title}
-            </h2>
-            <Input
-              id="user"
-              value={user}
-              onChange={handleUser}
-              leftIcon={<FontAwesomeIcon icon={faUser} />}
-              input={inputs.user}
-              helperText={userHelperText}
-            />
-            <Input
-              id="password"
-              value={password}
-              onChange={handlePassword}
-              leftIcon={<FontAwesomeIcon icon={faLock} />}
-              rightIcon={
-                <button onClick={toggleShowPassword} type="button">
-                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                </button>
-              }
-              type={showPassword ? "text" : "password"}
-              input={inputs.password}
-              helperText={passwordHelperText}
-            />
-            <div
-              className={`cursor-pointer flex items-center gap-2 ${css({
+              {buttons.signUp}
+            </Link>{" "}
+            {aux.or}{" "}
+            <Link
+              to="/auth/sign-in-as-guest"
+              className={`underline transition ${css({
                 color: localStorage.getItem("chat-text-basic"),
+                ":hover": {
+                  color: localStorage.getItem("chat-text-primary"),
+                },
               })}`}
             >
-              <input
-                value={remember}
-                onChange={toggleRemember}
-                id="remember"
-                type="checkbox"
-              />
-              <label className="cursor-pointer" htmlFor="remember">
-                {inputs.remember.label}
-              </label>
-            </div>
-            <PrimaryButton ariaLabel={buttonsArias.signIn}>
-              {buttons.signIn}
-            </PrimaryButton>
-            <p
-              className={css({
-                color: localStorage.getItem("chat-text-basic"),
-              })}
-            >
-              {auth.new}{" "}
-              <Link
-                to="/auth/sign-up"
-                className={`underline transition ${css({
-                  color: localStorage.getItem("chat-text-basic"),
-                  ":hover": {
-                    color: localStorage.getItem("chat-text-primary"),
-                  },
-                })}`}
-              >
-                {buttons.signUp}
-              </Link>{" "}
-              {aux.or}{" "}
-              <Link
-                to="/auth/sign-in-as-guest"
-                className={`underline transition ${css({
-                  color: localStorage.getItem("chat-text-basic"),
-                  ":hover": {
-                    color: localStorage.getItem("chat-text-primary"),
-                  },
-                })}`}
-              >
-                {buttons.signInAsGuest}
-              </Link>
-            </p>
-          </form>
-        ) : null}
+              {buttons.signInAsGuest}
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
   );

@@ -13,6 +13,10 @@
   .signIn h2 {
     @apply text-4xl;
   }
+
+  .signIn {
+    @apply p-5;
+  }
 }
 
 @media (max-width: 350px) {

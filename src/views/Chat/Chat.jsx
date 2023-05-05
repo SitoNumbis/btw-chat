@@ -40,7 +40,7 @@ function Chat() {
     return () => newSocket.close();
   }, []);
 
-  const pickColor = useCallback((e) => {
+  /*  const pickColor = useCallback((e) => {
     const img = e.target;
     // Create a canvas element to draw the image onto
     const canvas = document.createElement("canvas");
@@ -80,7 +80,7 @@ function Chat() {
     }
 
     console.log(primaryColor); // Output the primary color
-  }, []);
+  }, []); */
 
   const [openSidebar, setOpenSidebar] = useState(true);
 
