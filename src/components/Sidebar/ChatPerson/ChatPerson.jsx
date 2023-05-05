@@ -102,12 +102,12 @@ function ChatPerson(props) {
               color: localStorage.getItem("chat-text-basic"),
             })}`}
           >
-            {name.length > 27 ? `${name.substring(0, 27)}...` : name}
+            {name && name.length > 27 ? `${name.substring(0, 27)}...` : name}
           </p>
           {printState()}
         </div>
         <div className={`!text-placeholder-dark !italic !text-left`}>
-          {lastMessage ? printLastMessage() : <p>{bio.substring(0, 18)}</p>}
+          {lastMessage ? printLastMessage() : <p>{bio?.substring(0, 18)}</p>}
           {!lastMessage && bio && bio.length > 18 ? "..." : ""}
         </div>
       </div>

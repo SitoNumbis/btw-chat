@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -28,6 +28,13 @@ function Input({ onSend }) {
     [message, onSend]
   );
 
+  const [history, setHistory] = useState([]);
+
+  const onKeyDown = useCallback(() => {
+    
+  }, [history]);
+  const onKeyUp = useCallback(() => {}, [history]);
+
   return (
     <form
       onSubmit={onSubmit}
@@ -38,6 +45,8 @@ function Input({ onSend }) {
       <input
         type="text"
         value={message}
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
         placeholder={input.placeholder}
         onChange={(e) => setMessage(e.target.value)}
         className={`w-full text-white ${styles.input}`}

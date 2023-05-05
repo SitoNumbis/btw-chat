@@ -86,16 +86,14 @@ export const passwordRecovery = async (email) => {
 };
 
 /**
- * Takes a user object and sends it to the backend to be authenticated
- * @param {string} user - the user name
- * @param {string} password - the user password
+ * @param {string} lang - the user language
  * @returns The response from the server.
  */
-export const createGuest = async () => {
+export const createGuest = async (lang) => {
   const response = await axios.post(
     // @ts-ignore
     `${config.apiUrl}/auth/create-guest`,
-    {},
+    { lang },
     {
       headers: getAuth,
     }

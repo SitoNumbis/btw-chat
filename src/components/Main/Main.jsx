@@ -91,10 +91,11 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         const response = await fetchMessagesRemote(target, sender, page, 20);
         const data = await response.json();
         const { list } = data;
-        setMessages({
-          type: "add",
-          messages: list,
-        });
+        if (list)
+          setMessages({
+            type: "add",
+            messages: list,
+          });
       } catch (err) {
         console.error(err);
       }

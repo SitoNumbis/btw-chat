@@ -35,7 +35,6 @@ function SignIn() {
   }, [setWhere]);
 
   const toCreateGuest = useCallback(() => {
-    console.log("hola");
     setWhere(2);
   }, [setWhere]);
 

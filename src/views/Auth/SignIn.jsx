@@ -258,7 +258,7 @@ function SignIn() {
           >
             {auth.new}{" "}
             <Link
-              to="/auth/sign-up"
+              to="/sign-up"
               className={`underline transition ${css({
                 color: localStorage.getItem("chat-text-basic"),
                 ":hover": {
@@ -270,7 +270,7 @@ function SignIn() {
             </Link>{" "}
             {aux.or}{" "}
             <Link
-              to="/auth/sign-in-as-guest"
+              to="/sign-in-as-guest"
               className={`underline transition ${css({
                 color: localStorage.getItem("chat-text-basic"),
                 ":hover": {

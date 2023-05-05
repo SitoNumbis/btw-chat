@@ -1,10 +1,17 @@
 import { Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import loadable from "@loadable/component";
+
+// some-javascript-utils
+import { getUserLanguage } from "some-javascript-utils/browser";
+
 import config from "./config";
 
 // services
 import { validateBasicKey } from "./services/auth";
+
+// contexts
+import { useLanguage } from "./context/LanguageProvider";
 
 // utils
 import { logoutUser, userLogged } from "./utils/auth";
@@ -27,6 +34,8 @@ const ResetPassword = loadable(() => import("./views/Auth/ResetPassword"));
 const EmailValidation = loadable(() => import("./views/Auth/EmailValidation"));
 
 function App() {
+  const { setLanguageState } = useLanguage();
+
   const fetch = async () => {
     try {
       const value = await validateBasicKey();
@@ -49,6 +58,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    try {
+      setLanguageState({ type: "set", lang: getUserLanguage(config.language) });
+    } catch (err) {
+      console.error(err);
+    }
     localStorage.setItem("chat-main-bg", "#222333");
     localStorage.setItem("chat-secondary-bg", "#1b1b2b");
     localStorage.setItem("chat-other-bg", "#222222");
@@ -77,11 +91,7 @@ function App() {
               >
                 <Route index element={<SignIn />} />
                 <Route exact path="/sign-up" element={<SignUp />} />
-                <Route
-                  exact
-                  path="/sign-in-as-guest"
-                  element={<SignUp />}
-                />
+                <Route exact path="/sign-in-as-guest" element={<SignUp />} />
                 <Route
                   exact
                   path="/reset-password"

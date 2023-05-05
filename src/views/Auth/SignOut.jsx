@@ -27,7 +27,7 @@ export default function SignOut() {
     logoutUser();
     // setUserState({ type: "logged-out" });
     setTimeout(() => {
-      window.location.href = "/auth/";
+      window.location.href = "/";
     }, 1000);
   };
 

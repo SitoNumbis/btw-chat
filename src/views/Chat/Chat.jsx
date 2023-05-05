@@ -142,11 +142,14 @@ function Chat() {
       const { list } = await response.json();
       if (name && name.length) setSearchChats({ type: "add", list });
       else setChats({ type: "add", list });
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     } catch (err) {
       console.error(err);
       setErrorLoadingPerson(true);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const [selectedChat, setSelectedChat] = useState(undefined);

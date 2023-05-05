@@ -125,6 +125,7 @@ function Sidebar({
   }, [fetchPerson, searchInput]);
 
   const printSearchChats = useCallback(() => {
+    console.log(searchChats, "useCallback");
     return searchChats.map((chat, i) => (
       <ChatPerson
         index={i}
@@ -235,50 +236,6 @@ function Sidebar({
         })} mx-auto my-0 border-placeholder-dark`}
       /> */}
       {!showOffState ? <ConnectionState socket={socket} /> : null}
-      <div>
-        {seeing === "search" ? (
-          <div>
-            <SearchInput
-              value={searchInput}
-              onChange={handleSearchInput}
-              input={inputs.search}
-            />
-            {loading ? (
-              <Loading />
-            ) : (
-              <div className="appear">{printSearchChats()}</div>
-            )}
-            {!searchChats.length && searchInput.length && !loading && !error ? (
-              <Empty />
-            ) : null}
-            {!searchChats.length &&
-            !searchInput.length &&
-            !loading &&
-            !error ? (
-              <EmptyChats searching />
-            ) : null}
-          </div>
-        ) : null}
-        {seeing === "simple" ? (
-          <div>
-            {loading ? (
-              <Loading />
-            ) : (
-              <div className="appear">{printChats()}</div>
-            )}
-            {!chats.length && !loading && !error ? (
-              <EmptyChats searching={false} />
-            ) : null}
-          </div>
-        ) : null}
-        {seeing === "multi" ? (
-          <div>
-            {!multiChats.length && !loading && !error ? (
-              <EmptyChats searching={false} />
-            ) : null}
-          </div>
-        ) : null}
-      </div>
 
       {error ? (
         <div className="flex flex-col px-12 p-5 gap-2 appear">
@@ -296,7 +253,55 @@ function Sidebar({
             <FontAwesomeIcon icon={faRotateLeft} />
           </button>
         </div>
-      ) : null}
+      ) : (
+        <div>
+          {seeing === "search" ? (
+            <div>
+              <SearchInput
+                value={searchInput}
+                onChange={handleSearchInput}
+                input={inputs.search}
+              />
+              {loading ? (
+                <Loading />
+              ) : (
+                <>
+                  {searchInput.length ? (
+                    <>
+                      {searchChats.length ? (
+                        <div className="appear">{printSearchChats()}</div>
+                      ) : (
+                        <Empty />
+                      )}
+                    </>
+                  ) : (
+                    <EmptyChats searching />
+                  )}
+                </>
+              )}
+            </div>
+          ) : null}
+          {seeing === "simple" ? (
+            <div>
+              {loading ? (
+                <Loading />
+              ) : (
+                <div className="appear">{printChats()}</div>
+              )}
+              {!chats.length && !loading && !error ? (
+                <EmptyChats searching={false} />
+              ) : null}
+            </div>
+          ) : null}
+          {seeing === "multi" ? (
+            <div>
+              {!multiChats.length && !loading && !error ? (
+                <EmptyChats searching={false} />
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 }

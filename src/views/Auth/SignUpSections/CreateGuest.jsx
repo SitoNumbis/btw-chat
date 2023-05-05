@@ -13,7 +13,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 import { useNotification } from "../../../context/NotificationProvider";
 
 // utils
-import { getUserName, logUser, userLogged } from "../../../utils/auth";
+import { getUserName, logUser } from "../../../utils/auth";
 
 // services
 import { createGuest } from "../../../services/auth";
@@ -62,7 +62,7 @@ function CreateGuest() {
   const init = async () => {
     setLoading(true);
     try {
-      const response = await createGuest();
+      const response = await createGuest(languageState.lang);
       const data = response.data;
       createCookie(
         config.basicKeyCookie,
@@ -96,7 +96,7 @@ function CreateGuest() {
       ) : (
         <div
           className={`${styles.signIn} appear ${css({
-            alignItems: "center",
+            alignItems: "center !important",
             width: "400px",
             height: "auto !important",
             backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
