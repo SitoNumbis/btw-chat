@@ -7,6 +7,8 @@ import {
   useMemo,
 } from "react";
 
+import useScreenSize from "use-screen-witdh";
+
 // @emotion/css
 import { css } from "@emotion/css";
 
@@ -29,8 +31,20 @@ const Input = loadable(() => import("./Input/Input"));
 const Message = loadable(() => import("./Message/Message"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
 const Settings = loadable(() => import("./Settings/Settings"));
+const ConnectionState = loadable(() =>
+  import("../ConnectionState/ConnectionState")
+);
 
 function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
+  const [showOffState, setShowOffState] = useState(false);
+
+  const { width } = useScreenSize();
+
+  useEffect(() => {
+    if (width < 850) setShowOffState(true);
+    else setShowOffState(false);
+  }, [width]);
+
   const messagesReducer = (state, action) => {
     const { type } = action;
     switch (type) {
@@ -163,6 +177,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         toggleSidebar={toggleSidebar}
         selectedChat={selectedChat}
       />
+      {showOffState ? <ConnectionState main socket={socket} /> : null}
       {!settings ? (
         <>
           {selectedChat ? (

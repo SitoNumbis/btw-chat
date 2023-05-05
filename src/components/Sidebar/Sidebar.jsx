@@ -71,9 +71,16 @@ function Sidebar({
     setSearchInput(e.target.value);
   }, []);
 
+  const [showOffState, setShowOffState] = useState(false);
+
   useEffect(() => {
-    if (width < 850) onClose(false);
-    else onClose(true);
+    if (width < 850) {
+      onClose(false);
+      setShowOffState(true);
+    } else {
+      onClose(true);
+      setShowOffState(false);
+    }
   }, [width]);
 
   const selectLocalChat = useCallback(
@@ -222,7 +229,7 @@ function Sidebar({
           width: "100%",
         })} mx-auto my-0 border-placeholder-dark`}
       /> */}
-      <ConnectionState socket={socket} />
+      {!showOffState ? <ConnectionState socket={socket} /> : null}
       <div>
         {seeing === "search" ? (
           <div>

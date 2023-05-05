@@ -19,7 +19,7 @@ import { useLanguage } from "../../context/LanguageProvider";
 // styles
 import "./styles.css";
 
-function ConnectionState({ socket }) {
+function ConnectionState({ socket, main }) {
   const { languageState } = useLanguage();
 
   const { states } = useMemo(() => {
@@ -29,7 +29,6 @@ function ConnectionState({ socket }) {
   const [currentState, setCurrentState] = useState("connecting");
 
   useEffect(() => {
-    console.log(socket);
     if (socket) {
       if (socket.connected) setCurrentState("connected");
       else setCurrentState("disconnected");
@@ -65,6 +64,40 @@ function ConnectionState({ socket }) {
         console.info("reconnect_failed");
         setCurrentState("connected");
       });
+      return () => {
+        socket.off("connect", () => {
+          console.info("connected");
+          setCurrentState("connected");
+        });
+        socket.off("connect_error", (error) => {
+          console.log(`Connection error: ${error.message}`);
+          setCurrentState("disconnected");
+        });
+        socket.off("reconnect", () => {
+          console.info("reconnected");
+          setCurrentState("connected");
+        });
+        socket.off("reconnecting", () => {
+          console.info("reconnecting");
+          setCurrentState("connecting");
+        });
+        socket.off("disconnect", () => {
+          console.info("disconnected");
+          setCurrentState("disconnected");
+        });
+        socket.off("error", () => {
+          console.info("error");
+          setCurrentState("disconnected");
+        });
+        socket.off("reconnect_error", () => {
+          console.info("reconnect_error");
+          setCurrentState("connected");
+        });
+        socket.off("reconnect_failed", () => {
+          console.info("reconnect_failed");
+          setCurrentState("connected");
+        });
+      };
     }
   }, [socket]);
 
@@ -134,6 +167,9 @@ function ConnectionState({ socket }) {
     <div
       className={`flex items-center justify-between gap-2 overflow-hidden ${color} ${css(
         {
+          marginLeft: main ? "-8px" : "",
+          marginTop: main ? "-13px" : "",
+          marginBottom: main ? "10px" : "",
           transition: "all 500ms ease",
           height,
           color: localStorage.getItem("chat-text-basic"),
@@ -170,6 +206,7 @@ function ConnectionState({ socket }) {
 
 ConnectionState.propTypes = {
   socket: PropTypes.object,
+  main: PropTypes.bool,
 };
 
 const ConnectionStateMemo = memo(
@@ -180,7 +217,7 @@ const ConnectionStateMemo = memo(
 ConnectionStateMemo.displayName = "ConnectionState";
 
 function arePropsEqual(oldProps, newProps) {
-  return oldProps.socket === newProps.socket;
+  return oldProps.socket === newProps.socket && oldProps.main === newProps.main;
 }
 
 export default ConnectionStateMemo;
