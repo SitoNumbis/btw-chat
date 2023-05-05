@@ -18,6 +18,7 @@ import {
   faUser,
   faUserGroup,
   faSadCry,
+  faRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
 // @emotion/css
@@ -118,6 +119,10 @@ function Sidebar({
     if (seeing === "simple" || seeing === "multi") fetchPerson();
     else handleSearch(searchInput);
   }, [searchInput, seeing]);
+
+  const reconnect = useCallback(() => {
+    fetchPerson(searchInput);
+  }, [fetchPerson, searchInput]);
 
   const printSearchChats = useCallback(() => {
     return searchChats.map((chat, i) => (

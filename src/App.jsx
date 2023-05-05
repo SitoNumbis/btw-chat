@@ -33,7 +33,7 @@ function App() {
       if (!value) {
         logoutUser();
         setTimeout(() => {
-          window.location.href = "/auth";
+          window.location.reload();
         }, 1000);
       } else localStorage.setItem(config.userCookie, value);
     } catch (err) {
@@ -64,7 +64,6 @@ function App() {
       <Notification />
       <BrowserRouter>
         <Routes>
-          {console.log(localStorage.getItem(config.userCookie))}
           {localStorage.getItem(config.userCookie) === null ? (
             <Route
               exact
@@ -90,15 +89,72 @@ function App() {
               />
             </Route>
           ) : (
-            <Route
-              exact
-              path="/"
-              element={
-                <Suspense>
-                  <Chat />
-                </Suspense>
-              }
-            />
+            <>
+              {" "}
+              <Route
+                exact
+                path="/"
+                element={
+                  <Suspense>
+                    <Chat />
+                  </Suspense>
+                }
+              />
+              <Route
+                exact
+                path="/auth"
+                element={
+                  <Suspense>
+                    <Auth />
+                  </Suspense>
+                }
+              >
+                <Route index element={<SignIn />} />
+                <Route exact path="/auth/sign-up" element={<SignUp />} />
+                <Route
+                  exact
+                  path="/auth/sign-in-as-guest"
+                  element={<SignUp />}
+                />
+                <Route
+                  exact
+                  path="/auth/reset-password"
+                  element={<ResetPassword />}
+                />
+                <Route
+                  exact
+                  path="/auth/email-validation"
+                  element={<EmailValidation />}
+                />
+              </Route>
+              <Route
+                exact
+                path="/"
+                element={
+                  <Suspense>
+                    <Auth />
+                  </Suspense>
+                }
+              >
+                <Route index element={<SignIn />} />
+                <Route exact path="/sign-up" element={<SignUp />} />
+                <Route
+                  exact
+                  path="/sign-in-as-guest"
+                  element={<SignUp />}
+                />
+                <Route
+                  exact
+                  path="/reset-password"
+                  element={<ResetPassword />}
+                />
+                <Route
+                  exact
+                  path="/email-validation"
+                  element={<EmailValidation />}
+                />
+              </Route>
+            </>
           )}
           <Route exact path="/sign-out" element={<SignOut />} />
           <Route path="*" element={<NotFound />} />

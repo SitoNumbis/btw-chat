@@ -80,7 +80,7 @@ function Settings() {
         </div>
         <div className="flex items-center gap-2">
           <h2
-            className={`${css({
+            className={`text-center ${css({
               color: localStorage.getItem("chat-text-basic"),
             })} text-2xl`}
           >
@@ -120,7 +120,7 @@ function Settings() {
         </div>
         <div className="flex items-center gap-3">
           <p
-            className={`${css({
+            className={`text-center ${css({
               color: localStorage.getItem("chat-text-basic"),
             })}`}
           >

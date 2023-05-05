@@ -168,11 +168,11 @@ function SignIn() {
     )
       .then((base64) => {
         setImageBG(base64);
-        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
       });
+    setLoading(false);
   }, []);
 
   return (

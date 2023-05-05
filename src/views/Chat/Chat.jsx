@@ -175,11 +175,11 @@ function Chat() {
     )
       .then((base64) => {
         setImageBG(base64);
-        setLoadingF(false);
       })
       .catch((error) => {
         console.error(error);
       });
+    setLoadingF(false);
   }, []);
 
   return (
