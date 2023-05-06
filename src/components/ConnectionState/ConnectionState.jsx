@@ -19,7 +19,7 @@ import { useLanguage } from "../../context/LanguageProvider";
 // styles
 import "./styles.css";
 
-function ConnectionState({ socket, main }) {
+function ConnectionState({ socket, main, settings }) {
   const { languageState } = useLanguage();
 
   const { states } = useMemo(() => {
@@ -125,6 +125,11 @@ function ConnectionState({ socket, main }) {
 
   const [height, setHeight] = useState("44px");
 
+  const margin = useMemo(() => {
+    if (main && settings) return "-13px 0 10px -8px";
+    else if (main) return "-3px 0 10px -8px";
+  }, [main, settings]);
+
   useEffect(() => {
     switch (currentState) {
       case "connected":
@@ -167,9 +172,7 @@ function ConnectionState({ socket, main }) {
     <div
       className={`flex items-center justify-between gap-2 overflow-hidden ${color} ${css(
         {
-          marginLeft: main ? "-8px" : "",
-          marginTop: main ? "-13px" : "",
-          marginBottom: main ? "10px" : "",
+          margin,
           transition: "all 500ms ease",
           height,
           color: localStorage.getItem("chat-text-basic"),
@@ -207,6 +210,7 @@ function ConnectionState({ socket, main }) {
 ConnectionState.propTypes = {
   socket: PropTypes.object,
   main: PropTypes.bool,
+  settings: PropTypes.bool,
 };
 
 const ConnectionStateMemo = memo(
@@ -217,7 +221,11 @@ const ConnectionStateMemo = memo(
 ConnectionStateMemo.displayName = "ConnectionState";
 
 function arePropsEqual(oldProps, newProps) {
-  return oldProps.socket === newProps.socket && oldProps.main === newProps.main;
+  return (
+    oldProps.socket === newProps.socket &&
+    oldProps.main === newProps.main &&
+    oldProps.settings === newProps.settings
+  );
 }
 
 export default ConnectionStateMemo;

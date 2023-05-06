@@ -184,7 +184,9 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         toggleSidebar={toggleSidebar}
         selectedChat={selectedChat}
       />
-      {showOffState ? <ConnectionState main socket={socket} /> : null}
+      {showOffState ? (
+        <ConnectionState main socket={socket} settings={settings} />
+      ) : null}
       {!settings ? (
         <>
           {selectedChat ? (
