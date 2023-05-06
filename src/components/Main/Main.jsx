@@ -172,6 +172,14 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     if (selectedChat) setSettings(false);
   }, [selectedChat]);
 
+  const [showConnectionState, setShowConnectionState] = useState(true);
+  const handleShowConnectionState = useCallback(
+    (value) => {
+      setShowConnectionState(value);
+    },
+    [setShowConnectionState]
+  );
+
   return (
     <div
       className={`${styles.main} ${css({
@@ -185,13 +193,25 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         selectedChat={selectedChat}
       />
       {showOffState ? (
-        <ConnectionState main socket={socket} settings={settings} />
+        <ConnectionState
+          main
+          socket={socket}
+          settings={settings}
+          stateConnectionState={showConnectionState}
+          listenChangeState={handleShowConnectionState}
+        />
       ) : null}
       {!settings ? (
         <>
           {selectedChat ? (
             <>
-              <div className={styles.messages}>
+              <div
+                className={`${styles.messages} ${css({
+                  height: showConnectionState
+                    ? "calc(100% - 170px)"
+                    : "calc(100% - 130px)",
+                })}`}
+              >
                 <p className="text-placeholder-dark italic mx-auto">
                   {selectedChat?.bio}
                 </p>

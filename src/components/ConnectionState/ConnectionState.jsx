@@ -19,7 +19,13 @@ import { useLanguage } from "../../context/LanguageProvider";
 // styles
 import "./styles.css";
 
-function ConnectionState({ socket, main, settings }) {
+function ConnectionState({
+  socket,
+  main,
+  settings,
+  stateConnectionState,
+  listenChangeState,
+}) {
   const { languageState } = useLanguage();
 
   const { states } = useMemo(() => {
@@ -37,7 +43,7 @@ function ConnectionState({ socket, main, settings }) {
         setCurrentState("connected");
       });
       socket.on("connect_error", (error) => {
-        console.log(`Connection error: ${error.message}`);
+        console.info(`Connection error: ${error.message}`);
         setCurrentState("disconnected");
       });
       socket.on("reconnect", () => {
@@ -134,8 +140,10 @@ function ConnectionState({ socket, main, settings }) {
     switch (currentState) {
       case "connected":
         setTimeout(() => setHeight("0"), 1000);
+        if (listenChangeState) listenChangeState(false);
         break;
       default:
+        if (listenChangeState) listenChangeState(true);
         return setHeight("44px");
     }
   }, [currentState]);
@@ -211,6 +219,8 @@ ConnectionState.propTypes = {
   socket: PropTypes.object,
   main: PropTypes.bool,
   settings: PropTypes.bool,
+  stateConnectionState: PropTypes.bool,
+  listenChangeState: PropTypes.func,
 };
 
 const ConnectionStateMemo = memo(
@@ -224,7 +234,9 @@ function arePropsEqual(oldProps, newProps) {
   return (
     oldProps.socket === newProps.socket &&
     oldProps.main === newProps.main &&
-    oldProps.settings === newProps.settings
+    oldProps.settings === newProps.settings &&
+    oldProps.stateConnectionState === newProps.stateConnectionState &&
+    oldProps.listenChangeState === newProps.listenChangeState
   );
 }
 
