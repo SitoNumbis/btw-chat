@@ -1,5 +1,10 @@
 {
   "es": {
+    "dialogs": {
+      "profileInfo": {
+        "title": "Información de perfil"
+      }
+    },
     "states": {
       "connecting": "Conectando",
       "disconnected": "Desconectado",
@@ -42,9 +47,21 @@
       "signUp": "Crear cuenta",
       "signInAsGuest": "Entrar como invitado",
       "begin": "Comenzar a usar BTW Chat",
-      "retry": "Reintentar operación"
+      "retry": "Reintentar operación",
+      "editProfile": "Editar información",
+      "save": "Guardar",
+      "cancel": "Cancelar"
     },
     "inputs": {
+      "name": {
+        "label": "Nombre público",
+        "type": "text",
+        "notEmpty": "Debes introducir un nombre"
+      },
+      "bio": {
+        "label": "Bio",
+        "type": "textarea"
+      },
       "user": {
         "label": "Usuario",
         "type": "text",
@@ -73,7 +90,10 @@
       "signUp": "Crear cuenta",
       "signInAsGuest": "Entrar como invitado",
       "begin": "Comenzar",
-      "retry": "Reintentar"
+      "retry": "Reintentar",
+      "editProfile": "Editar información",
+      "save": "Guardar",
+      "cancel": "Cancelar"
     },
     "navbar": {
       "links": {},

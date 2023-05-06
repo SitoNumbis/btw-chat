@@ -1,13 +1,14 @@
-import React, { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
 // @emotion/css
 import { css } from "@emotion/css";
 
 // contexts
+import { useDialog } from "../../../context/DialogProvider";
 import { useLanguage } from "../../../context/LanguageProvider";
 
 // images
@@ -17,7 +18,20 @@ import noPhoto from "../../../assets/images/no-photo.webp";
 import config from "../../../config";
 
 function Settings() {
+  const { setDialogState } = useDialog();
+
   const { languageState } = useLanguage();
+
+  const { buttons, buttonsArias } = useMemo(() => {
+    return {
+      buttons: languageState.texts.buttons,
+      buttonsArias: languageState.texts.buttonsArias,
+    };
+  }, [languageState]);
+
+  const handleEditing = useCallback(() => {
+    setDialogState({ type: "set-value", key: "editing", value: 1 });
+  }, [setDialogState]);
 
   const printState = useMemo(() => {
     switch (localStorage.getItem(config.userStateCookie)) {
@@ -79,7 +93,7 @@ function Settings() {
             <FontAwesomeIcon icon={faCamera} />
           </button>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="relative flex items-center gap-2 px-5">
           <h2
             className={`text-center ${css({
               color: localStorage.getItem("chat-text-basic"),
@@ -87,39 +101,9 @@ function Settings() {
           >
             {localStorage.getItem(config.userNameCookie)}
           </h2>
-          <button
-            className={`text-md rounded-full ${css({
-              width: "30px",
-              height: "30px",
-              color: localStorage.getItem("chat-text-basic"),
-              transition: "all 500ms ease",
-              ":hover": {
-                color: localStorage.getItem("chat-text-basic"),
-                background: localStorage.getItem("chat-text-primary"),
-              },
-            })}`}
-          >
-            <FontAwesomeIcon icon={faPen} />
-          </button>
         </div>
-        <div className="flex items-center gap-3">
-          {printState}
-          <button
-            className={`text-md rounded-full ${css({
-              width: "30px",
-              height: "30px",
-              color: localStorage.getItem("chat-text-basic"),
-              transition: "all 500ms ease",
-              ":hover": {
-                color: localStorage.getItem("chat-text-basic"),
-                background: localStorage.getItem("chat-text-primary"),
-              },
-            })}`}
-          >
-            <FontAwesomeIcon icon={faPen} />
-          </button>
-        </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">{printState}</div>
+        <div className="flex items-center gap-3 px-5">
           <p
             className={`text-center ${css({
               color: localStorage.getItem("chat-text-basic"),
@@ -127,21 +111,22 @@ function Settings() {
           >
             {localStorage.getItem(config.userBioCookie)}
           </p>
-          <button
-            className={`text-md rounded-full ${css({
-              width: "30px",
-              height: "30px",
-              color: localStorage.getItem("chat-text-basic"),
-              transition: "all 500ms ease",
-              ":hover": {
-                color: localStorage.getItem("chat-text-basic"),
-                background: localStorage.getItem("chat-text-primary"),
-              },
-            })}`}
-          >
-            <FontAwesomeIcon icon={faPen} />
-          </button>
         </div>
+        <button
+          onClick={handleEditing}
+          aria-label={buttonsArias.editProfile}
+          className={`text-md rounded-sm py-2 px-5 ${css({
+            color: localStorage.getItem("chat-text-basic"),
+            background: `${localStorage.getItem("chat-main-bg")}99`,
+            transition: "all 500ms ease",
+            ":hover": {
+              color: localStorage.getItem("chat-text-basic"),
+              background: localStorage.getItem("chat-text-primary"),
+            },
+          })}`}
+        >
+          {buttons.editProfile}
+        </button>
       </div>
     </div>
   );

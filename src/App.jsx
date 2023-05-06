@@ -12,6 +12,7 @@ import { validateBasicKey } from "./services/auth";
 
 // contexts
 import { useLanguage } from "./context/LanguageProvider";
+import { DialogProvider } from "./context/DialogProvider";
 
 // utils
 import { logoutUser, userLogged } from "./utils/auth";
@@ -110,7 +111,9 @@ function App() {
               path="/"
               element={
                 <Suspense>
-                  <Chat />
+                  <DialogProvider>
+                    <Chat />
+                  </DialogProvider>
                 </Suspense>
               }
             />

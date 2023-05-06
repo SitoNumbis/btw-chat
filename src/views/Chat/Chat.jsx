@@ -17,13 +17,19 @@ import styles from "./styles.module.css";
 // utils
 import { loadImage } from "../../utils/services";
 
+// contexts
+import { useDialog } from "../../context/DialogProvider";
+
 // components
 import Loading from "../../components/Loading/Loading";
 
+import ProfileInformationDialog from "../../components/Dialogs/ProfileInformationDialog";
 const Main = loadable(() => import("../../components/Main/Main"));
 const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
 
 function Chat() {
+  const { dialogState } = useDialog();
+
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
@@ -194,6 +200,9 @@ function Chat() {
 
   return (
     <div className={`flex entrance w-full h-screen ${styles.main}`}>
+      {dialogState.editing !== undefined ? (
+        <ProfileInformationDialog editing={dialogState.editing} />
+      ) : null}
       <img
         src={imageBG}
         alt="space-background"

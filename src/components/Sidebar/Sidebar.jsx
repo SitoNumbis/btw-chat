@@ -184,10 +184,10 @@ function Sidebar({
   return (
     <div
       className={`${styles.sidebar} ${css({
+        zIndex: 1,
         transform: open ? "translateX(0)" : "translateX(-360px)",
-      })} relative z-10 py-4 ${css({
         backgroundColor: `${localStorage.getItem("chat-other-bg")}CC`,
-      })}`}
+      })} relative z-10 py-4`}
     >
       <div className={styles.userRow}>
         <div className="flex items-center gap-2">

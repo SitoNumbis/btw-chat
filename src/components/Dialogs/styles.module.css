@@ -1,0 +1,15 @@
+.dialogContainer {
+  backdrop-filter: blur(4px);
+  @apply fixed top-0 left-0 flex items-center justify-center w-full h-screen z-40;
+}
+
+.dialog {
+  backdrop-filter: blur(4px);
+  @apply absolute p-5 gap-3 flex flex-col;
+}
+
+@media (max-width: 540px) {
+  .dialog {
+    @apply absolute p-5;
+  }
+}

@@ -31,7 +31,7 @@ function ConnectionState({ socket, main }) {
   useEffect(() => {
     if (socket) {
       if (socket.connected) setCurrentState("connected");
-      else setCurrentState("disconnected");
+      else setCurrentState("connecting");
       socket.on("connect", () => {
         console.info("connected");
         setCurrentState("connected");

@@ -41,38 +41,91 @@ function Input({
           },
         })}`}
       >
-        <input
-          id={id}
-          value={value}
-          onChange={onChange}
-          type={type ? type : input.type}
-          placeholder={input.placeholder}
-          className={`simple-input w-full ${css({
-            paddingLeft: leftIcon ? "30px" : "20px",
-            paddingRight: rightIcon ? "30px" : "20px",
-            color: localStorage.getItem("chat-text-basic"),
-            background: `${localStorage.getItem("chat-other-bg")}AA`,
-            ":focus": {
-              borderColor: localStorage.getItem("chat-text-primary"),
-              boxShadow: `0px 0px 0 2px ${localStorage.getItem(
-                "chat-text-primary"
-              )}`,
-              outline: "0 none",
-            },
-            ":focus - .simple-input-left-icon": {
-              color: `${localStorage.getItem("chat-text-primary")} !important`,
-            },
-            ":focus - .simple-input-right-icon": {
-              color: `${localStorage.getItem("chat-text-primary")} !important`,
-            },
-            ":focus + .simple-input-left-icon": {
-              color: `${localStorage.getItem("chat-text-primary")} !important`,
-            },
-            ":focus + .simple-input-right-icon": {
-              color: `${localStorage.getItem("chat-text-primary")} !important`,
-            },
-          })} ${className}`}
-        />
+        {input?.type === "textarea" || type === "textarea" ? (
+          <textarea
+            id={id}
+            value={value}
+            onChange={onChange}
+            type={type ? type : input.type}
+            placeholder={input.placeholder}
+            className={`simple-input w-full ${css({
+              resize: "none",
+              height: "150px",
+              paddingLeft: leftIcon ? "30px" : "20px",
+              paddingRight: rightIcon ? "30px" : "20px",
+              color: localStorage.getItem("chat-text-basic"),
+              background: `${localStorage.getItem("chat-other-bg")}AA`,
+              ":focus": {
+                borderColor: localStorage.getItem("chat-text-primary"),
+                boxShadow: `0px 0px 0 2px ${localStorage.getItem(
+                  "chat-text-primary"
+                )}`,
+                outline: "0 none",
+              },
+              ":focus - .simple-input-left-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+              ":focus - .simple-input-right-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+              ":focus + .simple-input-left-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+              ":focus + .simple-input-right-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+            })} ${className}`}
+          />
+        ) : (
+          <input
+            id={id}
+            value={value}
+            onChange={onChange}
+            type={type ? type : input.type}
+            placeholder={input.placeholder}
+            className={`simple-input w-full ${css({
+              paddingLeft: leftIcon ? "30px" : "20px",
+              paddingRight: rightIcon ? "30px" : "20px",
+              color: localStorage.getItem("chat-text-basic"),
+              background: `${localStorage.getItem("chat-other-bg")}AA`,
+              ":focus": {
+                borderColor: localStorage.getItem("chat-text-primary"),
+                boxShadow: `0px 0px 0 2px ${localStorage.getItem(
+                  "chat-text-primary"
+                )}`,
+                outline: "0 none",
+              },
+              ":focus - .simple-input-left-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+              ":focus - .simple-input-right-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+              ":focus + .simple-input-left-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+              ":focus + .simple-input-right-icon": {
+                color: `${localStorage.getItem(
+                  "chat-text-primary"
+                )} !important`,
+              },
+            })} ${className}`}
+          />
+        )}
         {leftIcon ? (
           <div
             className={`simple-input-left-icon ${css({

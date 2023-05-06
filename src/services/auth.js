@@ -101,3 +101,24 @@ export const createGuest = async (lang) => {
   const data = await response.data;
   return data;
 };
+
+/**
+ * @param {string} name
+ * @param {string} bio
+ * @returns The response from the server.
+ */
+export const saveInfo = async (name, bio) => {
+  const response = await axios.post(
+    // @ts-ignore
+    `${config.apiUrl}/auth/save-info`,
+    { user: localStorage.getItem(config.userCookie), name, bio },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+};
