@@ -91,6 +91,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         const response = await fetchMessagesRemote(target, sender, page, 20);
         const data = await response.json();
         const { list } = data;
+        console.log(list);
         if (list)
           setMessages({
             type: "add",
@@ -109,13 +110,18 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat]);
 
+  const onMessageReceived = (conversation) => {
+    console.info("receiving messages");
+    const { target, sender } = conversation;
+    fetchMessages(target, sender);
+  };
+
   useEffect(() => {
     if (socket) {
-      socket.on("message", (conversation) => {
-        console.info("receiving messages");
-        const { target, sender } = conversation;
-        fetchMessages(target, sender);
-      });
+      socket.on("message", onMessageReceived);
+      return () => {
+        socket.off("message", onMessageReceived);
+      };
     }
   }, [socket]);
 

@@ -34,6 +34,7 @@ import config from "../../config";
 
 // components
 import Loading from "../Loading/Loading";
+
 const ConnectionState = loadable(() =>
   import("../ConnectionState/ConnectionState")
 );
@@ -55,6 +56,26 @@ function Sidebar({
   open,
   onClose,
 }) {
+  const onMessageReceived = useCallback(
+    (conversation) => {
+      console.info("receiving messages");
+      const { sender } = conversation;
+      const { user } = sender;
+      if (!chats.find((localChat) => localChat.user === user))
+        fetchPerson(user, true);
+    },
+    [chats, searchChats, multiChats, fetchPerson]
+  );
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("message", onMessageReceived);
+      return () => {
+        socket.off("message", onMessageReceived);
+      };
+    }
+  }, [socket]);
+
   const { languageState } = useLanguage();
 
   const { width } = useScreenSize();
@@ -137,7 +158,9 @@ function Sidebar({
     ));
   }, [searchChats, selectLocalChat]);
 
+  console.log(chats);
   const printChats = useCallback(() => {
+    console.log(chats);
     return chats.map((chat, i) => (
       <ChatPerson
         index={i}
@@ -238,15 +261,17 @@ function Sidebar({
       {!showOffState ? <ConnectionState socket={socket} /> : null}
 
       {error ? (
-        <div className="flex flex-col px-12 p-5 gap-2 appear">
+        <div className="flex flex-col px-12 p-5 gap-2 appear items-center justify-start">
           <FontAwesomeIcon icon={faSadCry} className="text-l-error text-4xl" />
           <p className="text-l-error">{sidebar.error}</p>
           <button
             onClick={reconnect}
             className={`w-10 h-10 rounded-full ${css({
               transition: "all 500ms ease",
+              color: localStorage.getItem("chat-text-basic"),
               ":hover": {
-                background: localStorage.getItem("chat-main-bg"),
+                color: localStorage.getItem("chat-text-primary"),
+                background: localStorage.getItem("chat-text-basic"),
               },
             })}`}
           >
@@ -286,11 +311,16 @@ function Sidebar({
               {loading ? (
                 <Loading />
               ) : (
-                <div className="appear">{printChats()}</div>
+                <>
+                  {!chats.length ? (
+                    <EmptyChats searching={false} />
+                  ) : (
+                    <div className="appear h-full overflow-auto">
+                      {printChats()}
+                    </div>
+                  )}
+                </>
               )}
-              {!chats.length && !loading && !error ? (
-                <EmptyChats searching={false} />
-              ) : null}
             </div>
           ) : null}
           {seeing === "multi" ? (

@@ -68,6 +68,7 @@ function Settings() {
               width: "40px",
               height: "40px",
               color: localStorage.getItem("chat-text-primary"),
+              background: localStorage.getItem("chat-text-basic"),
               transition: "all 500ms ease",
               ":hover": {
                 color: localStorage.getItem("chat-text-basic"),

@@ -107,8 +107,14 @@ function ChatPerson(props) {
           {printState()}
         </div>
         <div className={`!text-placeholder-dark !italic !text-left`}>
-          {lastMessage ? printLastMessage() : <p>{bio?.substring(0, 18)}</p>}
-          {!lastMessage && bio && bio.length > 18 ? "..." : ""}
+          {lastMessage ? (
+            printLastMessage()
+          ) : (
+            <p>
+              {bio?.substring(0, 18)}
+              {!lastMessage && bio && bio.length > 18 ? "..." : ""}
+            </p>
+          )}
         </div>
       </div>
     </button>

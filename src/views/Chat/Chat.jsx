@@ -27,17 +27,17 @@ function Chat() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    console.log(config.apiSocketUrl);
     const newSocket = io(config.apiSocketUrl, { transports: ["polling"] });
 
-    newSocket.on("connect", (data) => {
-      console.log(data);
+    newSocket.on("connect", () => {
       console.log("connect", localStorage.getItem(config.userCookie));
       newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
     });
 
     setSocket(newSocket);
-    return () => newSocket.close();
+    return () => {
+      newSocket.close();
+    };
   }, []);
 
   /*  const pickColor = useCallback((e) => {
@@ -102,6 +102,7 @@ function Chat() {
     switch (type) {
       case "add": {
         const { list, from } = action;
+
         const newOldState = [...oldState];
         if (from === "back") {
           list.forEach((user) => {
@@ -110,7 +111,6 @@ function Chat() {
             );
             if (!found) newOldState.push(user);
           });
-          return newOldState;
         } else {
           list.forEach((user) => {
             const found = newOldState.find(
@@ -118,8 +118,9 @@ function Chat() {
             );
             if (!found) newOldState.push(user);
           });
-          return newOldState;
         }
+        console.log(newOldState);
+        return newOldState;
       }
       default:
         return oldState;
@@ -130,27 +131,33 @@ function Chat() {
   const [searchChats, setSearchChats] = useReducer(chatsReducer, []);
   const [multiChats, setMultiChats] = useReducer(chatsReducer, []);
 
-  const fetchPerson = async (name) => {
-    setErrorLoadingPerson(false);
-    setLoading(true);
-    try {
-      const response = await fetchChat(name);
-      if (response.status !== 200 && response.status !== 204) {
-        console.error(response.statusText);
+  const fetchPerson = useCallback(
+    async (name, newOne) => {
+      setErrorLoadingPerson(false);
+      setLoading(true);
+      try {
+        const response = await fetchChat(name, newOne ? true : false);
+        if (response.status !== 200 && response.status !== 204) {
+          console.error(response.statusText);
+          setErrorLoadingPerson(true);
+        }
+        const { list } = await response.json();
+        if (name && name.length && !newOne)
+          setSearchChats({ type: "add", list });
+        else setChats({ type: "add", list });
+        if (name?.length)
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        else setLoading(false);
+      } catch (err) {
+        console.error(err);
         setErrorLoadingPerson(true);
-      }
-      const { list } = await response.json();
-      if (name && name.length) setSearchChats({ type: "add", list });
-      else setChats({ type: "add", list });
-      setTimeout(() => {
         setLoading(false);
-      }, 1000);
-    } catch (err) {
-      console.error(err);
-      setErrorLoadingPerson(true);
-      setLoading(false);
-    }
-  };
+      }
+    },
+    [setSearchChats, setChats]
+  );
 
   const [selectedChat, setSelectedChat] = useState(undefined);
 

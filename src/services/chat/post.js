@@ -46,12 +46,13 @@ export const fetchMessages = async (target, sender, page = 1, count = 20) => {
  
  * @returns
  */
-export const fetchChat = async (target) => {
+export const fetchChat = async (target, single) => {
   const response = await fetch(`${config.apiUrl}/fetch-chats`, {
     method: "POST",
     body: JSON.stringify({
       user: localStorage.getItem(config.userCookie),
       target,
+      single,
     }),
     headers: {
       "Content-Type": "application/json",
