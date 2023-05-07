@@ -176,18 +176,21 @@ function Chat() {
 
   const selectChat = useCallback(
     async (user, searching, from = "") => {
+      console.log(user, searching, from);
       if (!user) return setSelectedChat(undefined);
+
       if (searching) {
         const found = searchChats.find((localUser) => localUser.user === user);
         setSelectedChat(found);
         navigate(`/?chat=${found.user}`);
       } else if (from === "location") {
-        const response = await fetchChat(user, false);
+        const response = await fetchChat(user, true);
         if (response.status !== 200 && response.status !== 204) {
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }
         const { list } = await response.json();
+        console.log(list);
         if (list.length) setSelectedChat(list[0]);
       } else {
         const found = chats.find((localUser) => localUser.user === user);

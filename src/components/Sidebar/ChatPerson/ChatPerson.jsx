@@ -27,6 +27,7 @@ function ChatPerson(props) {
     index,
     selectChat,
     searching,
+    active,
   } = props;
 
   const printState = useCallback(() => {
@@ -80,11 +81,17 @@ function ChatPerson(props) {
   return (
     <button
       type="button"
+      disabled={active}
       onClick={handleClick}
-      className={`flex items-center justify-start px-4 py-3 w-full gap-3 cursor-pointer ${
+      className={`flex items-center justify-start px-4 py-3 w-full gap-3 ${
         index === 0 ? "-mt-0" : ""
       } ${css({
         transition: "all 500ms ease",
+        cursor: "pointer",
+        ":disabled": {
+          cursor: "initial !important",
+          background: `${localStorage.getItem("chat-main-bg")}88`,
+        },
         ":hover": {
           background: `${localStorage.getItem("chat-main-bg")}88`,
         },
@@ -131,6 +138,7 @@ ChatPerson.propTypes = {
   index: PropTypes.number,
   selectChat: PropTypes.func,
   searching: PropTypes.bool,
+  active: PropTypes.bool,
 };
 
 const ChatPersonMemo = memo(
@@ -147,7 +155,8 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.lastMessage === newProps.lastMessage &&
     oldProps.bio === newProps.bio &&
     oldProps.index === newProps.index &&
-    oldProps.selectChat === newProps.selectChat
+    oldProps.selectChat === newProps.selectChat &&
+    oldProps.active === newProps.active
   );
 }
 

@@ -96,6 +96,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     async (target, sender) => {
       setLoading(true);
       try {
+        console.log(target, sender);
         const response = await fetchMessagesRemote(target, sender, page, 20);
         const data = await response.json();
         const { list } = data;
@@ -120,7 +121,11 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     [page, oldChat]
   );
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
+    console.log(selectedChat, location);
     if (selectedChat && localStorage.getItem(config.userCookie) !== null)
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat, location]);
@@ -185,9 +190,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
 
   const [settings, setSettings] = useState(true);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const goToSettings = useCallback(() => {
     setSettings(true);
     const { pathname } = location;
@@ -222,7 +224,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
             left: 0,
             behavior: "smooth",
           });
-      }, 1000);
+      }, 500);
     }
   }, [selectedChat, messagesList, loading]);
 

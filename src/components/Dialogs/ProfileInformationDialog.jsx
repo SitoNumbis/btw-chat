@@ -13,6 +13,7 @@ import { css } from "@emotion/css";
 // contexts
 import { useDialog } from "../../context/DialogProvider";
 import { useLanguage } from "../../context/LanguageProvider";
+import { useNotification } from "../../context/NotificationProvider";
 
 // services
 import { saveInfo } from "../../services/auth.js";
@@ -33,6 +34,18 @@ const Secondary = loadable(() => import("../Buttons/Secondary"));
 const Input = loadable(() => import("../Inputs/Input"));
 
 function ProfileInformationDialog({ editing }) {
+  const { setNotificationState } = useNotification();
+
+  const showNotification = useCallback(
+    (ntype, message) =>
+      setNotificationState({
+        type: "set",
+        ntype,
+        message,
+      }),
+    [setNotificationState]
+  );
+
   const { setDialogState } = useDialog();
 
   const { languageState } = useLanguage();
@@ -84,12 +97,13 @@ function ProfileInformationDialog({ editing }) {
     [setBio]
   );
 
-  const { buttons, buttonsArias, dialogs, inputs } = useMemo(() => {
+  const { buttons, buttonsArias, dialogs, inputs, errors } = useMemo(() => {
     return {
       inputs: languageState.texts.inputs,
       buttons: languageState.texts.buttons,
       buttonsArias: languageState.texts.buttonsArias,
       dialogs: languageState.texts.dialogs,
+      errors: languageState.texts.errors,
     };
   }, [languageState]);
 
@@ -118,9 +132,11 @@ function ProfileInformationDialog({ editing }) {
   }, []);
 
   const fetchTarget = useCallback(async () => {
+    setLoading(true);
     try {
-      const response = await fetchChat(editing);
-      const { data } = response;
+      const response = await fetchChat(editing, true);
+      const { list } = await response.json();
+      const [data] = list;
       const { user, name, photo, bio, state } = data;
       localStorage.setItem(`${editing}user`, user);
       localStorage.setItem(`${editing}name`, name);
@@ -129,7 +145,11 @@ function ProfileInformationDialog({ editing }) {
       setState(state);
     } catch (err) {
       console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", errors.notConnected);
+      else showNotification("error", String(err));
     }
+    setLoading(false);
   }, [editing]);
 
   useEffect(() => {
@@ -214,17 +234,18 @@ function ProfileInformationDialog({ editing }) {
             </div>
           </form>
         ) : (
-          <div>
-            {" "}
+          <div className="flex flex-col items-center justify-start">
             <div
               className={`relative ${css({
                 width: "130px",
                 height: "130px",
-              })} rounded-sm cursor-pointer`}
+              })} rounded-sm`}
             >
               <img
-                className={`w-full h-full cursor-pointer rounded-full`}
+                className={`w-full h-full rounded-full`}
                 src={
+                  localStorage.getItem(`${editing}photo`) &&
+                  localStorage.getItem(`${editing}photo`) !== "undefined" &&
                   localStorage.getItem(`${editing}photo`) !== null
                     ? localStorage.getItem(`${editing}photo`)
                     : noPhoto

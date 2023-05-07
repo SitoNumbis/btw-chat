@@ -35,6 +35,7 @@ import config from "../../config";
 
 // components
 import Loading from "../Loading/Loading";
+import { parseQueries } from "../../utils/parsers";
 
 const ConnectionState = loadable(() =>
   import("../ConnectionState/ConnectionState")
@@ -155,6 +156,9 @@ function Sidebar({
   }, [fetchPerson, searchInput]);
 
   const printSearchChats = useCallback(() => {
+    const { search } = location;
+    const params = parseQueries(search);
+    const user = params.chat;
     return searchChats.map((chat, i) => (
       <ChatPerson
         index={i}
@@ -162,11 +166,15 @@ function Sidebar({
         {...chat}
         selectChat={selectLocalChat}
         searching
+        active={chat.user === user}
       />
     ));
-  }, [searchChats, selectLocalChat]);
+  }, [searchChats, selectLocalChat, location]);
 
   const printChats = useCallback(() => {
+    const { search } = location;
+    const params = parseQueries(search);
+    const user = params.chat;
     return chats.map((chat, i) => (
       <ChatPerson
         index={i}
@@ -174,9 +182,10 @@ function Sidebar({
         {...chat}
         selectChat={selectLocalChat}
         searching={false}
+        active={chat.user === user}
       />
     ));
-  }, [chats, selectLocalChat]);
+  }, [chats, selectLocalChat, location]);
 
   const printState = useMemo(() => {
     switch (localStorage.getItem(config.userStateCookie)) {

@@ -1,10 +1,11 @@
-import { memo, useCallback, useMemo} from "react";
+import { memo, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
 import { css } from "@emotion/css";
 
 // contexts
+import { useDialog } from "../../../context/DialogProvider";
 import { useLanguage } from "../../../context/LanguageProvider";
 
 // images
@@ -16,8 +17,11 @@ import { isSelf } from "../../../utils/users";
 
 // styles
 import styles from "./styles.module.css";
+import config from "../../../config";
 
 function Message({ date, sender, message, join }) {
+  const { setDialogState } = useDialog();
+
   const { languageState } = useLanguage();
 
   const { messageT } = useMemo(() => {
@@ -31,6 +35,18 @@ function Message({ date, sender, message, join }) {
   const user = useCallback(() => {
     if (sender !== null && sender) return isSelf(sender.user);
   }, [sender]);
+
+  const seeProfile = useCallback(() => {
+    console.log(sender);
+    setDialogState({
+      type: "set-value",
+      key: "editing",
+      value:
+        sender.user === localStorage.getItem(config.userCookie)
+          ? 1
+          : sender.user,
+    });
+  }, [setDialogState, sender]);
 
   return (
     <div
@@ -56,15 +72,17 @@ function Message({ date, sender, message, join }) {
             {message}
           </p>
           {!join ? (
-            <img
-              className="w-10 h-10 rounded-full cursor-pointer"
-              src={
-                sender !== null && sender && sender.photo
-                  ? sender.photo
-                  : noPhoto
-              }
-              alt={sender !== null && sender ? sender.user : ""}
-            />
+            <button onClick={seeProfile}>
+              <img
+                className="w-10 h-10 rounded-full cursor-pointer"
+                src={
+                  sender !== null && sender && sender.photo
+                    ? sender.photo
+                    : noPhoto
+                }
+                alt={sender !== null && sender ? sender.user : ""}
+              />
+            </button>
           ) : (
             <div className="min-w-10 min-h-10 w-10 h-10"></div>
           )}
