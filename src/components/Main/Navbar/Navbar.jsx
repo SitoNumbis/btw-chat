@@ -19,6 +19,7 @@ import styles from "./styles.module.css";
 
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
+import Badge from "../../Badge/Badge";
 
 function Navbar({
   socket,
@@ -59,21 +60,24 @@ function Navbar({
     <div className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
       <div className="flex gap-3 items-center w-full h-full justify-between">
         <div className="flex gap-3 items-center w-full h-full">
-          <button
-            tabIndex={-1}
-            className={`${styles.closeButton} ${css({
-              transition: "all 500ms ease",
-              color: localStorage.getItem("chat-text-basic"),
-              ":hover": {
-                color: localStorage.getItem("chat-text-primary"),
-              },
-            })} font-bold text-xl`}
-            onClick={toggleSidebar}
-            aria-label={buttonsArias.openSidebar}
-          >
-            <FontAwesomeIcon icon={faBars} />
-          </button>
-          {selectedChat ? (
+          <div className="relative">
+            <Badge />
+            <button
+              tabIndex={-1}
+              className={`${styles.closeButton} ${css({
+                transition: "all 500ms ease",
+                color: localStorage.getItem("chat-text-basic"),
+                ":hover": {
+                  color: localStorage.getItem("chat-text-primary"),
+                },
+              })} font-bold text-xl`}
+              onClick={toggleSidebar}
+              aria-label={buttonsArias.openSidebar}
+            >
+              <FontAwesomeIcon icon={faBars} />
+            </button>
+          </div>
+          {selectedChat && !settings ? (
             <button
               onClick={goToProfile}
               className="flex gap-3 items-center cursor-pointer"

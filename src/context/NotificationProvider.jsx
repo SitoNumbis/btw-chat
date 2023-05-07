@@ -9,8 +9,13 @@ const NotificationContext = React.createContext();
 
 const notificationReducer = (notificationState, action) => {
   switch (action.type) {
+    case "set-badge": {
+      const { count } = action;
+      return { ...notificationState, count };
+    }
     case "set":
       return {
+        ...notificationState,
         visible: true,
         type: action.ntype,
         message: action.message,
@@ -24,6 +29,7 @@ const NotificationProvider = ({ children }) => {
   const [notificationState, setNotificationState] = React.useReducer(
     notificationReducer,
     {
+      count: 0,
       visible: false,
       type: "success",
       message: "message",

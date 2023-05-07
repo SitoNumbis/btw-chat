@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, useReducer } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { scrollTo } from "some-javascript-utils/browser";
+import { sortBy } from "some-javascript-utils/array";
 
 import useScreenSize from "use-screen-witdh";
 
@@ -10,6 +10,9 @@ import { css } from "@emotion/css";
 
 import PropTypes from "prop-types";
 import loadable from "@loadable/component";
+
+// contexts
+import { useNotification } from "../../context/NotificationProvider";
 
 // styles
 import styles from "./styles.module.css";
@@ -20,7 +23,6 @@ import {
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
 } from "../../services/chat/post";
-import { sortBy } from "some-javascript-utils/array";
 
 // components
 const Input = loadable(() => import("./Input/Input"));
@@ -32,6 +34,8 @@ const ConnectionState = loadable(() =>
 const Messages = loadable(() => import("./Messages/Messages"));
 
 function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
+  const { setNotificationState } = useNotification();
+
   const [showOffState, setShowOffState] = useState(false);
 
   const [settings, setSettings] = useState(true);
@@ -138,6 +142,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       const senderUser = sender.user;
       if (selectedChat && selectedChat.user === senderUser)
         fetchMessages(target, senderUser, false);
+      else setNotificationState({ type: "set-badge", count: 1 });
     },
     [selectedChat, fetchMessages]
   );
@@ -196,7 +201,10 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
 
   useEffect(() => {
     const { pathname } = location;
-    if (pathname.indexOf("/settings" === 0)) setSettings(true);
+    if (pathname.indexOf("/settings") === 0) {
+      setSettings(true);
+      selectChat(undefined);
+    }
   }, [location]);
 
   useEffect(() => {

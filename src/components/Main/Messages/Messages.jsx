@@ -72,9 +72,9 @@ function Messages({
           messagesList.current.scrollTo({
             top: messagesList.current.scrollHeight,
             left: 0,
-            behavior: "smooth",
+            behavior: "auto",
           });
-      }, 500);
+      }, 100);
     }
   }, [selectedChat, messagesList, loading]);
 

@@ -1,0 +1,13 @@
+.badge {
+  width: 10px;
+  height: 10px;
+  right: -5px;
+  top: 2px;
+  @apply rounded-full absolute;
+}
+
+@media (min-width: 851px) {
+  .badge {
+    display: none;
+  }
+}
