@@ -1,4 +1,5 @@
 import { useState, useEffect, Suspense, useReducer, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import io from "socket.io-client";
 import loadable from "@loadable/component";
 
@@ -16,6 +17,7 @@ import styles from "./styles.module.css";
 
 // utils
 import { loadImage } from "../../utils/services";
+import { parseQueries } from "../../utils/parsers";
 
 // contexts
 import { useDialog } from "../../context/DialogProvider";
@@ -23,11 +25,16 @@ import { useDialog } from "../../context/DialogProvider";
 // components
 import Loading from "../../components/Loading/Loading";
 
-import ProfileInformationDialog from "../../components/Dialogs/ProfileInformationDialog";
+const ProfileInformationDialog = loadable(() =>
+  import("../../components/Dialogs/ProfileInformationDialog")
+);
 const Main = loadable(() => import("../../components/Main/Main"));
 const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
 
 function Chat() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const { dialogState } = useDialog();
 
   const [socket, setSocket] = useState(null);
@@ -168,18 +175,34 @@ function Chat() {
   const [selectedChat, setSelectedChat] = useState(undefined);
 
   const selectChat = useCallback(
-    (user, searching) => {
+    async (user, searching, from = "") => {
       if (!user) return setSelectedChat(undefined);
       if (searching) {
         const found = searchChats.find((localUser) => localUser.user === user);
         setSelectedChat(found);
+        navigate(`/?chat=${found.user}`);
+      } else if (from === "location") {
+        const response = await fetchChat(user, false);
+        if (response.status !== 200 && response.status !== 204) {
+          console.error(response.statusText);
+          setErrorLoadingPerson(true);
+        }
+        const { list } = await response.json();
+        if (list.length) setSelectedChat(list[0]);
       } else {
         const found = chats.find((localUser) => localUser.user === user);
         setSelectedChat(found);
+        navigate(`/?chat=${found.user}`);
       }
     },
-    [chats, searchChats, multiChats]
+    [chats, searchChats, multiChats, selectedChat, setSelectedChat, navigate]
   );
+
+  useEffect(() => {
+    const { search } = location;
+    const params = parseQueries(search);
+    if (params.chat) selectChat(params.chat, false, "location");
+  }, [location]);
 
   const [imageBG, setImageBG] = useState(
     "https://ik.imagekit.io/lgqp0wffgtp/tr:q-1/Beyon_the_world/Chat/image_12QNJKZ2w.jpg?updatedAt=1683111900098"

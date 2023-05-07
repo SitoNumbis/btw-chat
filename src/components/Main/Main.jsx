@@ -123,7 +123,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   useEffect(() => {
     if (selectedChat && localStorage.getItem(config.userCookie) !== null)
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
-  }, [selectedChat]);
+  }, [selectedChat, location]);
 
   const onMessageReceived = (conversation) => {
     console.info("receiving messages");
