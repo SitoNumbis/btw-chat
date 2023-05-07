@@ -205,9 +205,12 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         <>
           {selectedChat ? (
             <>
+              {console.log()}
               <div
                 className={`${styles.messages} ${css({
-                  height: "10px",
+                  height: showConnectionState
+                    ? `calc(${window.innerHeight}px - 170px)`
+                    : `calc(${window.innerHeight}px - 130px)`,
                 })}`}
               >
                 <p className="text-placeholder-dark italic mx-auto">

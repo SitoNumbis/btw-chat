@@ -50,7 +50,8 @@
       "retry": "Reintentar operación",
       "editProfile": "Editar información",
       "save": "Guardar",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "sen": "Enviar mensaje"
     },
     "inputs": {
       "name": {
@@ -93,7 +94,8 @@
       "retry": "Reintentar",
       "editProfile": "Editar información",
       "save": "Guardar",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "send": "Enviar"
     },
     "navbar": {
       "links": {},
@@ -108,7 +110,7 @@
         "lessThanMin": "<1 min",
         "agoMin": "hace [result] min",
         "agoMins": "hace [result] mins",
-        "agoHour": "hace [result] horas",
+        "agoHour": "hace [result] hora",
         "agoHours": "hace [result] horas",
         "agoDay": "hace [result] día",
         "agoDays": "hace [result] días"

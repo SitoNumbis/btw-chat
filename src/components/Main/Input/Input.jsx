@@ -15,8 +15,12 @@ function Input({ onSend }) {
 
   const { languageState } = useLanguage();
 
-  const { input } = useMemo(() => {
-    return { input: languageState.texts.main.input };
+  const { input, buttons, buttonsArias } = useMemo(() => {
+    return {
+      input: languageState.texts.main.input,
+      buttons: languageState.texts.buttons,
+      buttonsArias: languageState.texts.buttonsArias,
+    };
   }, [languageState]);
 
   const onSubmit = useCallback(
@@ -47,7 +51,9 @@ function Input({ onSend }) {
         onKeyUp={onKeyUp}
         placeholder={input.placeholder}
         onChange={(e) => setMessage(e.target.value)}
-        className={`w-full text-white ${styles.input}`}
+        className={`w-full text-white ${styles.input} ${css({
+          paddingRight: `${buttons.send.length * 10}px`,
+        })}`}
       />
       <button
         className={`absolute right-3 text-placeholder-dark transition font-semibold ${
@@ -58,8 +64,9 @@ function Input({ onSend }) {
           },
         })}`}
         onClick={onSubmit}
+        aria-label={buttonsArias.send}
       >
-        Send
+        {buttons.send}
       </button>
     </form>
   );

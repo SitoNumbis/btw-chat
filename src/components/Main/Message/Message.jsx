@@ -46,6 +46,7 @@ function Message({ date, sender, message, join }) {
         >
           <p
             className={`${styles.message} ${css({
+              overflowWrap: "anywhere",
               backgroundColor: user()
                 ? `${localStorage.getItem("chat-text-primary")}33`
                 : `${localStorage.getItem("chat-other-bg")}99`,

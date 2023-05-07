@@ -1,5 +1,5 @@
 .messages {
-  @apply flex flex-col gap-5 overflow-auto px-10 pt-1 pb-2;
+  @apply flex flex-1 flex-col gap-5 overflow-auto px-10 pt-1 pb-2;
 }
 
 .main {
@@ -15,8 +15,11 @@
 }
 
 @media (max-width: 850px) {
-  .messages,
   .inputContainer {
+    padding: 0 16px;
+  }
+
+  .messages {
     @apply pr-2 pl-0;
   }
 
