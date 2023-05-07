@@ -1,9 +1,13 @@
 .bg {
-  @apply flex h-full w-full rounded-sm;
+  @apply flex w-full h-full rounded-sm;
 }
 
 .main {
-  @apply p-10;
+  @apply flex h-full;
+}
+
+.main {
+  @apply h-full p-10 w-full;
 }
 
 @media (max-width: 850px) {

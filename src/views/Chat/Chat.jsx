@@ -199,7 +199,7 @@ function Chat() {
   }, []);
 
   return (
-    <div className={`flex entrance w-full h-screen ${styles.main}`}>
+    <div className={`entrance ${styles.main}`}>
       {dialogState.editing !== undefined ? (
         <ProfileInformationDialog editing={dialogState.editing} />
       ) : null}

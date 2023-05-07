@@ -30,9 +30,7 @@ function Input({ onSend }) {
 
   const [history, setHistory] = useState([]);
 
-  const onKeyDown = useCallback(() => {
-    
-  }, [history]);
+  const onKeyDown = useCallback(() => {}, [history]);
   const onKeyUp = useCallback(() => {}, [history]);
 
   return (

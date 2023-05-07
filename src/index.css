@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 body {
-  overflow: hidden;
+  @apply h-screen flex items-center justify-center;
+}
+
+#root {
+  @apply h-full w-full;
 }
 
 * {

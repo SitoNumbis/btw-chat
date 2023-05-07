@@ -207,9 +207,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
             <>
               <div
                 className={`${styles.messages} ${css({
-                  height: showConnectionState
-                    ? "calc(100% - 170px)"
-                    : "calc(100% - 130px)",
+                  height: "10px",
                 })}`}
               >
                 <p className="text-placeholder-dark italic mx-auto">
