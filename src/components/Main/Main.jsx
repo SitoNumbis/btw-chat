@@ -86,57 +86,64 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     }
   };
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useReducer(messagesReducer, []);
   const [page, setPage] = useState(0);
 
   const [oldChat, setOldChat] = useState("");
 
   const fetchMessages = useCallback(
-    async (target, sender, loading = true) => {
-      if (loading) setLoading(true);
-      try {
-        const response = await fetchMessagesRemote(
-          target,
-          sender.user ? sender.user : sender,
-          page,
-          20
-        );
-        const data = await response.json();
-        const { list } = data;
-        if (list) {
-          if (oldChat === target)
-            setMessages({
-              type: "add",
-              messages: list,
+    async (target, sender, loadingL = true) => {
+      if (!loading) {
+        if (loadingL) setLoading(true);
+        try {
+          const response = await fetchMessagesRemote(
+            target,
+            sender.user ? sender.user : sender,
+            page,
+            20
+          );
+          const data = await response.json();
+          const { list } = data;
+          if (list) {
+            if (oldChat === target)
+              setMessages({
+                type: "add",
+                messages: list,
+              });
+            else
+              setMessages({
+                type: "init",
+                messages: list,
+              });
+          }
+          setTimeout(() => {
+            messagesList.current.scrollTo({
+              top: messagesList.current.scrollHeight,
+              left: 0,
+              behavior: "smooth",
             });
-          else
-            setMessages({
-              type: "init",
-              messages: list,
-            });
+          }, 10);
+          setOldChat(target);
+        } catch (err) {
+          console.error(err);
         }
-        setTimeout(() => {
-          messagesList.current.scrollTo({
-            top: messagesList.current.scrollHeight,
-            left: 0,
-            behavior: "smooth",
-          });
-        }, 10);
-        setOldChat(target);
-      } catch (err) {
-        console.error(err);
+        setLoading(false);
       }
-      setLoading(false);
     },
-    [page, oldChat]
+    [page, oldChat, loading]
   );
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (selectedChat && localStorage.getItem(config.userCookie) !== null)
+    console.log("entro?")
+    if (
+      selectedChat &&
+      localStorage.getItem(config.userCookie) !== null &&
+      !loading
+    )
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat, location]);
 

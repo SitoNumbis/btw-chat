@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { Base64 } from "js-base64";
-import loadable from "@loadable/component";
+
 import { Link } from "react-router-dom";
 
 // some-javascript-utils
@@ -36,10 +36,8 @@ import config from "../../config";
 
 // components
 import Loading from "../../components/Loading/Loading";
-const Input = loadable(() => import("../../components/Inputs/Input"));
-const PrimaryButton = loadable(() =>
-  import("../../components/Buttons/Primary")
-);
+import Input from "../../components/Inputs/Input";
+import PrimaryButton from "../../components/Buttons/Primary";
 
 Base64.extendString();
 

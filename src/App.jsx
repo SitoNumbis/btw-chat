@@ -18,6 +18,7 @@ import { DialogProvider } from "./context/DialogProvider";
 import { logoutUser, userLogged } from "./utils/auth";
 
 // components
+import Loading from "./components/Loading/Loading";
 const Notification = loadable(() =>
   import("./components/Notification/Notification")
 );
