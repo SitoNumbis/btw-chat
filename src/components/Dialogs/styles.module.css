@@ -8,6 +8,12 @@
   @apply absolute p-5 gap-3 flex flex-col;
 }
 
+@media (max-width: 850px) {
+  .dialog {
+    @apply w-full h-full;
+  }
+}
+
 @media (max-width: 540px) {
   .dialog {
     @apply absolute p-5;
