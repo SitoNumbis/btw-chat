@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -15,6 +15,7 @@ import { parseSentAsDate } from "../../../utils/parseSent";
 
 // config
 import config from "../../../config";
+import { useState } from "react";
 
 function ChatPerson(props) {
   const {
@@ -59,10 +60,20 @@ function ChatPerson(props) {
     [messageT]
   );
 
+  const [updateLastMessage, setUpdateLastMessage] = useState(false);
+
+  useEffect(() => {
+    console.log("cambio");
+    setUpdateLastMessage(true);
+    setTimeout(() => {
+      setUpdateLastMessage(false);
+    }, 100);
+  }, [lastMessage]);
+
   const printLastMessage = useCallback(() => {
     return (
       <div className="w-full flex items-center justify-between">
-        <p>
+        <p className="appear">
           {`${
             lastMessage.sender.user === localStorage.getItem(config.userCookie)
               ? aux.you
@@ -113,15 +124,23 @@ function ChatPerson(props) {
           </p>
           {printState()}
         </div>
-        <div className={`!text-placeholder-dark !italic !text-left`}>
-          {lastMessage ? (
-            printLastMessage()
-          ) : (
-            <p>
-              {bio?.substring(0, 18)}
-              {!lastMessage && bio && bio.length > 18 ? "..." : ""}
-            </p>
-          )}
+        <div
+          className={`!text-placeholder-dark !italic !text-left ${css({
+            height: "24px",
+          })}`}
+        >
+          {!updateLastMessage ? (
+            <>
+              {lastMessage ? (
+                printLastMessage()
+              ) : (
+                <p>
+                  {bio?.substring(0, 18)}
+                  {!lastMessage && bio && bio.length > 18 ? "..." : ""}
+                </p>
+              )}
+            </>
+          ) : null}
         </div>
       </div>
     </button>

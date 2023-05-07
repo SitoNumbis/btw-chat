@@ -1,12 +1,4 @@
-import {
-  memo,
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
-  useReducer,
-  useMemo,
-} from "react";
+import { useCallback, useState, useEffect, useReducer } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { scrollTo } from "some-javascript-utils/browser";
@@ -30,21 +22,20 @@ import {
 } from "../../services/chat/post";
 
 // components
-import Loading from "../../components/Loading/Loading";
 const Input = loadable(() => import("./Input/Input"));
-const Message = loadable(() => import("./Message/Message"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
 const Settings = loadable(() => import("./Settings/Settings"));
 const ConnectionState = loadable(() =>
   import("../ConnectionState/ConnectionState")
 );
+const Messages = loadable(() => import("./Messages/Messages"));
 
 function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const [showOffState, setShowOffState] = useState(false);
 
-  const { width } = useScreenSize();
+  const [settings, setSettings] = useState(true);
 
-  const messagesList = useRef(null);
+  const { width } = useScreenSize();
 
   useEffect(() => {
     if (width < 850) setShowOffState(true);
@@ -97,12 +88,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       if (!loading) {
         if (loadingL) setLoading(true);
         try {
-          const response = await fetchMessagesRemote(
-            target,
-            sender.user ? sender.user : sender,
-            page,
-            20
-          );
+          const response = await fetchMessagesRemote(target, sender, page, 100);
           const data = await response.json();
           const { list } = data;
           if (list) {
@@ -117,13 +103,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
                 messages: list,
               });
           }
-          setTimeout(() => {
-            messagesList.current.scrollTo({
-              top: messagesList.current.scrollHeight,
-              left: 0,
-              behavior: "smooth",
-            });
-          }, 10);
+
           setOldChat(target);
         } catch (err) {
           console.error(err);
@@ -149,7 +129,12 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const onMessageReceived = (conversation) => {
     console.info("receiving messages");
     const { target, sender } = conversation;
-    fetchMessages(target, sender, false);
+    if (
+      selectedChat &&
+      ((sender.user && selectedChat.user === sender.user) ||
+        selectedChat.user === sender)
+    )
+      fetchMessages(target, sender.user ? sender.user : sender, false);
   };
 
   useEffect(() => {
@@ -176,13 +161,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           type: "add",
           messages: [parsedMessage],
         });
-        setTimeout(() => {
-          messagesList.current.scrollTo({
-            top: messagesList.current.scrollHeight,
-            left: 0,
-            behavior: "smooth",
-          });
-        }, 10);
         const response = await sendMessageRemote(parsedMessage);
         const data = await response.json();
         console.log(data);
@@ -190,7 +168,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         console.error(err);
       }
     },
-    [selectedChat, messagesList]
+    [selectedChat]
   );
 
   const [minuteOut, setMinuteOut] = useState(false);
@@ -203,8 +181,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       });
     }, 60000);
   }, [minuteOut]);
-
-  const [settings, setSettings] = useState(true);
 
   const goToSettings = useCallback(() => {
     setSettings(true);
@@ -229,20 +205,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     },
     [setShowConnectionState]
   );
-
-  useEffect(() => {
-    if (selectedChat && !loading) {
-      scrollTo(window.innerHeight);
-      setTimeout(() => {
-        if (messagesList.current !== null)
-          messagesList.current.scrollTo({
-            top: messagesList.current.scrollHeight,
-            left: 0,
-            behavior: "smooth",
-          });
-      }, 500);
-    }
-  }, [selectedChat, messagesList, loading]);
 
   return (
     <div
@@ -269,43 +231,13 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         <>
           {selectedChat ? (
             <>
-              <div
-                id="messages-list"
-                ref={messagesList}
-                className={`${styles.messages} ${css({
-                  height: showConnectionState
-                    ? `calc(${window.innerHeight}px - 170px)`
-                    : `calc(${window.innerHeight}px - 130px)`,
-                })}`}
-              >
-                <p className="text-placeholder-dark italic mx-auto">
-                  {selectedChat?.bio}
-                </p>
-                {loading ? (
-                  <Loading />
-                ) : (
-                  <>
-                    {messages.map((message, i) => {
-                      if (i === 0 && messages.length === 0)
-                        return <Message key={message.date} {...message} />;
-                      else {
-                        if (i < messages.length - 1)
-                          return (
-                            <Message
-                              key={message.date}
-                              {...message}
-                              join={
-                                message.sender.user ===
-                                messages[i + 1].sender.user
-                              }
-                            />
-                          );
-                        else return <Message key={message.date} {...message} />;
-                      }
-                    })}
-                  </>
-                )}
-              </div>
+              <Messages
+                loading={loading}
+                settings={settings}
+                messages={messages}
+                selectedChat={selectedChat}
+                showConnectionState={showConnectionState}
+              />
               <div className={styles.inputContainer}>
                 <Input onSend={sendMessage} />
               </div>

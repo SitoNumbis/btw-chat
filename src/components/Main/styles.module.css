@@ -1,5 +1,5 @@
 .messages {
-  @apply flex flex-1 flex-col gap-5 overflow-auto px-10 pt-1 pb-2;
+  @apply relative flex flex-1 flex-col gap-5 overflow-auto px-10 pt-1 pb-2;
 }
 
 .main {

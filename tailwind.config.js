@@ -33,10 +33,10 @@ export default {
     },
     extend: {
       minHeight: {
-        10: "2.5rem",
+        m10: "2.5rem",
       },
       minWidth: {
-        10: "2.5rem",
+        m10: "2.5rem",
       },
     },
   },

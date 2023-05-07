@@ -113,9 +113,15 @@ function Chat() {
   const chatsReducer = (oldState, action) => {
     const { type } = action;
     switch (type) {
+      case "add-message": {
+        const { message, user } = action;
+        const newOldState = [...oldState];
+        const found = newOldState.find((localUser) => localUser.user === user);
+        if (found) found.lastMessage = message;
+        return newOldState;
+      }
       case "add": {
         const { list, from } = action;
-
         const newOldState = [...oldState];
         if (from === "back") {
           list.forEach((user) => {
@@ -123,6 +129,7 @@ function Chat() {
               (localUser) => localUser.id === user.id
             );
             if (!found) newOldState.push(user);
+            else found.lastMessage = user.lastMessage;
           });
         } else {
           list.forEach((user) => {
@@ -130,6 +137,7 @@ function Chat() {
               (localUser) => localUser.id === user.id
             );
             if (!found) newOldState.push(user);
+            else found.lastMessage = user.lastMessage;
           });
         }
         return newOldState;
@@ -144,9 +152,9 @@ function Chat() {
   const [multiChats, setMultiChats] = useReducer(chatsReducer, []);
 
   const fetchPerson = useCallback(
-    async (name, newOne) => {
+    async (name, newOne, loading = true) => {
       setErrorLoadingPerson(false);
-      setLoading(true);
+      if (loading) setLoading(true);
       try {
         const response = await fetchChat(name, newOne ? true : false);
         if (response.status !== 200 && response.status !== 204) {
@@ -175,6 +183,7 @@ function Chat() {
 
   const selectChat = useCallback(
     async (user, searching, from = "") => {
+      console.log(user, searching, from);
       if (!user) return setSelectedChat(undefined);
 
       if (searching) {

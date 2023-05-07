@@ -71,8 +71,7 @@ function Sidebar({
       console.info("receiving messages");
       const { sender } = conversation;
       const { user } = sender;
-      if (!chats.find((localChat) => localChat.user === user))
-        fetchPerson(user, true);
+      fetchPerson(user, true, false);
     },
     [chats, searchChats, multiChats, fetchPerson]
   );

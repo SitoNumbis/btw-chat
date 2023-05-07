@@ -72,9 +72,15 @@ function Message({ date, sender, message, join }) {
             {message}
           </p>
           {!join ? (
-            <button onClick={seeProfile}>
+            <button
+              className={`w-10 h-10 ${css({
+                minWidth: "40px",
+                minHeight: "40px",
+              })}`}
+              onClick={seeProfile}
+            >
               <img
-                className={`w-10 h-10 rounded-full cursor-pointer ${css({
+                className={`w-full h-full rounded-full cursor-pointer ${css({
                   animation: "aGrow 0.4s ease 1",
                 })}`}
                 src={
