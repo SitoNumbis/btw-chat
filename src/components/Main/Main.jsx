@@ -93,11 +93,15 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const [oldChat, setOldChat] = useState("");
 
   const fetchMessages = useCallback(
-    async (target, sender) => {
-      setLoading(true);
+    async (target, sender, loading = true) => {
+      if (loading) setLoading(true);
       try {
-        console.log(target, sender);
-        const response = await fetchMessagesRemote(target, sender, page, 20);
+        const response = await fetchMessagesRemote(
+          target,
+          sender.user ? sender.user : sender,
+          page,
+          20
+        );
         const data = await response.json();
         const { list } = data;
         if (list) {
@@ -112,6 +116,13 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
               messages: list,
             });
         }
+        setTimeout(() => {
+          messagesList.current.scrollTo({
+            top: messagesList.current.scrollHeight,
+            left: 0,
+            behavior: "smooth",
+          });
+        }, 10);
         setOldChat(target);
       } catch (err) {
         console.error(err);
@@ -125,7 +136,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(selectedChat, location);
     if (selectedChat && localStorage.getItem(config.userCookie) !== null)
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat, location]);
@@ -133,7 +143,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const onMessageReceived = (conversation) => {
     console.info("receiving messages");
     const { target, sender } = conversation;
-    fetchMessages(target, sender);
+    fetchMessages(target, sender, false);
   };
 
   useEffect(() => {
@@ -166,7 +176,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
             left: 0,
             behavior: "smooth",
           });
-        }, 200);
+        }, 10);
         const response = await sendMessageRemote(parsedMessage);
         const data = await response.json();
         console.log(data);

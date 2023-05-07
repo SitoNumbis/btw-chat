@@ -54,14 +54,14 @@ function Message({ date, sender, message, join }) {
         { marginBottom: join ? "-16px" : "" }
       )}`}
     >
-      <div className="appear flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         <div
           className={`flex items-end justify-start gap-2 ${
             user() ? "flex-row" : "flex-row-reverse"
           }`}
         >
           <p
-            className={`${styles.message} ${css({
+            className={`aGrow  ${styles.message} ${css({
               overflowWrap: "anywhere",
               backgroundColor: user()
                 ? `${localStorage.getItem("chat-text-primary")}33`
@@ -74,7 +74,9 @@ function Message({ date, sender, message, join }) {
           {!join ? (
             <button onClick={seeProfile}>
               <img
-                className="w-10 h-10 rounded-full cursor-pointer"
+                className={`w-10 h-10 rounded-full cursor-pointer ${css({
+                  animation: "aGrow 0.4s ease 1",
+                })}`}
                 src={
                   sender !== null && sender && sender.photo
                     ? sender.photo

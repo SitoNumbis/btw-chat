@@ -132,7 +132,6 @@ function Chat() {
             if (!found) newOldState.push(user);
           });
         }
-        console.log(newOldState);
         return newOldState;
       }
       default:
@@ -176,7 +175,6 @@ function Chat() {
 
   const selectChat = useCallback(
     async (user, searching, from = "") => {
-      console.log(user, searching, from);
       if (!user) return setSelectedChat(undefined);
 
       if (searching) {
@@ -190,7 +188,6 @@ function Chat() {
           setErrorLoadingPerson(true);
         }
         const { list } = await response.json();
-        console.log(list);
         if (list.length) setSelectedChat(list[0]);
       } else {
         const found = chats.find((localUser) => localUser.user === user);

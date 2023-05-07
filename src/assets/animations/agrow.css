@@ -1,0 +1,34 @@
+.aGrow {
+  animation: aGrow 0.2s linear 1;
+}
+
+.aShrink {
+  animation: aShrink 0.5s ease 1;
+}
+
+@keyframes aGrow {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  80% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes aShrink {
+  0% {
+    transform: translateY(0), scale(1);
+  }
+
+  100% {
+    transform: translateY(5px), scale(0);
+  }
+}

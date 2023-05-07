@@ -17,6 +17,7 @@ import "./assets/animations/spin.css";
 import "./assets/animations/appear.css";
 import "./assets/animations/entrance.css";
 import "./assets/animations/expand.css";
+import "./assets/animations/agrow.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <LanguageProvider>
