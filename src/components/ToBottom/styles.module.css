@@ -1,0 +1,11 @@
+.to-bottom {
+  bottom: 70px;
+  right: 40px;
+  @apply rounded-full fixed w-10 h-10;
+}
+
+@media (max-width: 850px) {
+  .to-bottom {
+    right: 15px;
+  }
+}

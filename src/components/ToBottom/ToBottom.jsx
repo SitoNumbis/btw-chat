@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 
 import { scrollTo } from "some-javascript-utils/browser";
 
@@ -8,6 +8,9 @@ import { css } from "@emotion/css";
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
+
+// styles
+import styles from "./styles.module.css";
 
 function ToBottom({ canGoBottom }) {
   const toBottom = useCallback(() => {
@@ -28,11 +31,9 @@ function ToBottom({ canGoBottom }) {
   return see ? (
     <button
       onClick={toBottom}
-      className={`${
-        canGoBottom ? "aGrow" : "aShrink"
-      } rounded-full fixed w-10 h-10 ${css({
-        bottom: "70px",
-        right: "40px",
+      className={`${canGoBottom ? "aGrow" : "aShrink"} ${
+        styles["to-bottom"]
+      }  ${css({
         color: localStorage.getItem("chat-text-basic"),
         background: localStorage.getItem("chat-text-primary"),
       })}`}
