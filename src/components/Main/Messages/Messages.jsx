@@ -32,8 +32,10 @@ function Messages({
       const top =
         messagesList.current.pageYOffset || messagesList.current.scrollTop;
       if (
-        messagesList.current.offsetHeight > 600 &&
-        top < messagesList.current.offsetHeight - 200
+        top <
+        messagesList.current.scrollHeight -
+          messagesList.current.offsetHeight -
+          500
       )
         setCanGoBottom(true);
       else setCanGoBottom(false);
@@ -90,7 +92,7 @@ function Messages({
           : `calc(${window.innerHeight}px - 130px)`,
       })}`}
     >
-      {canGoBottom ? <ToBottom /> : null}
+      <ToBottom canGoBottom={canGoBottom} />
       <p className="text-placeholder-dark italic mx-auto">
         {selectedChat?.bio}
       </p>
