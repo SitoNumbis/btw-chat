@@ -138,7 +138,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("entro?")
     if (
       selectedChat &&
       localStorage.getItem(config.userCookie) !== null &&
