@@ -258,7 +258,7 @@ function ProfileInformationDialog({ editing }) {
 }
 
 ProfileInformationDialog.propTypes = {
-  editing: PropTypes.bool,
+  editing: PropTypes.any,
 };
 
 const ProfileInformationDialogMemo = memo(

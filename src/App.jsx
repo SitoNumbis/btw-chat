@@ -108,7 +108,7 @@ function App() {
           ) : (
             <Route
               exact
-              path="/"
+              path="/*"
               element={
                 <Suspense>
                   <DialogProvider>

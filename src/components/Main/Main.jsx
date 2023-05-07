@@ -7,6 +7,7 @@ import {
   useReducer,
   useMemo,
 } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { scrollTo } from "some-javascript-utils/browser";
 
@@ -184,10 +185,20 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
 
   const [settings, setSettings] = useState(true);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const goToSettings = useCallback(() => {
     setSettings(true);
+    const { pathname } = location;
+    if (pathname.indexOf("/settings" !== 0)) navigate("/settings");
     selectChat(undefined);
-  }, [setSettings]);
+  }, [navigate, location, selectChat]);
+
+  useEffect(() => {
+    const { pathname } = location;
+    if (pathname.indexOf("/settings" === 0)) setSettings(true);
+  }, [location]);
 
   useEffect(() => {
     if (selectedChat) setSettings(false);

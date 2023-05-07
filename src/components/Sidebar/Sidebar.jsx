@@ -1,4 +1,5 @@
 import { memo, useEffect, useCallback, useState, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import loadable from "@loadable/component";
 import debounce from "lodash.debounce";
 
@@ -56,6 +57,14 @@ function Sidebar({
   open,
   onClose,
 }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const goSettings = useCallback(() => {
+    const { pathname } = location;
+    if (pathname.indexOf("/settings" !== 0)) navigate("/settings");
+  }, [navigate, location]);
+
   const onMessageReceived = useCallback(
     (conversation) => {
       console.info("receiving messages");
@@ -146,7 +155,6 @@ function Sidebar({
   }, [fetchPerson, searchInput]);
 
   const printSearchChats = useCallback(() => {
-    console.log(searchChats, "useCallback");
     return searchChats.map((chat, i) => (
       <ChatPerson
         index={i}
@@ -158,9 +166,7 @@ function Sidebar({
     ));
   }, [searchChats, selectLocalChat]);
 
-  console.log(chats);
   const printChats = useCallback(() => {
-    console.log(chats);
     return chats.map((chat, i) => (
       <ChatPerson
         index={i}
@@ -190,7 +196,10 @@ function Sidebar({
       })} relative z-10 py-4`}
     >
       <div className={styles.userRow}>
-        <div className="flex items-center gap-2">
+        <button
+          onClick={goSettings}
+          className="flex items-center gap-2 cursor-pointer"
+        >
           <img
             className="w-10 h-10 rounded-full cursor-pointer"
             src={
@@ -207,7 +216,7 @@ function Sidebar({
             {localStorage.getItem(config.userNameCookie)}
           </h2>
           {printState}
-        </div>
+        </button>
         <button
           tabIndex={-1}
           className={`${styles.closeButton} ${css({

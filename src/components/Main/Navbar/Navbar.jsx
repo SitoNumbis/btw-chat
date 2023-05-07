@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
@@ -11,6 +11,7 @@ import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { css } from "@emotion/css";
 
 // contexts
+import { useDialog } from "../../../context/DialogProvider";
 import { useLanguage } from "../../../context/LanguageProvider";
 
 // styles
@@ -26,6 +27,16 @@ function Navbar({
   goToSettings,
   toggleSidebar,
 }) {
+  const { setDialogState } = useDialog();
+
+  const goToProfile = useCallback(() => {
+    setDialogState({
+      type: "set-value",
+      key: "editing",
+      value: selectedChat.user,
+    });
+  }, [selectedChat, goToSettings]);
+
   const { languageState } = useLanguage();
 
   const { navbar, buttonsArias } = useMemo(() => {
@@ -63,7 +74,10 @@ function Navbar({
             <FontAwesomeIcon icon={faBars} />
           </button>
           {selectedChat ? (
-            <>
+            <button
+              onClick={goToProfile}
+              className="flex gap-3 items-center cursor-pointer"
+            >
               <img
                 className="w-10 h-10 rounded-full cursor-pointer"
                 src={selectedChat?.photo ? selectedChat?.photo : noPhoto}
@@ -77,7 +91,7 @@ function Navbar({
                 {selectedChat?.name}
               </p>
               {printState()}
-            </>
+            </button>
           ) : (
             <h2
               className={`${css({

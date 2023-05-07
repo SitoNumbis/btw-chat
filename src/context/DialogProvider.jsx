@@ -1,6 +1,6 @@
 /* eslint-disable react/function-component-definition */
 /* eslint-disable react/jsx-no-constructed-context-values */
-import React, { createContext, useReducer, useContext } from "react";
+import { createContext, useReducer, useContext } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
