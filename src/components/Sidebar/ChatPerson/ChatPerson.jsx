@@ -67,8 +67,8 @@ function ChatPerson(props) {
               ? aux.you
               : ""
           }${
-            lastMessage.message && lastMessage.message.length > 18
-              ? `${lastMessage.message.substring(0, 18)}...`
+            lastMessage.message && lastMessage.message.length > 16
+              ? `${lastMessage.message.substring(0, 16)}...`
               : lastMessage.message
           }`}
         </p>

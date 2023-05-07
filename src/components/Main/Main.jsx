@@ -1,11 +1,14 @@
 import {
   memo,
+  useRef,
   useCallback,
   useState,
   useEffect,
   useReducer,
   useMemo,
 } from "react";
+
+import { scrollTo } from "some-javascript-utils/browser";
 
 import useScreenSize from "use-screen-witdh";
 
@@ -40,6 +43,8 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
 
   const { width } = useScreenSize();
 
+  const messagesList = useRef(null);
+
   useEffect(() => {
     if (width < 850) setShowOffState(true);
     else setShowOffState(false);
@@ -49,8 +54,8 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     const { type } = action;
     switch (type) {
       case "init": {
-        const { list } = action;
-        return list;
+        const { messages } = action;
+        return messages;
       }
       case "add": {
         const { messages } = action;
@@ -84,6 +89,8 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const [messages, setMessages] = useReducer(messagesReducer, []);
   const [page, setPage] = useState(0);
 
+  const [oldChat, setOldChat] = useState("");
+
   const fetchMessages = useCallback(
     async (target, sender) => {
       setLoading(true);
@@ -91,18 +98,25 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         const response = await fetchMessagesRemote(target, sender, page, 20);
         const data = await response.json();
         const { list } = data;
-        console.log(list);
-        if (list)
-          setMessages({
-            type: "add",
-            messages: list,
-          });
+        if (list) {
+          if (oldChat === target)
+            setMessages({
+              type: "add",
+              messages: list,
+            });
+          else
+            setMessages({
+              type: "init",
+              messages: list,
+            });
+        }
+        setOldChat(target);
       } catch (err) {
         console.error(err);
       }
       setLoading(false);
     },
-    [page]
+    [page, oldChat]
   );
 
   useEffect(() => {
@@ -140,6 +154,13 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           type: "add",
           messages: [parsedMessage],
         });
+        setTimeout(() => {
+          messagesList.current.scrollTo({
+            top: messagesList.current.scrollHeight,
+            left: 0,
+            behavior: "smooth",
+          });
+        }, 200);
         const response = await sendMessageRemote(parsedMessage);
         const data = await response.json();
         console.log(data);
@@ -147,7 +168,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         console.error(err);
       }
     },
-    [selectedChat]
+    [selectedChat, messagesList]
   );
 
   const [minuteOut, setMinuteOut] = useState(false);
@@ -180,6 +201,20 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     [setShowConnectionState]
   );
 
+  useEffect(() => {
+    if (selectedChat && !loading) {
+      scrollTo(window.innerHeight);
+      setTimeout(() => {
+        if (messagesList.current !== null)
+          messagesList.current.scrollTo({
+            top: messagesList.current.scrollHeight,
+            left: 0,
+            behavior: "smooth",
+          });
+      }, 1000);
+    }
+  }, [selectedChat, messagesList, loading]);
+
   return (
     <div
       className={`${styles.main} ${css({
@@ -205,8 +240,9 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         <>
           {selectedChat ? (
             <>
-              {console.log()}
               <div
+                id="messages-list"
+                ref={messagesList}
                 className={`${styles.messages} ${css({
                   height: showConnectionState
                     ? `calc(${window.innerHeight}px - 170px)`
