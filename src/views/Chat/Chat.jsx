@@ -183,7 +183,6 @@ function Chat() {
 
   const selectChat = useCallback(
     async (user, searching, from = "") => {
-      console.log(user, searching, from);
       if (!user) return setSelectedChat(undefined);
 
       if (searching) {

@@ -63,7 +63,6 @@ function ChatPerson(props) {
   const [updateLastMessage, setUpdateLastMessage] = useState(false);
 
   useEffect(() => {
-    console.log("cambio");
     setUpdateLastMessage(true);
     setTimeout(() => {
       setUpdateLastMessage(false);

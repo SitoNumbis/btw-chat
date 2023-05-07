@@ -20,6 +20,7 @@ import {
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
 } from "../../services/chat/post";
+import { sortBy } from "some-javascript-utils/array";
 
 // components
 const Input = loadable(() => import("./Input/Input"));
@@ -54,11 +55,14 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         const toReturn = [...state];
         messages.forEach((message) => {
           const found = toReturn.find(
-            (localMessage) => localMessage.date === message.date
+            (localMessage) =>
+              localMessage.date === message.date &&
+              localMessage.target === message.target
           );
           if (!found) toReturn.push(message);
         });
-        return toReturn;
+
+        return sortBy(toReturn, "date", true);
       }
       case "plus-minute": {
         const newState = state.map((item) => {
@@ -91,6 +95,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           const response = await fetchMessagesRemote(target, sender, page, 100);
           const data = await response.json();
           const { list } = data;
+
           if (list) {
             if (oldChat === target)
               setMessages({
@@ -126,16 +131,16 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat, location]);
 
-  const onMessageReceived = (conversation) => {
-    console.info("receiving messages");
-    const { target, sender } = conversation;
-    if (
-      selectedChat &&
-      ((sender.user && selectedChat.user === sender.user) ||
-        selectedChat.user === sender)
-    )
-      fetchMessages(target, sender.user ? sender.user : sender, false);
-  };
+  const onMessageReceived = useCallback(
+    (conversation) => {
+      console.info("receiving messages");
+      const { target, sender } = conversation;
+      const senderUser = sender.user;
+      if (selectedChat && selectedChat.user === senderUser)
+        fetchMessages(target, senderUser, false);
+    },
+    [selectedChat, fetchMessages]
+  );
 
   useEffect(() => {
     if (socket) {
@@ -144,7 +149,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         socket.off("message", onMessageReceived);
       };
     }
-  }, [socket]);
+  }, [socket, selectedChat]);
 
   const sendMessage = useCallback(
     async (message) => {

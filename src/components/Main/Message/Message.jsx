@@ -37,7 +37,6 @@ function Message({ date, sender, message, join }) {
   }, [sender]);
 
   const seeProfile = useCallback(() => {
-    console.log(sender);
     setDialogState({
       type: "set-value",
       key: "editing",
