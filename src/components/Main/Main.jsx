@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useReducer } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import CryptoJS from "crypto-js";
 import { sortBy } from "some-javascript-utils/array";
 
 import useScreenSize from "use-screen-witdh";
@@ -26,6 +26,7 @@ import {
 
 // components
 const Input = loadable(() => import("./Input/Input"));
+const Typing = loadable(() => import("./Typing/Typing"));
 const Navbar = loadable(() => import("./Navbar/Navbar"));
 const Settings = loadable(() => import("./Settings/Settings"));
 const ConnectionState = loadable(() =>
@@ -98,8 +99,13 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         try {
           const response = await fetchMessagesRemote(target, sender, page, 100);
           const data = await response.json();
-          const { list } = data;
-
+          const list = data.list.map((message) => {
+            const parsedMessage = CryptoJS.AES.decrypt(
+              message,
+              selectedChat.key
+            ).toString(CryptoJS.enc.Utf8);
+            return JSON.parse(parsedMessage);
+          });
           if (list) {
             if (oldChat === target)
               setMessages({
@@ -118,9 +124,10 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           console.error(err);
         }
         setLoading(false);
+        setTyping(false);
       }
     },
-    [page, oldChat, loading]
+    [page, oldChat, loading, selectedChat]
   );
 
   const navigate = useNavigate();
@@ -147,11 +154,21 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     [selectedChat, fetchMessages]
   );
 
+  const [typing, setTyping] = useState(false);
+  const targetTyping = useCallback(() => {
+    setTyping(true);
+    setTimeout(() => {
+      setTyping(false);
+    }, 5000);
+  }, [selectedChat, setTyping]);
+
   useEffect(() => {
     if (socket) {
       socket.on("message", onMessageReceived);
+      socket.on("typing", targetTyping);
       return () => {
         socket.off("message", onMessageReceived);
+        socket.off("typing", targetTyping);
       };
     }
   }, [socket, selectedChat]);
@@ -251,8 +268,13 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
                 selectedChat={selectedChat}
                 showConnectionState={showConnectionState}
               />
+              <Typing typing={typing} />
               <div className={styles.inputContainer}>
-                <Input onSend={sendMessage} />
+                <Input
+                  onSend={sendMessage}
+                  socket={socket}
+                  selectedChat={selectedChat}
+                />
               </div>
             </>
           ) : null}
@@ -274,6 +296,9 @@ Main.propTypes = {
     user: PropTypes.string,
     name: PropTypes.string,
     bio: PropTypes.string,
+    state: PropTypes.string,
+    lastMessage: PropTypes.string,
+    key: PropTypes.string,
   }),
 };
 

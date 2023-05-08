@@ -130,6 +130,9 @@ Messages.propTypes = {
     user: PropTypes.string,
     name: PropTypes.string,
     bio: PropTypes.string,
+    state: PropTypes.string,
+    lastMessage: PropTypes.string,
+    key: PropTypes.string,
   }),
   showConnectionState: PropTypes.bool,
 };

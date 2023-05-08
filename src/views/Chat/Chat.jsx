@@ -1,5 +1,6 @@
 import { useState, useEffect, Suspense, useReducer, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import CryptoJS from "crypto-js";
 import io from "socket.io-client";
 import loadable from "@loadable/component";
 
@@ -161,7 +162,21 @@ function Chat() {
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }
-        const { list } = await response.json();
+        const data = await response.json();
+        const list = data.list
+          .filter((remoteItem) => remoteItem.lastMessage)
+          .map((remoteItem) => {
+            const { key, lastMessage } = remoteItem;
+            const parsedLastMessage = CryptoJS.AES.decrypt(
+              lastMessage,
+              key
+            ).toString(CryptoJS.enc.Utf8);
+            return {
+              ...remoteItem,
+              lastMessage: JSON.parse(parsedLastMessage),
+            };
+          });
+
         if (name && name.length && !newOne)
           setSearchChats({ type: "add", list });
         else setChats({ type: "add", list });

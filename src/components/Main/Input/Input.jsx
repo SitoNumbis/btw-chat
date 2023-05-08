@@ -10,7 +10,10 @@ import { useLanguage } from "../../../context/LanguageProvider";
 // styles
 import styles from "./styles.module.css";
 
-function Input({ socket, onSend }) {
+// config
+import config from "../../../config";
+
+function Input({ socket, onSend, selectedChat }) {
   const [message, setMessage] = useState("");
 
   const { languageState } = useLanguage();
@@ -37,14 +40,17 @@ function Input({ socket, onSend }) {
   const onKeyDown = useCallback(() => {}, [history]);
   const onKeyUp = useCallback(() => {}, [history]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("send-typing", onMessageReceived);
-      return () => {
-        socket.off("send-typing", onMessageReceived);
-      };
-    }
-  }, [socket]);
+  const handleText = useCallback(
+    (e) => {
+      setMessage(e.target.value);
+      if (socket)
+        socket.emit("typing", {
+          user: localStorage.getItem(config.userCookie),
+          target: selectedChat.user,
+        });
+    },
+    [socket]
+  );
 
   return (
     <form
@@ -59,7 +65,7 @@ function Input({ socket, onSend }) {
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
         placeholder={input.placeholder}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={handleText}
         className={`w-full text-white ${styles.input} ${css({
           paddingRight: `${buttons.send.length * 10}px`,
         })}`}
@@ -82,7 +88,17 @@ function Input({ socket, onSend }) {
 }
 
 Input.propTypes = {
+  socket: PropTypes.object,
   onSend: PropTypes.func,
+  selectedChat: PropTypes.shape({
+    photo: PropTypes.string,
+    user: PropTypes.string,
+    name: PropTypes.string,
+    bio: PropTypes.string,
+    state: PropTypes.string,
+    lastMessage: PropTypes.string,
+    key: PropTypes.string,
+  }),
 };
 
 export default Input;

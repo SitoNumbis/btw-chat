@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 // @emotion/css
 import { css } from "@emotion/css";
@@ -21,12 +21,16 @@ function Badge() {
       }, 450);
   }, [notificationState.count]);
 
+  const badgeEmotion = useMemo(() => {
+    return css({
+      background: localStorage.getItem("chat-text-primary"),
+      border: `2px solid ${localStorage.getItem("chat-main-bg")}`,
+    });
+  }, []);
+
   return see ? (
     <div
-      className={`${styles.badge} ${see ? "aGrow" : "aShrink"} ${css({
-        background: localStorage.getItem("chat-text-primary"),
-        border: `1px solid ${localStorage.getItem("chat-main-bg")}`,
-      })}`}
+      className={`${styles.badge} ${see ? "aGrow" : "aShrink"} ${badgeEmotion}`}
     ></div>
   ) : null;
 }
