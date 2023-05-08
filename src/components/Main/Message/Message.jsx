@@ -47,6 +47,13 @@ function Message({ date, sender, message, join }) {
     });
   }, [setDialogState, sender]);
 
+  const imageEmotion = useMemo(() => {
+    return css({
+      minWidth: "28px",
+      minHeight: "28px",
+    })
+  }, []);
+
   return (
     <div
       className={`w-full flex ${user() ? "justify-end" : "justify-start"} ${css(
@@ -71,13 +78,7 @@ function Message({ date, sender, message, join }) {
             {message}
           </p>
           {!join ? (
-            <button
-              className={`w-10 h-10 ${css({
-                minWidth: "40px",
-                minHeight: "40px",
-              })}`}
-              onClick={seeProfile}
-            >
+            <button className={`w-7 h-7 ${imageEmotion}`} onClick={seeProfile}>
               <img
                 className={`w-full h-full rounded-full cursor-pointer ${css({
                   animation: "aGrow 0.4s ease 1",
@@ -91,7 +92,7 @@ function Message({ date, sender, message, join }) {
               />
             </button>
           ) : (
-            <div className="min-w-10 min-h-10 w-10 h-10"></div>
+            <div className={`w-7 h-7 ${imageEmotion}`}></div>
           )}
         </div>
         {!join ? (
