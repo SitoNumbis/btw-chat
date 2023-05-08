@@ -176,9 +176,10 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const sendMessage = useCallback(
     async (message) => {
       try {
+        const date = new Date().getTime();
         const parsedMessage = {
           message,
-          date: new Date().getTime(),
+          date,
           target: selectedChat?.user,
           sender: {
             user: localStorage.getItem(config.userCookie),
@@ -191,6 +192,11 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         const response = await sendMessageRemote(parsedMessage);
         const data = await response.json();
         console.log(data);
+        /* setMessages({
+          type: "set-as-sent",
+          date,
+          theDate: data.date,
+        }); */
       } catch (err) {
         console.error(err);
       }
