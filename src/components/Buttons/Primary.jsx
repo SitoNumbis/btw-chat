@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -8,19 +8,22 @@ import { css } from "@emotion/css";
 import "./styles.css";
 
 function Primary({ children, ariaLabel, onClick, type }) {
+  const primaryEmotion = useMemo(() => {
+    return css({
+      color: localStorage.getItem("chat-text-basic"),
+      background: localStorage.getItem("chat-text-primary"),
+      ":hover": {
+        color: localStorage.getItem("chat-text-basic"),
+        background: `${localStorage.getItem("chat-text-primary")}99`,
+      },
+    });
+  }, []);
   return (
     <button
       aria-label={ariaLabel}
       onClick={onClick}
       type={type}
-      className={`button ${css({
-        color: localStorage.getItem("chat-text-basic"),
-        background: localStorage.getItem("chat-text-primary"),
-        ":hover": {
-          color: localStorage.getItem("chat-text-basic"),
-          background: `${localStorage.getItem("chat-text-primary")}99`,
-        },
-      })}`}
+      className={`button ${primaryEmotion}`}
     >
       {children}
     </button>

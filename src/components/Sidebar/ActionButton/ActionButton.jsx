@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo, useMemo } from "react";
 import PropTypes from "prop-types";
 
 // font awesome
@@ -11,24 +11,28 @@ import { css } from "@emotion/css";
 import styles from "./styles.module.css";
 
 function ActionButton({ icon, ariaLabel, id, onClick, className, active }) {
+  const buttonEmotion = useMemo(() => {
+    return css({
+      color: active
+        ? localStorage.getItem("chat-text-primary")
+        : localStorage.getItem("chat-text-basic"),
+      background: active
+        ? `${localStorage.getItem("chat-main-bg")}AA`
+        : `${localStorage.getItem("chat-main-bg")}11`,
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+        background: `${localStorage.getItem("chat-main-bg")}88`,
+      },
+    });
+  }, [active]);
+
   return (
     <button
       tabIndex={-1}
       id={`action-${id}`}
       aria-label={ariaLabel}
       onClick={onClick}
-      className={`${css({
-        color: active
-          ? localStorage.getItem("chat-text-primary")
-          : localStorage.getItem("chat-text-basic"),
-        background: active
-          ? `${localStorage.getItem("chat-main-bg")}AA`
-          : `${localStorage.getItem("chat-main-bg")}11`,
-        ":hover": {
-          color: localStorage.getItem("chat-text-primary"),
-          background: `${localStorage.getItem("chat-main-bg")}88`,
-        },
-      })} ${styles.actionButton} ${className}`}
+      className={`${buttonEmotion} ${styles.actionButton} ${className}`}
     >
       <FontAwesomeIcon icon={icon} />
     </button>

@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import loadable from "@loadable/component";
-import { Link } from "react-router-dom";
 
 // @emotion*css
 import { css } from "@emotion/css";
@@ -23,6 +22,7 @@ import config from "../../../config";
 
 // styles
 import styles from "../styles.module.css";
+import Colors from "../../../assets/emotion/color";
 
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
@@ -34,6 +34,8 @@ const PrimaryButton = loadable(() =>
 );
 
 function CreateGuest() {
+  const { mainBG, whiteText } = Colors();
+
   const { setNotificationState } = useNotification();
 
   const showNotification = useCallback(
@@ -83,44 +85,32 @@ function CreateGuest() {
     init();
   }, []);
 
+  const formEmotion = useMemo(() => {
+    return css({
+      alignItems: "center !important",
+      width: "400px",
+      height: "auto !important",
+      backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
+    });
+  }, []);
+
   return (
     <div className="w-full h-screen flex items-center justify-center">
       {loading ? (
         <Loading
-          className={`z-10 w-full h-full items-center justify-center flex ${css(
-            {
-              background: localStorage.getItem("chat-main-bg"),
-            }
-          )}`}
+          className={`z-10 w-full h-full items-center justify-center flex ${mainBG()}`}
         />
       ) : (
-        <div
-          className={`${styles.signIn} appear ${css({
-            alignItems: "center !important",
-            width: "400px",
-            height: "auto !important",
-            backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
-          })}`}
-        >
+        <div className={`${styles.signIn} appear ${formEmotion}`}>
           <img
             className="rounded-full w-20 h-20 object-fit"
             src={noPhoto}
             alt="no-photo"
           />
-          <h2
-            className={`text-center text-3xl font-semibold ${css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
+          <h2 className={`text-center text-3xl font-semibold ${whiteText}`}>
             {getUserName()}
           </h2>
-          <p
-            className={`text-center ${css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
-            {auth.guest.start}
-          </p>
+          <p className={`text-center ${whiteText}`}>{auth.guest.start}</p>
           <a href="/">
             <PrimaryButton ariaLabel={buttonsArias.begin}>
               {buttons.begin}

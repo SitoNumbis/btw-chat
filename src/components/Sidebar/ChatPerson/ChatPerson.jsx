@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback, useEffect } from "react";
+import { memo, useMemo, useState, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -13,9 +13,11 @@ import noPhoto from "../../../assets/images/no-photo.webp";
 // utils
 import { parseSentAsDate } from "../../../utils/parseSent";
 
+// styles
+import Colors from "../../../assets/emotion/color";
+
 // config
 import config from "../../../config";
-import { useState } from "react";
 
 function ChatPerson(props) {
   const {
@@ -30,6 +32,8 @@ function ChatPerson(props) {
     searching,
     active,
   } = props;
+
+  const { whiteText } = Colors();
 
   const printState = useCallback(() => {
     switch (state) {
@@ -88,24 +92,26 @@ function ChatPerson(props) {
     );
   }, [lastMessage, aux, printDate]);
 
+  const buttonEmotion = useMemo(() => {
+    return css({
+      ":disabled": {
+        cursor: "initial !important",
+        background: `${localStorage.getItem("chat-main-bg")}88`,
+      },
+      ":hover": {
+        background: `${localStorage.getItem("chat-main-bg")}88`,
+      },
+    });
+  }, []);
+
   return (
     <button
       type="button"
       disabled={active}
       onClick={handleClick}
-      className={`flex items-center justify-start px-4 py-3 w-full gap-3 ${
+      className={`flex items-center justify-start px-4 py-3 w-full gap-3 main-transition-ease cursor-pointer ${
         index === 0 ? "-mt-0" : ""
-      } ${css({
-        transition: "all 500ms ease",
-        cursor: "pointer",
-        ":disabled": {
-          cursor: "initial !important",
-          background: `${localStorage.getItem("chat-main-bg")}88`,
-        },
-        ":hover": {
-          background: `${localStorage.getItem("chat-main-bg")}88`,
-        },
-      })}`}
+      } ${buttonEmotion}`}
     >
       <img
         className="w-10 h-10 rounded-full cursor-pointer"
@@ -114,20 +120,12 @@ function ChatPerson(props) {
       />
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between w-full">
-          <p
-            className={`${css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
+          <p className={`${whiteText}`}>
             {name && name.length > 27 ? `${name.substring(0, 27)}...` : name}
           </p>
           {printState()}
         </div>
-        <div
-          className={`!text-placeholder-dark !italic !text-left ${css({
-            height: "24px",
-          })}`}
-        >
+        <div className={`!text-placeholder-dark !italic !text-left h-6`}>
           {!updateLastMessage ? (
             <>
               {lastMessage ? (

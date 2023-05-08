@@ -11,6 +11,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 
 // styles
 import styles from "../styles.module.css";
+import Colors from "../../../assets/emotion/color";
 
 // components
 import Loading from "../../../components/Loading/Loading";
@@ -22,6 +23,8 @@ const SecondaryButton = loadable(() =>
 );
 
 function Start({ toCreateAccount, toCreateGuest }) {
+  const { whiteText } = Colors();
+
   useEffect(() => {
     setLoading(false);
   }, []);
@@ -38,50 +41,52 @@ function Start({ toCreateAccount, toCreateGuest }) {
     };
   }, [languageState]);
 
+  const containerEmotion = useMemo(() => {
+    return css({
+      backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
+      backdropFilter: "blur(10px)",
+    });
+  }, []);
+
+  const formEmotion = useMemo(() => {
+    return css({
+      height: "auto !important",
+      width: "auto !important",
+      backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
+    });
+  }, []);
+
+  const titleEmotion = useMemo(() => {
+    return css({
+      fontFamily: "'Times New Roman', Times, serif !important",
+      color: localStorage.getItem("chat-text-basic"),
+    });
+  }, []);
+
+  const appearOneSec = useMemo(() => {
+    return css({
+      animation: "appear 1s 1 ease",
+    });
+  }, []);
+
   return (
     <div>
       {loading ? (
         <Loading
-          className={`absolute z-10 w-full h-screen items-center ${css({
-            backdropFilter: "blur(4px)",
-          })}`}
+          className={`absolute z-10 w-full h-screen items-center main-backdrop-filter`}
         />
       ) : null}
       <div
-        className={`z-10 w-full min-h-screen entrance flex items-center justify-center ${css(
-          {
-            backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
-            backdropFilter: "blur(10px)",
-          }
-        )}`}
+        className={`z-10 w-full min-h-screen entrance flex items-center justify-center ${containerEmotion}`}
       >
-        <div
-          className={`${styles.signIn} appear ${css({
-            height: "auto !important",
-            width: "auto !important",
-            backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
-          })}`}
-        >
-          <h1
-            className={`text-6xl font-bold ${css({
-              animation: "appear 1s 1 ease",
-              fontFamily: "'Times New Roman', Times, serif !important",
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
+        <div className={`${styles.signIn} appear ${formEmotion}`}>
+          <h1 className={`text-6xl font-bold ${appearOneSec} ${titleEmotion}`}>
             {auth.signUp.sub}
           </h1>
-          <p
-            className={`mt-2 ${css({
-              animation: "appear 1s 1 ease",
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
+          <p className={`mt-2 ${whiteText} ${appearOneSec}`}>
             {auth.signUp.content}
           </p>
-          <div
-            className={`flex gap-2 ${css({ animation: "appear 1s 1 ease" })}`}
-          >
+          <div className={`flex gap-2 ${appearOneSec}`}>
             <PrimaryButton
               onClick={toCreateAccount}
               ariaLabel={buttonsArias.signUp}

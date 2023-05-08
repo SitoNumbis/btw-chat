@@ -1,4 +1,11 @@
-import { useState, useEffect, Suspense, useReducer, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  Suspense,
+  useReducer,
+  useCallback,
+  useMemo,
+} from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
 import io from "socket.io-client";
@@ -243,6 +250,17 @@ function Chat() {
     setLoadingF(false);
   }, []);
 
+  const imageEmotion = useMemo(() => {
+    return css({
+      objectFit: "cover",
+      width: "100%",
+      position: "absolute",
+      height: "100vh",
+      top: 0,
+      left: 0,
+    });
+  }, []);
+
   return (
     <div className={`entrance ${styles.main}`}>
       {dialogState.editing !== undefined ? (
@@ -252,20 +270,11 @@ function Chat() {
         src={imageBG}
         alt="space-background"
         /* onLoad={pickColor} */
-        className={css({
-          objectFit: "cover",
-          width: "100%",
-          position: "absolute",
-          height: "100vh",
-          top: 0,
-          left: 0,
-        })}
+        className={imageEmotion}
       />
       {loadingF ? (
         <Loading
-          className={`absolute z-10 w-full h-screen items-center ${css({
-            backdropFilter: "blur(4px)",
-          })}`}
+          className={`absolute z-10 w-full h-screen items-center main-backdrop-filter`}
         />
       ) : null}
       <div className={`${styles.bg}`}>
@@ -282,11 +291,7 @@ function Chat() {
             onClose={toggleSidebar}
             socket={socket}
           />
-          <div
-            className={`flex flex-col flex-1 ${css({
-              transition: "all 500ms ease",
-            })}`}
-          >
+          <div className={`flex flex-col flex-1 main-transition-ease`}>
             <Main
               selectChat={selectChat}
               selectedChat={selectedChat}

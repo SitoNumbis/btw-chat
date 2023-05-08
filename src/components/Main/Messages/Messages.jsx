@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import loadable from "@loadable/component";
@@ -82,15 +82,19 @@ function Messages({
     scrollToBottom();
   }, [messages]);
 
+  const listEmotion = useMemo(() => {
+    return css({
+      height: showConnectionState
+        ? `calc(${window.innerHeight}px - 170px)`
+        : `calc(${window.innerHeight}px - 130px)`,
+    });
+  }, [showConnectionState]);
+
   return (
     <div
       id="messages-list"
       ref={messagesList}
-      className={`${styles.messages} ${css({
-        height: showConnectionState
-          ? `calc(${window.innerHeight}px - 170px)`
-          : `calc(${window.innerHeight}px - 130px)`,
-      })}`}
+      className={`${styles.messages} ${listEmotion}`}
     >
       <ToBottom canGoBottom={canGoBottom} />
       <p className="text-placeholder-dark italic mx-auto">

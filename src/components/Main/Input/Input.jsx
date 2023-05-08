@@ -9,11 +9,14 @@ import { useLanguage } from "../../../context/LanguageProvider";
 
 // styles
 import styles from "./styles.module.css";
+import Colors from "../../../assets/emotion/color";
 
 // config
 import config from "../../../config";
 
 function Input({ socket, onSend, selectedChat }) {
+  const { mainBG, whiteText } = Colors();
+
   const [message, setMessage] = useState("");
 
   const { languageState } = useLanguage();
@@ -78,12 +81,24 @@ function Input({ socket, onSend, selectedChat }) {
     [socket, typing, selectedChat]
   );
 
+  const inputEmotion = useMemo(() => {
+    return css({
+      paddingRight: `${buttons.send.length * 10}px`,
+    });
+  }, [buttons]);
+
+  const buttonEmotion = useMemo(() => {
+    return css({
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+      },
+    });
+  }, []);
+
   return (
     <form
       onSubmit={onSubmit}
-      className={`relative w-full h-10 ${css({
-        background: localStorage.getItem("chat-main-bg"),
-      })} flex items-center justify-between p-3 rounded-sm ${styles.div}`}
+      className={`${mainBG()} main-transition-ease ${styles.div}`}
     >
       <input
         type="text"
@@ -92,18 +107,10 @@ function Input({ socket, onSend, selectedChat }) {
         onKeyUp={onKeyUp}
         placeholder={input.placeholder}
         onChange={handleText}
-        className={`w-full text-white ${styles.input} ${css({
-          paddingRight: `${buttons.send.length * 10}px`,
-        })}`}
+        className={`w-full ${whiteText} ${styles.input} ${inputEmotion}`}
       />
       <button
-        className={`absolute right-3 text-placeholder-dark transition font-semibold ${
-          styles.button
-        } ${css({
-          ":hover": {
-            color: localStorage.getItem("chat-text-primary"),
-          },
-        })}`}
+        className={`absolute right-3 text-placeholder-dark transition font-semibold ${styles.button} ${buttonEmotion}`}
         onClick={onSubmit}
         aria-label={buttonsArias.send}
       >

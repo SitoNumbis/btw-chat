@@ -1,7 +1,6 @@
 import { memo, useEffect, useCallback, useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import loadable from "@loadable/component";
-import debounce from "lodash.debounce";
 import { useDebounce } from "use-lodash-debounce";
 
 import useScreenSize from "use-screen-witdh";
@@ -31,6 +30,7 @@ import noPhoto from "../../assets/images/no-photo.webp";
 
 // styles
 import styles from "./styles.module.css";
+import Colors from "../../assets/emotion/color.js";
 
 import config from "../../config";
 
@@ -59,6 +59,8 @@ function Sidebar({
   open,
   onClose,
 }) {
+  const { whiteText } = Colors();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -200,6 +202,15 @@ function Sidebar({
     }
   }, []);
 
+  const reconnectEmotion = useMemo(() => {
+    return css({
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+        background: localStorage.getItem("chat-text-basic"),
+      },
+    });
+  }, []);
+
   return (
     <div
       className={`${styles.sidebar} ${css({
@@ -288,14 +299,7 @@ function Sidebar({
           <p className="text-l-error">{sidebar.error}</p>
           <button
             onClick={reconnect}
-            className={`w-10 h-10 rounded-full ${css({
-              transition: "all 500ms ease",
-              color: localStorage.getItem("chat-text-basic"),
-              ":hover": {
-                color: localStorage.getItem("chat-text-primary"),
-                background: localStorage.getItem("chat-text-basic"),
-              },
-            })}`}
+            className={`w-10 h-10 rounded-full main-transition-ease ${whiteText} ${reconnectEmotion}`}
           >
             <FontAwesomeIcon icon={faRotateLeft} />
           </button>

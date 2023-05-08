@@ -1,4 +1,4 @@
-import  { useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 
 // @fortawesome
 import { faClose } from "@fortawesome/free-solid-svg-icons";
@@ -56,6 +56,13 @@ export default function Notification() {
     }
   }, [notificationState]);
 
+  const notificationEmotion = useMemo(() => {
+    return css({
+      width: "300px",
+      border: "1px solid #8080804a",
+    });
+  }, []);
+
   return (
     <div
       className={`fixed left-1 bottom-1 z-40 ${open ? "appear" : "disappear"}`}
@@ -63,12 +70,7 @@ export default function Notification() {
       {openR ? (
         <div
           ref={ref}
-          className={`relative notification rounded-scard p-5 ${getColor()} ${css(
-            {
-              width: "300px",
-              border: "1px solid #8080804a",
-            }
-          )}`}
+          className={`relative notification rounded-scard p-5 ${getColor()} ${notificationEmotion}`}
         >
           <button onClick={handleClose} className="absolute top-1 right-2">
             <FontAwesomeIcon className="text-white" icon={faClose} />

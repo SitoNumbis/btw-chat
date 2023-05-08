@@ -65,11 +65,31 @@ function Message({ date, sender, message, join, loading }) {
     });
   }, []);
 
+  const containerEmotion = useMemo(() => {
+    return css({ marginBottom: join ? "-16px" : "" });
+  }, [join]);
+
+  const growEmotion = useMemo(() => {
+    return css({
+      animation: "aGrow 0.4s ease 1",
+    });
+  }, []);
+
+  const pEmotion = useMemo(() => {
+    return css({
+      overflowWrap: "anywhere",
+      backgroundColor: user()
+        ? `${localStorage.getItem("chat-text-primary")}33`
+        : `${localStorage.getItem("chat-other-bg")}99`,
+      color: localStorage.getItem("chat-text-basic"),
+    });
+  }, []);
+
   return (
     <div
-      className={`w-full flex ${user() ? "justify-end" : "justify-start"} ${css(
-        { marginBottom: join ? "-16px" : "" }
-      )}`}
+      className={`w-full flex ${
+        user() ? "justify-end" : "justify-start"
+      } ${containerEmotion}`}
     >
       <div className="flex flex-col gap-2">
         <div
@@ -77,17 +97,7 @@ function Message({ date, sender, message, join, loading }) {
             user() ? "flex-row" : "flex-row-reverse"
           }`}
         >
-          <p
-            className={`aGrow  ${styles.message} ${css({
-              overflowWrap: "anywhere",
-              backgroundColor: user()
-                ? `${localStorage.getItem("chat-text-primary")}33`
-                : `${localStorage.getItem("chat-other-bg")}99`,
-              color: localStorage.getItem("chat-text-basic"),
-            })} `}
-          >
-            {message}
-          </p>
+          <p className={`aGrow  ${styles.message} ${pEmotion} `}>{message}</p>
 
           {!join ? (
             <div className={`w-7 h-7 ${imageEmotion}`}>
@@ -96,11 +106,7 @@ function Message({ date, sender, message, join, loading }) {
               ) : (
                 <button className="w-full h-full" onClick={seeProfile}>
                   <img
-                    className={`w-full h-full rounded-full cursor-pointer ${css(
-                      {
-                        animation: "aGrow 0.4s ease 1",
-                      }
-                    )}`}
+                    className={`w-full h-full rounded-full cursor-pointer ${growEmotion}`}
                     src={
                       sender !== null && sender && sender.photo
                         ? sender.photo

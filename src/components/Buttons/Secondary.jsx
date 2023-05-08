@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -8,20 +8,24 @@ import { css } from "@emotion/css";
 import "./styles.css";
 
 function Secondary({ children, ariaLabel, onClick, type }) {
+  const secondaryEmotion = useMemo(() => {
+    return css({
+      color: localStorage.getItem("chat-text-basic"),
+      border: "1px solid",
+      borderColor: `${localStorage.getItem("chat-text-primary")}99`,
+      ":hover": {
+        color: localStorage.getItem("chat-text-basic"),
+        background: `${localStorage.getItem("chat-text-primary")}99`,
+      },
+    });
+  }, []);
+
   return (
     <button
       aria-label={ariaLabel}
       onClick={onClick}
       type={type}
-      className={`button ${css({
-        color: localStorage.getItem("chat-text-basic"),
-        border: "1px solid",
-        borderColor: `${localStorage.getItem("chat-text-primary")}99`,
-        ":hover": {
-          color: localStorage.getItem("chat-text-basic"),
-          background: `${localStorage.getItem("chat-text-primary")}99`,
-        },
-      })}`}
+      className={`button ${secondaryEmotion}`}
     >
       {children}
     </button>

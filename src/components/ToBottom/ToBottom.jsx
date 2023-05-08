@@ -1,4 +1,5 @@
-import { useCallback, useState, useEffect } from "react";
+import { memo, useCallback, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 import { scrollTo } from "some-javascript-utils/browser";
 
@@ -43,4 +44,16 @@ function ToBottom({ canGoBottom }) {
   ) : null;
 }
 
-export default ToBottom;
+ToBottom.propTypes = {
+  canGoBottom: PropTypes.bool,
+};
+
+const ToBottomMemo = memo((props) => <ToBottom {...props} />, propsAreEqual);
+
+ToBottomMemo.displayName = "ToBottom";
+
+function propsAreEqual(oldProps, newProps) {
+  return oldProps.canGoBottom === newProps.canGoBottom;
+}
+
+export default ToBottomMemo;

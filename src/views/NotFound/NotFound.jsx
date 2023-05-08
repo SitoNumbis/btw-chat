@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 // font awesome
@@ -13,8 +13,11 @@ import { loadImage } from "../../utils/services";
 
 // styles
 import styles from "./styles.module.css";
+import Colors from "../../assets/emotion/color";
 
 function NotFound() {
+  const { whiteText } = Colors();
+
   const [imageBG, setImageBG] = useState(
     "https://ik.imagekit.io/lgqp0wffgtp/tr:q-1/Beyon_the_world/Chat/auth_vNlQJ5l45.webp?updatedAt=1683111316564"
   );
@@ -31,6 +34,14 @@ function NotFound() {
       });
   }, []);
 
+  const linkEmotion = useMemo(() => {
+    return css({
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+      },
+    });
+  }, []);
+
   return (
     <div className="w-full h-screen">
       <img
@@ -43,21 +54,10 @@ function NotFound() {
           styles.glass
         } ${css({ background: `${localStorage.getItem("chat-main-bg")}77` })}`}
       >
-        <h1
-          className={`appear z-10 text-9xl font-bold ${css({
-            color: `${localStorage.getItem("chat-text-basic")}`,
-          })}`}
-        >
-          {404}
-        </h1>
+        <h1 className={`appear z-10 text-9xl font-bold ${whiteText}`}>{404}</h1>
         <Link
           to="/"
-          className={`appear mt-10 transition ${css({
-            color: localStorage.getItem("chat-text-basic"),
-            ":hover": {
-              color: localStorage.getItem("chat-text-primary"),
-            },
-          })}`}
+          className={`appear mt-10 transition ${whiteText} ${linkEmotion}`}
         >
           <FontAwesomeIcon icon={faHome} />
         </Link>

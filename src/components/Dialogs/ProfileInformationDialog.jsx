@@ -21,6 +21,7 @@ import { fetchChat } from "../../services/chat/post";
 
 // styles
 import styles from "./styles.module.css";
+import colors from "../../assets/emotion/color";
 
 // images
 import noPhoto from "../../assets/images/no-photo.webp";
@@ -29,9 +30,9 @@ import config from "../../config";
 
 // components
 import Loading from "../../components/Loading/Loading";
+const Input = loadable(() => import("../Inputs/Input"));
 const Primary = loadable(() => import("../Buttons/Primary"));
 const Secondary = loadable(() => import("../Buttons/Secondary"));
-const Input = loadable(() => import("../Inputs/Input"));
 
 function ProfileInformationDialog({ editing }) {
   const { setNotificationState } = useNotification();
@@ -55,26 +56,20 @@ function ProfileInformationDialog({ editing }) {
 
   const [name, setName] = useState("");
 
+  const { whiteText, mainBG, otherBG } = colors();
+
   const printState = useMemo(() => {
     switch (state) {
       case "disconnected":
         return (
-          <div
-            className={`flex items-center gap-2 ${css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
+          <div className={`flex items-center gap-2 ${whiteText}`}>
             {languageState.texts.states.disconnected}
             <div className="w-3 h-3 rounded-full bg-l-error"></div>
           </div>
         );
       default:
         return (
-          <div
-            className={`flex items-center gap-2 ${css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
+          <div className={`flex items-center gap-2 ${whiteText}}`}>
             {languageState.texts.states.connected}
             <div className="w-3 h-3 rounded-full bg-success"></div>
           </div>
@@ -159,17 +154,29 @@ function ProfileInformationDialog({ editing }) {
     } else fetchTarget();
   }, [editing]);
 
+  const containerEmotion = useMemo(() => {
+    return `${css({
+      width: "400px",
+    })} ${otherBG()}`;
+  }, [otherBG]);
+
+  const loadingEmotion = useMemo(() => {
+    return `${css({
+      backdropFilter: "blur(4px)",
+    })} ${mainBG()}`;
+  }, [mainBG]);
+
+  const imageEmotion = useMemo(() => {
+    return css({
+      width: "130px",
+      height: "130px",
+    });
+  }, []);
+
   return (
-    <div
-      className={`entrance ${styles.dialogContainer} ${css({
-        background: `${localStorage.getItem("chat-secondary-bg")}99`,
-      })}`}
-    >
+    <div className={`entrance ${styles.dialogContainer} ${mainBG(99)}`}>
       <div
-        className={`appear relative rounded-sm ${styles.dialog} ${css({
-          width: "400px",
-          background: localStorage.getItem("chat-other-bg"),
-        })}`}
+        className={`appear relative rounded-sm ${styles.dialog} ${containerEmotion}`}
       >
         <button
           onClick={handleClose}
@@ -179,19 +186,10 @@ function ProfileInformationDialog({ editing }) {
         </button>
         {loading ? (
           <Loading
-            className={`rounded-sm absolute top-0 left-0 z-10 w-full h-full justify-center items-center flex ${css(
-              {
-                backdropFilter: "blur(4px)",
-                background: `${localStorage.getItem("chat-main-bg")}`,
-              }
-            )}`}
+            className={`rounded-sm absolute top-0 left-0 z-10 w-full h-full justify-center items-center flex ${loadingEmotion}`}
           />
         ) : null}
-        <h2
-          className={`text-center ${css({
-            color: localStorage.getItem("chat-text-basic"),
-          })} text-2xl`}
-        >
+        <h2 className={`text-center ${whiteText} text-2xl`}>
           {dialogs.profileInfo.title}
         </h2>
         {editing === 1 ? (
@@ -202,11 +200,7 @@ function ProfileInformationDialog({ editing }) {
               input={inputs.name}
               value={name}
               onChange={handleName}
-              className={css({
-                background: `${localStorage.getItem(
-                  "chat-main-bg"
-                )} !important`,
-              })}
+              className={mainBG("FF", true)}
             />
             <Input
               id="bio"
@@ -214,11 +208,7 @@ function ProfileInformationDialog({ editing }) {
               input={inputs.bio}
               value={bio}
               onChange={handleBio}
-              className={css({
-                background: `${localStorage.getItem(
-                  "chat-main-bg"
-                )} !important`,
-              })}
+              className={mainBG("FF", true)}
             />
             <div className="flex items-center gap-5">
               <Primary type="submit" ariaLabel={buttonsArias.save}>
@@ -235,12 +225,7 @@ function ProfileInformationDialog({ editing }) {
           </form>
         ) : (
           <div className="flex flex-col items-center justify-start gap-3">
-            <div
-              className={`relative ${css({
-                width: "130px",
-                height: "130px",
-              })} rounded-sm`}
-            >
+            <div className={`relative ${imageEmotion} rounded-sm`}>
               <img
                 className={`w-full h-full rounded-full`}
                 src={
@@ -253,21 +238,13 @@ function ProfileInformationDialog({ editing }) {
               />
             </div>
             <div className="relative flex items-center gap-2 px-5">
-              <h2
-                className={`text-center ${css({
-                  color: localStorage.getItem("chat-text-basic"),
-                })} text-2xl`}
-              >
+              <h2 className={`text-center ${whiteText} text-2xl`}>
                 {localStorage.getItem(`${editing}user`)}
               </h2>
             </div>
             <div className="flex items-center gap-3">{printState}</div>
             <div className="flex items-center gap-3 px-5">
-              <p
-                className={`text-center ${css({
-                  color: localStorage.getItem("chat-text-basic"),
-                })}`}
-              >
+              <p className={`text-center ${whiteText}`}>
                 {localStorage.getItem(`${editing}bio`)}
               </p>
             </div>

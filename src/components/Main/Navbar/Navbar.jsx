@@ -1,4 +1,5 @@
 import { memo, useCallback, useMemo } from "react";
+import loadable from "@loadable/component";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
@@ -16,10 +17,12 @@ import { useLanguage } from "../../../context/LanguageProvider";
 
 // styles
 import styles from "./styles.module.css";
+import Colors from "../../../assets/emotion/color";
 
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
-import Badge from "../../Badge/Badge";
+
+const Badge = loadable(() => import("../../Badge/Badge"));
 
 function Navbar({
   socket,
@@ -28,6 +31,8 @@ function Navbar({
   goToSettings,
   toggleSidebar,
 }) {
+  const { whiteText } = Colors();
+
   const { setDialogState } = useDialog();
 
   const goToProfile = useCallback(() => {
@@ -56,6 +61,48 @@ function Navbar({
     }
   }, [selectedChat]);
 
+  const barsEmotion = useMemo(() => {
+    return css({
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+      },
+    });
+  }, []);
+
+  const settingsEmotion = useMemo(() => {
+    return css({
+      color: !settings
+        ? localStorage.getItem("chat-text-basic")
+        : localStorage.getItem("chat-text-primary"),
+      transform: settings ? "rotate(-45deg)" : "",
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+        transform: "rotate(-45deg)",
+      },
+    });
+  }, [settings]);
+
+  const gearEmotion = useMemo(() => {
+    return css({
+      color: !settings
+        ? localStorage.getItem("chat-text-basic")
+        : localStorage.getItem("chat-text-primary"),
+      transform: settings ? "rotate(-45deg)" : "",
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+      },
+    });
+  }, [settings]);
+
+  const linkEmotion = useMemo(() => {
+    return css({
+      paddingBottom: "3px",
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+      },
+    });
+  }, []);
+
   return (
     <div className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
       <div className="flex gap-3 items-center w-full h-full justify-between">
@@ -64,13 +111,7 @@ function Navbar({
             <Badge />
             <button
               tabIndex={-1}
-              className={`${styles.closeButton} ${css({
-                transition: "all 500ms ease",
-                color: localStorage.getItem("chat-text-basic"),
-                ":hover": {
-                  color: localStorage.getItem("chat-text-primary"),
-                },
-              })} font-bold text-xl`}
+              className={`${styles.closeButton} main-transition-ease ${whiteText} ${barsEmotion} font-bold text-xl`}
               onClick={toggleSidebar}
               aria-label={buttonsArias.openSidebar}
             >
@@ -87,73 +128,32 @@ function Navbar({
                 src={selectedChat?.photo ? selectedChat?.photo : noPhoto}
                 alt={selectedChat?.user ? selectedChat?.user : ""}
               />
-              <p
-                className={`font-semibold ${css({
-                  color: localStorage.getItem("chat-text-basic"),
-                })}`}
-              >
+              <p className={`font-semibold ${whiteText}`}>
                 {selectedChat?.name}
               </p>
               {printState()}
             </button>
           ) : (
-            <h2
-              className={`${css({
-                color: localStorage.getItem("chat-text-basic"),
-              })}`}
-            >
-              {navbar.title}
-            </h2>
+            <h2 className={`${whiteText}`}>{navbar.title}</h2>
           )}
         </div>
         <button
           onClick={goToSettings}
-          className={`appear  ${css({
-            transition: "all 500ms ease",
-            color: !settings
-              ? localStorage.getItem("chat-text-basic")
-              : localStorage.getItem("chat-text-primary"),
-            transform: settings ? "rotate(-45deg)" : "",
-            ":hover": {
-              color: localStorage.getItem("chat-text-primary"),
-              transform: "rotate(-45deg)",
-            },
-          })}`}
+          className={`appear main-transition-ease ${settingsEmotion}`}
         >
           <FontAwesomeIcon
-            className={`appear  ${css({
-              transition: "all 500ms ease",
-              color: !settings
-                ? localStorage.getItem("chat-text-basic")
-                : localStorage.getItem("chat-text-primary"),
-              transform: settings ? "rotate(-45deg)" : "",
-              ":hover": {
-                color: localStorage.getItem("chat-text-primary"),
-              },
-            })}`}
+            className={`appear main-transition-ease ${gearEmotion}`}
             icon={faGear}
           />
         </button>
         <Link
           to="/sign-out"
-          className={`appear relative flex items-center justify-center ${css({
-            paddingBottom: "3px",
-            transition: "all 500ms ease",
-            color: localStorage.getItem("chat-text-basic"),
-            ":hover": {
-              color: localStorage.getItem("chat-text-primary"),
-            },
-          })}`}
+          className={`appear relative flex items-center justify-center main-transition-ease ${whiteText} ${linkEmotion}`}
         >
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
         </Link>
       </div>
-      <hr
-        className={`${css({
-          width: "100%",
-          marginBottom: "10px",
-        })} mx-auto mt-3 border-dark`}
-      />
+      <hr className={`w-full mb-3 mx-auto mt-3 border-dark`} />
     </div>
   );
 }

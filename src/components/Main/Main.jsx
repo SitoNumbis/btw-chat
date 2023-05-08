@@ -16,6 +16,8 @@ import { useNotification } from "../../context/NotificationProvider";
 
 // styles
 import styles from "./styles.module.css";
+import Colors from "../../assets/emotion/color";
+
 import config from "../../config";
 
 // services
@@ -35,6 +37,8 @@ const ConnectionState = loadable(() =>
 const Messages = loadable(() => import("./Messages/Messages"));
 
 function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
+  const { mainBG } = Colors();
+
   const { setNotificationState } = useNotification();
 
   const [showOffState, setShowOffState] = useState(false);
@@ -258,11 +262,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   );
 
   return (
-    <div
-      className={`${styles.main} ${css({
-        backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
-      })}`}
-    >
+    <div className={`${styles.main} ${mainBG(88)}`}>
       <Navbar
         settings={settings}
         goToSettings={goToSettings}

@@ -186,21 +186,30 @@ function ConnectionState({
     }
   }, [currentState]);
 
+  const connectionStateEmotion = useMemo(() => {
+    return css({
+      margin,
+      transition: "all 500ms ease",
+      height,
+      color: localStorage.getItem("chat-text-basic"),
+    });
+  }, [margin, height]);
+
+  const buttonEmotion = useMemo(() => {
+    return css({
+      transition: "all 500ms ease",
+      ":hover": {
+        background: localStorage.getItem("chat-main-bg"),
+      },
+    });
+  }, []);
+
   return (
     <div
-      className={`flex items-center justify-between gap-2 overflow-hidden ${color} ${css(
-        {
-          margin,
-          transition: "all 500ms ease",
-          height,
-          color: localStorage.getItem("chat-text-basic"),
-        }
-      )}`}
+      className={`flex items-center justify-between gap-2 overflow-hidden ${color} ${connectionStateEmotion}`}
     >
       <div className="flex items-center gap-2">
-        <div className={`pr-2 ${css({ transform: "rotateY(-180deg)" })}`}>
-          {icon}
-        </div>
+        <div className={`pr-2 transform-rotate-y-180`}>{icon}</div>
         <p
           className={`text-md ${currentState === "connecting" ? "italic" : ""}`}
         >
@@ -211,12 +220,7 @@ function ConnectionState({
       {currentState === "disconnected" ? (
         <button
           onClick={reconnect}
-          className={`w-10 h-10 rounded-full ${css({
-            transition: "all 500ms ease",
-            ":hover": {
-              background: localStorage.getItem("chat-main-bg"),
-            },
-          })}`}
+          className={`w-10 h-10 rounded-full ${buttonEmotion}`}
         >
           <FontAwesomeIcon icon={faRotateLeft} />
         </button>

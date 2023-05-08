@@ -9,7 +9,7 @@
 }
 
 .div {
-  transition: all 500ms ease;
+  @apply relative w-full h-10 flex items-center justify-between p-3 rounded-sm;
 }
 
 .div:hover {

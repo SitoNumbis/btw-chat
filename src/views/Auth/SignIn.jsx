@@ -34,6 +34,9 @@ import { login } from "../../services/auth";
 
 import config from "../../config";
 
+// styles
+import Colors from "../../assets/emotion/color";
+
 // components
 import Loading from "../../components/Loading/Loading";
 import Input from "../../components/Inputs/Input";
@@ -42,6 +45,8 @@ import PrimaryButton from "../../components/Buttons/Primary";
 Base64.extendString();
 
 function SignIn() {
+  const { whiteText } = Colors();
+
   const { setNotificationState } = useNotification();
 
   const showNotification = useCallback(
@@ -173,6 +178,28 @@ function SignIn() {
     setLoading(false);
   }, []);
 
+  const containerEmotion = useMemo(() => {
+    return css({
+      backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
+      backdropFilter: "blur(10px)",
+    });
+  }, []);
+
+  const formEmotion = useMemo(() => {
+    return css({
+      display: !showForm ? "none" : "",
+      backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
+    });
+  }, [showForm]);
+
+  const linkEmotion = useMemo(() => {
+    return css({
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+      },
+    });
+  }, []);
+
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
       <img
@@ -182,31 +209,17 @@ function SignIn() {
       />
       {loading ? (
         <Loading
-          className={`absolute z-10 w-full h-screen items-center ${css({
-            backdropFilter: "blur(4px)",
-          })}`}
+          className={`absolute z-10 w-full h-screen items-center main-backdrop-filter`}
         />
       ) : null}
       <div
-        className={`z-10 w-full min-h-screen entrance flex items-center justify-center ${css(
-          {
-            backgroundColor: `${localStorage.getItem("chat-main-bg")}88`,
-            backdropFilter: "blur(10px)",
-          }
-        )}`}
+        className={`z-10 w-full min-h-screen entrance flex items-center justify-center ${containerEmotion}`}
       >
         <form
           onSubmit={handleSubmit}
-          className={`${styles.signIn} appear ${css({
-            display: !showForm ? "none" : "",
-            backgroundColor: `${localStorage.getItem("chat-secondary-bg")}44`,
-          })}`}
+          className={`${styles.signIn} appear ${formEmotion}`}
         >
-          <h2
-            className={`text-5xl font-bold ${css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
-          >
+          <h2 className={`text-5xl font-bold ${whiteText}`}>
             {auth.signIn.title}
           </h2>
           <Input
@@ -232,9 +245,7 @@ function SignIn() {
             helperText={passwordHelperText}
           />
           <div
-            className={`cursor-pointer flex items-center gap-2 ${css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}`}
+            className={`cursor-pointer flex items-center gap-2 ${whiteText}`}
           >
             <input
               value={remember}
@@ -249,32 +260,18 @@ function SignIn() {
           <PrimaryButton ariaLabel={buttonsArias.signIn}>
             {buttons.signIn}
           </PrimaryButton>
-          <p
-            className={css({
-              color: localStorage.getItem("chat-text-basic"),
-            })}
-          >
+          <p className={whiteText}>
             {auth.new}{" "}
             <Link
               to="/sign-up"
-              className={`underline transition ${css({
-                color: localStorage.getItem("chat-text-basic"),
-                ":hover": {
-                  color: localStorage.getItem("chat-text-primary"),
-                },
-              })}`}
+              className={`underline transition ${whiteText} ${linkEmotion}`}
             >
               {buttons.signUp}
             </Link>{" "}
             {aux.or}{" "}
             <Link
               to="/sign-in-as-guest"
-              className={`underline transition ${css({
-                color: localStorage.getItem("chat-text-basic"),
-                ":hover": {
-                  color: localStorage.getItem("chat-text-primary"),
-                },
-              })}`}
+              className={`underline transition ${whiteText} ${linkEmotion}`}
             >
               {buttons.signInAsGuest}
             </Link>

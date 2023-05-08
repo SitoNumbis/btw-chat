@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+.main-backdrop-filter {
+  backdrop-filter: blur(4px);
+}
+
+.main-transition-ease {
+  transition: all 500ms ease;
+}
+
+.transform-rotate-y-180 {
+  transform: rotateY(-180deg);
+}
+
 body {
   @apply h-screen flex items-center justify-center;
 }
