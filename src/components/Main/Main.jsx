@@ -69,12 +69,27 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
 
         return sortBy(toReturn, "date", true);
       }
+      case "add-new": {
+        const { message } = action;
+        const toReturn = [...state];
+        toReturn.push(message);
+
+        return sortBy(toReturn, "date", true);
+      }
       case "plus-minute": {
         const newState = state.map((item) => {
           const parsedItem = { ...item };
           parsedItem.tick = item.tick ? 0 : item.tick + 1;
           return parsedItem;
         });
+        return newState;
+      }
+      case "set-as-sent": {
+        const { date, theDate } = action;
+        const newState = [...state];
+        const found = state.find((item) => item.date === date);
+        found.date = theDate;
+        delete found.loading;
         return newState;
       }
       case "new-message": {
@@ -184,19 +199,20 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           sender: {
             user: localStorage.getItem(config.userCookie),
           },
+          loading: true,
         };
         setMessages({
-          type: "add",
-          messages: [parsedMessage],
+          type: "add-new",
+          message: parsedMessage,
         });
         const response = await sendMessageRemote(parsedMessage);
         const data = await response.json();
         console.log(data);
-        /* setMessages({
+        setMessages({
           type: "set-as-sent",
           date,
           theDate: data.date,
-        }); */
+        });
       } catch (err) {
         console.error(err);
       }

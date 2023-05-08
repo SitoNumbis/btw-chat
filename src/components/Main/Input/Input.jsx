@@ -40,16 +40,42 @@ function Input({ socket, onSend, selectedChat }) {
   const onKeyDown = useCallback(() => {}, [history]);
   const onKeyUp = useCallback(() => {}, [history]);
 
+  const [typing, setTyping] = useState(false);
+
+  const [timerId, setTimerId] = useState(null);
+
+  useEffect(() => {
+    // Set up the timer when the component mounts
+    const id = setTimeout(() => {
+      setTyping(false);
+    }, 5000);
+    setTimerId(id);
+
+    // Clear the timer when the component unmounts
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [typing]);
+
+  // Cancel the timer when the component updates
+  useEffect(() => {
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+  }, [timerId]);
+
   const handleText = useCallback(
     (e) => {
       setMessage(e.target.value);
-      if (socket)
+      if (socket && !typing) {
         socket.emit("typing", {
           user: localStorage.getItem(config.userCookie),
           target: selectedChat.user,
         });
+        setTyping(true);
+      }
     },
-    [socket]
+    [socket, typing, selectedChat]
   );
 
   return (
