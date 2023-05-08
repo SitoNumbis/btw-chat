@@ -10,7 +10,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 // styles
 import styles from "./styles.module.css";
 
-function Input({ onSend }) {
+function Input({ socket, onSend }) {
   const [message, setMessage] = useState("");
 
   const { languageState } = useLanguage();
@@ -36,6 +36,15 @@ function Input({ onSend }) {
 
   const onKeyDown = useCallback(() => {}, [history]);
   const onKeyUp = useCallback(() => {}, [history]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("send-typing", onMessageReceived);
+      return () => {
+        socket.off("send-typing", onMessageReceived);
+      };
+    }
+  }, [socket]);
 
   return (
     <form

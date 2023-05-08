@@ -234,7 +234,7 @@ function ProfileInformationDialog({ editing }) {
             </div>
           </form>
         ) : (
-          <div className="flex flex-col items-center justify-start">
+          <div className="flex flex-col items-center justify-start gap-3">
             <div
               className={`relative ${css({
                 width: "130px",
