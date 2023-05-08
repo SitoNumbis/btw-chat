@@ -25,6 +25,7 @@ function Badge() {
     <div
       className={`${styles.badge} ${see ? "aGrow" : "aShrink"} ${css({
         background: localStorage.getItem("chat-text-primary"),
+        border: `1px solid ${localStorage.getItem("chat-main-bg")}`,
       })}`}
     ></div>
   ) : null;
