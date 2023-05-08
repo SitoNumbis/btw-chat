@@ -168,7 +168,7 @@ Navbar.propTypes = {
     name: PropTypes.string,
     bio: PropTypes.string,
     state: PropTypes.string,
-    lastMessage: PropTypes.string,
+    lastMessage: PropTypes.any,
     key: PropTypes.string,
   }),
   settings: PropTypes.bool,

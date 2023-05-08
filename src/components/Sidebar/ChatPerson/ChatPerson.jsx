@@ -151,7 +151,7 @@ ChatPerson.propTypes = {
   name: PropTypes.string,
   user: PropTypes.string,
   state: PropTypes.string,
-  lastMessage: PropTypes.object,
+  lastMessage: PropTypes.any,
   bio: PropTypes.string,
   index: PropTypes.number,
   selectChat: PropTypes.func,
