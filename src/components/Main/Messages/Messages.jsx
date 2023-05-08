@@ -101,7 +101,6 @@ function Messages({
       ) : (
         <>
           {messages.map((message, i) => {
-            console.log(message.date);
             if (i === 0 && messages.length === 0)
               return <Message key={message.date} {...message} />;
             else {

@@ -19,7 +19,9 @@ import { isSelf } from "../../../utils/users";
 import styles from "./styles.module.css";
 import config from "../../../config";
 
-function Message({ date, sender, message, join }) {
+import Loading from "../../Loading/Loading";
+
+function Message({ date, sender, message, join, loading }) {
   const { setDialogState } = useDialog();
 
   const { languageState } = useLanguage();
@@ -51,7 +53,16 @@ function Message({ date, sender, message, join }) {
     return css({
       minWidth: "28px",
       minHeight: "28px",
-    })
+    });
+  }, []);
+
+  const loadingEmotion = useMemo(() => {
+    return css({
+      padding: "0 !important",
+      svg: {
+        fontSize: "20px !important",
+      },
+    });
   }, []);
 
   return (
@@ -77,20 +88,29 @@ function Message({ date, sender, message, join }) {
           >
             {message}
           </p>
+
           {!join ? (
-            <button className={`w-7 h-7 ${imageEmotion}`} onClick={seeProfile}>
-              <img
-                className={`w-full h-full rounded-full cursor-pointer ${css({
-                  animation: "aGrow 0.4s ease 1",
-                })}`}
-                src={
-                  sender !== null && sender && sender.photo
-                    ? sender.photo
-                    : noPhoto
-                }
-                alt={sender !== null && sender ? sender.user : ""}
-              />
-            </button>
+            <div className={`w-7 h-7 ${imageEmotion}`}>
+              {loading ? (
+                <Loading className={loadingEmotion} />
+              ) : (
+                <button className="w-full h-full" onClick={seeProfile}>
+                  <img
+                    className={`w-full h-full rounded-full cursor-pointer ${css(
+                      {
+                        animation: "aGrow 0.4s ease 1",
+                      }
+                    )}`}
+                    src={
+                      sender !== null && sender && sender.photo
+                        ? sender.photo
+                        : noPhoto
+                    }
+                    alt={sender !== null && sender ? sender.user : ""}
+                  />
+                </button>
+              )}
+            </div>
           ) : (
             <div className={`w-7 h-7 ${imageEmotion}`}></div>
           )}
@@ -110,6 +130,7 @@ Message.propTypes = {
   date: PropTypes.number,
   sender: PropTypes.object,
   message: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
 const MessageMemo = memo((props) => <Message {...props} />, arePropsEqual);
@@ -119,7 +140,8 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.join === newProps.join &&
     oldProps.date === newProps.date &&
     oldProps.sender === newProps.sender &&
-    oldProps.message === newProps.message
+    oldProps.message === newProps.message &&
+    oldProps.loading === newProps.loading
   );
 }
 

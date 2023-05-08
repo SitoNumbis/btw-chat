@@ -47,6 +47,9 @@ function Chat() {
       console.log("connect", localStorage.getItem(config.userCookie));
       newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
     });
+    newSocket.on("plus-minute", (date) => {
+      localStorage.setItem("date", date);
+    });
 
     setSocket(newSocket);
     return () => {

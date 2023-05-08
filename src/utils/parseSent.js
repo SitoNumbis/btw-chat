@@ -4,7 +4,10 @@
  */
 export const parseSent = (sentDate) => {
   const now = new Date();
-  const subs = now.getTime() - sentDate;
+  const subs =
+    localStorage.getItem("date") !== null
+      ? Number(localStorage.getItem("date")) - sentDate
+      : now - sentDate;
   // checking minutes
   const minutes = Math.floor(subs / 1000 / 60);
   if (minutes < 60) return { count: minutes, type: "minutes" };
