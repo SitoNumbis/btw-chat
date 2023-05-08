@@ -207,7 +207,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         });
         const response = await sendMessageRemote(parsedMessage);
         const data = await response.json();
-        console.log(data);
         setMessages({
           type: "set-as-sent",
           date,

@@ -159,15 +159,25 @@ function ConnectionState({
     } else setDots("");
   }, [dots, currentState]);
 
+  const faceEmotion = useMemo(() => {
+    return css({ animation: "appear-small 0.5s ease 1" });
+  }, []);
+
   const icon = useMemo(() => {
     switch (currentState) {
       case "disconnected":
         return (
-          <FontAwesomeIcon className={`appear text-2xl`} icon={faFaceFrown} />
+          <FontAwesomeIcon
+            className={`${faceEmotion} text-2xl`}
+            icon={faFaceFrown}
+          />
         );
       case "connected":
         return (
-          <FontAwesomeIcon className={`appear text-2xl`} icon={faSmileBeam} />
+          <FontAwesomeIcon
+            className={`${faceEmotion} text-2xl`}
+            icon={faSmileBeam}
+          />
         );
       default: // connecting
         return (
