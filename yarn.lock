@@ -2551,6 +2551,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+use-lodash-debounce@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/use-lodash-debounce/-/use-lodash-debounce-1.3.0.tgz#b9807fe5131874c353220b1558fbc4b778dc6b00"
+  integrity sha512-qBLiqR+ozBXGEcdWRLjYtRv12jk34/SfPgs6gzyhyLJP1IqGITApw4GA2f2mpIxxDBs1vEuGnzz64oTVVyjDDg==
+
 use-screen-witdh@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/use-screen-witdh/-/use-screen-witdh-0.1.2.tgz#7a9dcea48c37ecc0e6f09cec178e7473648d97de"

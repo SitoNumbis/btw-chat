@@ -2,6 +2,7 @@ import { memo, useEffect, useCallback, useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import loadable from "@loadable/component";
 import debounce from "lodash.debounce";
+import { useDebounce } from "use-lodash-debounce";
 
 import useScreenSize from "use-screen-witdh";
 
@@ -98,9 +99,19 @@ function Sidebar({
   }, [languageState]);
 
   const [searchInput, setSearchInput] = useState("");
-  const handleSearchInput = useCallback((e) => {
-    setSearchInput(e.target.value);
-  }, []);
+  const debouncedValue = useDebounce(searchInput, 500);
+
+  useEffect(() => {
+    // do search stuff
+    fetchPerson(debouncedValue);
+  }, [debouncedValue]);
+
+  const handleSearchInput = useCallback(
+    (e) => {
+      setSearchInput(e.target.value);
+    },
+    [setSearchInput]
+  );
 
   const [showOffState, setShowOffState] = useState(false);
 
@@ -139,16 +150,10 @@ function Sidebar({
       }, 500);
   }, [seeing]);
 
-  // Define a function to handle the search when the user types
-  const handleSearch = debounce((searchText) => {
-    // Call the server search function with the current search text
-    fetchPerson(searchText);
-  }, 500); // Wait 500ms before calling the server search function
-
-  useEffect(() => {
+  /*   useEffect(() => {
     if (seeing === "simple" || seeing === "multi") fetchPerson();
     else handleSearch(searchInput);
-  }, [searchInput, seeing]);
+  }, [searchInput, seeing]); */
 
   const reconnect = useCallback(() => {
     fetchPerson(searchInput);

@@ -166,19 +166,15 @@ function Chat() {
           setErrorLoadingPerson(true);
         }
         const data = await response.json();
-        const list = data.list
-          .filter((remoteItem) => remoteItem.lastMessage)
-          .map((remoteItem) => {
-            const { key, lastMessage } = remoteItem;
-            const parsedLastMessage = CryptoJS.AES.decrypt(
-              lastMessage,
-              key
-            ).toString(CryptoJS.enc.Utf8);
-            return {
-              ...remoteItem,
-              lastMessage: JSON.parse(parsedLastMessage),
-            };
-          });
+        const list = data.list.map((remoteItem) => {
+          const { key, lastMessage } = remoteItem;
+          if (lastMessage) {
+            remoteItem.lastMessage = JSON.parse(
+              CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)
+            );
+          }
+          return remoteItem;
+        });
 
         if (name && name.length && !newOne)
           setSearchChats({ type: "add", list });
@@ -201,8 +197,8 @@ function Chat() {
 
   const selectChat = useCallback(
     async (user, searching, from = "") => {
+      if (selectedChat !== undefined && from === "location") return;
       if (!user) return setSelectedChat(undefined);
-
       if (searching) {
         const found = searchChats.find((localUser) => localUser.user === user);
         setSelectedChat(found);
