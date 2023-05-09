@@ -8,6 +8,9 @@ import { scrollTo } from "some-javascript-utils/browser";
 // @emotion/css
 import { css } from "@emotion/css";
 
+// utils
+import { isSelf } from "../../../utils/users";
+
 // styles
 import styles from "../styles.module.css";
 
@@ -15,6 +18,8 @@ import styles from "../styles.module.css";
 import Loading from "../../../components/Loading/Loading";
 const ToBottom = loadable(() => import("../../ToBottom/ToBottom"));
 const Message = loadable(() => import("../Message/Message"));
+const SentDate = loadable(() => import("../Message/SentDate"));
+const Bubble = loadable(() => import("../Message/Bubble"));
 
 function Messages({
   showConnectionState,
@@ -22,6 +27,7 @@ function Messages({
   settings,
   selectedChat,
   loading,
+  onRetry,
 }) {
   const messagesList = useRef(null);
 
@@ -90,6 +96,14 @@ function Messages({
     });
   }, [showConnectionState]);
 
+  const user = useCallback((sender) => {
+    if (sender !== null && sender) return isSelf(sender.user);
+  }, []);
+
+  const containerEmotion = useCallback((join) => {
+    return css({ marginBottom: join ? "-16px" : "" });
+  }, []);
+
   return (
     <div
       id="messages-list"
@@ -104,21 +118,94 @@ function Messages({
         <Loading />
       ) : (
         <>
-          {messages.map((message, i) => {
-            if (i === 0 && messages.length === 0)
-              return <Message key={message.date} {...message} />;
-            else {
-              if (i < messages.length - 1)
+          {messages.map(
+            ({ id, sender, date, message, loading, error, target }, i) => {
+              if (i === 0 && messages.length === 0)
                 return (
-                  <Message
-                    key={message.date}
-                    {...message}
-                    join={message.sender.user === messages[i + 1].sender.user}
-                  />
+                  <div
+                    key={id}
+                    className={`w-full flex flex-col ${
+                      user(sender) ? "items-end" : "items-start"
+                    } ${containerEmotion(false)}`}
+                  >
+                    <div
+                      className={`flex items-end justify-start gap-2 ${
+                        user(sender) ? "flex-row" : "flex-row-reverse"
+                      }`}
+                    >
+                      <Message message={message} sender={sender} />
+                      <Bubble loading={loading} sender={sender} />
+                    </div>
+                    <SentDate
+                      onRetry={onRetry}
+                      error={error}
+                      loading={loading}
+                      date={date}
+                      sender={sender}
+                    />
+                  </div>
                 );
-              else return <Message key={message.date} {...message} />;
+              else {
+                if (i < messages.length - 1)
+                  return (
+                    <div
+                      key={id}
+                      className={`w-full flex flex-col ${
+                        user(sender) ? "items-end" : "items-start"
+                      } ${containerEmotion(
+                        sender.user === messages[i + 1].sender.user
+                      )}`}
+                    >
+                      <div
+                        className={`flex items-end justify-start gap-2 ${
+                          user(sender) ? "flex-row" : "flex-row-reverse"
+                        }`}
+                      >
+                        <Message message={message} sender={sender} />
+                        <Bubble
+                          loading={loading}
+                          sender={sender}
+                          join={sender.user === messages[i + 1].sender.user}
+                        />
+                      </div>
+                      <SentDate
+                        onRetry={onRetry}
+                        error={error}
+                        loading={loading}
+                        date={date}
+                        sender={sender}
+                        join={sender.user === messages[i + 1].sender.user}
+                      />
+                    </div>
+                  );
+                else
+                  return (
+                    <div
+                      key={id}
+                      className={`w-full flex flex-col ${
+                        user(sender) ? "items-end" : "items-start"
+                      } ${containerEmotion(false)}`}
+                    >
+                      <div
+                        className={`flex items-end justify-start gap-2 ${
+                          user(sender) ? "flex-row" : "flex-row-reverse"
+                        }`}
+                      >
+                        <Message message={message} sender={sender} />
+                        <Bubble loading={loading} sender={sender} />
+                      </div>
+                      <SentDate
+                        onRetry={onRetry}
+                        error={error}
+                        loading={loading}
+                        date={date}
+                        sender={sender}
+                      />
+                    </div>
+                  );
+              }
             }
-          })}
+          )}
         </>
       )}
     </div>
@@ -139,6 +226,7 @@ Messages.propTypes = {
     key: PropTypes.string,
   }),
   showConnectionState: PropTypes.bool,
+  onRetry: PropTypes.func,
 };
 
 export default Messages;

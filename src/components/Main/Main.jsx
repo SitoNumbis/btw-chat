@@ -1,12 +1,10 @@
 import { useCallback, useState, useEffect, useReducer } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
-import { sortBy } from "some-javascript-utils/array";
 
 import useScreenSize from "use-screen-witdh";
 
 // @emotion/css
-import { css } from "@emotion/css";
 
 import PropTypes from "prop-types";
 import loadable from "@loadable/component";
@@ -71,14 +69,14 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           if (!found) toReturn.push(message);
         });
 
-        return sortBy(toReturn, "date", true);
+        return toReturn;
       }
       case "add-new": {
         const { message } = action;
         const toReturn = [...state];
         toReturn.push(message);
 
-        return sortBy(toReturn, "date", true);
+        return toReturn;
       }
       case "plus-minute": {
         const newState = state.map((item) => {
@@ -88,12 +86,33 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         });
         return newState;
       }
+      case "re-sent": {
+        const { message } = action;
+        delete message.error;
+        const toReturn = [...state];
+        const findIndex = toReturn.findIndex(
+          (localMessage) => localMessage.date === message.date
+        );
+        if (findIndex >= 0) toReturn.splice(findIndex, 1);
+        toReturn.push(message);
+        return toReturn;
+      }
+      case "set-as-error": {
+        const { date } = action;
+        const found = state.find((localMessage) => localMessage.date === date);
+        if (found) {
+          found.error = true;
+          delete found.loading;
+        }
+        return [...state];
+      }
       case "set-as-sent": {
         const { date, theDate } = action;
         const newState = [...state];
         const found = state.find((item) => item.date === date);
         found.date = theDate;
         delete found.loading;
+        delete found.error;
         return newState;
       }
       case "new-message": {
@@ -117,7 +136,8 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         if (loadingL) setLoading(true);
         try {
           const response = await fetchMessagesRemote(target, sender, page, 100);
-          const data = await response.json();
+          const { data } = response;
+          localStorage.setItem("date", data.date);
           const list = data.list.map((message) => {
             const parsedMessage = CryptoJS.AES.decrypt(
               message,
@@ -161,6 +181,10 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat, location]);
 
+  function isPushNotificationSupported() {
+    return "serviceWorker" in navigator && "PushManager" in window;
+  }
+
   const onMessageReceived = useCallback(
     (conversation) => {
       console.info("receiving messages");
@@ -168,7 +192,10 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       const senderUser = sender.user;
       if (selectedChat && selectedChat.user === senderUser)
         fetchMessages(target, senderUser, false);
-      else setNotificationState({ type: "set-badge", count: 1 });
+      else {
+        setNotificationState({ type: "set-badge", count: 1 });
+        isPushNotificationSupported();
+      }
     },
     [selectedChat, fetchMessages]
   );
@@ -193,24 +220,52 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   }, [socket, selectedChat]);
 
   const sendMessage = useCallback(
-    async (message) => {
-      try {
-        const date = new Date().getTime();
-        const parsedMessage = {
+    async (message, resent = false) => {
+      const date = new Date().getTime();
+      let parsedMessage = undefined;
+      if (typeof message === "string")
+        parsedMessage = {
+          id: date,
           message,
           date,
           target: selectedChat?.user,
           sender: {
             user: localStorage.getItem(config.userCookie),
           },
-          loading: true,
         };
-        setMessages({
-          type: "add-new",
-          message: parsedMessage,
-        });
-        const response = await sendMessageRemote(parsedMessage);
-        const data = await response.json();
+      else parsedMessage = message;
+      try {
+        let data = undefined;
+        if (!resent) {
+          setMessages({
+            type: "add-new",
+            message: { ...parsedMessage, loading: true },
+          });
+          const response = await sendMessageRemote(
+            selectedChat.user,
+            { user: localStorage.getItem(config.userCookie) },
+            CryptoJS.AES.encrypt(
+              JSON.stringify(parsedMessage),
+              selectedChat.key
+            ).toString()
+          );
+          data = response.data;
+        } else {
+          setMessages({
+            type: "re-sent",
+            message: { ...message, loading: true },
+          });
+          const response = await sendMessageRemote(
+            selectedChat.user,
+            { user: localStorage.getItem(config.userCookie) },
+            CryptoJS.AES.encrypt(
+              JSON.stringify(parsedMessage),
+              selectedChat.key
+            ).toString()
+          );
+          data = response.data;
+        }
+        localStorage.setItem("date", data.date);
         setMessages({
           type: "set-as-sent",
           date,
@@ -218,6 +273,10 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         });
       } catch (err) {
         console.error(err);
+        setMessages({
+          type: "set-as-error",
+          date: parsedMessage.date,
+        });
       }
     },
     [selectedChat]
@@ -261,6 +320,14 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     [setShowConnectionState]
   );
 
+  const onRetry = useCallback(
+    (date) => {
+      const find = messages.find((localMessage) => localMessage.date === date);
+      if (find) sendMessage(find, true);
+    },
+    [messages, sendMessage]
+  );
+
   return (
     <div className={`${styles.main} ${mainBG(88)}`}>
       <Navbar
@@ -288,6 +355,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
                 messages={messages}
                 selectedChat={selectedChat}
                 showConnectionState={showConnectionState}
+                onRetry={onRetry}
               />
               <Typing typing={typing} />
               <div className={styles.inputContainer}>

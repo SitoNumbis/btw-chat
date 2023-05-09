@@ -1,3 +1,5 @@
+import axios from "axios";
+
 // some-javascript-utils
 import { getCookie } from "some-javascript-utils/browser";
 
@@ -5,18 +7,26 @@ import config from "../../config";
 
 /**
  *
- * @param {object} message
+ * @param {string} target
+ * @param {object} sender
+ * @param {string} message
  * @returns
  */
-export const sendMessage = async (message) => {
-  const response = await fetch(`${config.apiUrl}/send-message`, {
-    method: "POST",
-    body: JSON.stringify(message),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+export const sendMessage = async (target, sender, message) => {
+  const response = await axios.post(
+    `${config.apiUrl}/send-message`,
+    {
+      target,
+      sender,
+      message,
     },
-  });
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
   return response;
 };
 
@@ -29,14 +39,16 @@ export const sendMessage = async (message) => {
  * @returns
  */
 export const fetchMessages = async (target, sender, page = 1, count = 20) => {
-  const response = await fetch(`${config.apiUrl}/fetch-messages`, {
-    method: "POST",
-    body: JSON.stringify({ target, sender, page, count }),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
-    },
-  });
+  const response = await axios.post(
+    `${config.apiUrl}/fetch-messages`,
+    { target, sender, page, count },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
   return response;
 };
 
@@ -47,17 +59,19 @@ export const fetchMessages = async (target, sender, page = 1, count = 20) => {
  * @returns
  */
 export const fetchChat = async (target, single) => {
-  const response = await fetch(`${config.apiUrl}/fetch-chats`, {
-    method: "POST",
-    body: JSON.stringify({
+  const response = await axios.post(
+    `${config.apiUrl}/fetch-chats`,
+    {
       user: localStorage.getItem(config.userCookie),
       target,
       single,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
     },
-  });
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
   return response;
 };

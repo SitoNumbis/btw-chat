@@ -31,9 +31,11 @@ function Input({ socket, onSend, selectedChat }) {
 
   const onSubmit = useCallback(
     (e) => {
-      setMessage("");
-      onSend(message);
       e.preventDefault();
+      if (message.length) {
+        setMessage("");
+        onSend(message);
+      }
     },
     [message, onSend]
   );
@@ -50,13 +52,17 @@ function Input({ socket, onSend, selectedChat }) {
   useEffect(() => {
     // Set up the timer when the component mounts
     const id = setTimeout(() => {
+      console.log("turned off");
       setTyping(false);
     }, 5000);
     setTimerId(id);
+    console.log(id);
 
     // Clear the timer when the component unmounts
     return () => {
+      console.log("cleaned");
       clearTimeout(timerId);
+      setTyping(false);
     };
   }, [typing]);
 
@@ -64,18 +70,20 @@ function Input({ socket, onSend, selectedChat }) {
   useEffect(() => {
     if (timerId) {
       clearTimeout(timerId);
+      setTyping(false);
     }
   }, [timerId]);
 
   const handleText = useCallback(
     (e) => {
       setMessage(e.target.value);
+      console.log(typing);
       if (socket && !typing) {
+        setTyping(true);
         socket.emit("typing", {
           user: localStorage.getItem(config.userCookie),
           target: selectedChat.user,
         });
-        setTyping(true);
       }
     },
     [socket, typing, selectedChat]

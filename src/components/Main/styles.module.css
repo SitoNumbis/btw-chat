@@ -11,7 +11,7 @@
 .inputContainer {
   flex-shrink: 0;
   min-height: 40px;
-  @apply px-10 my-5;
+  @apply px-10 mb-5;
 }
 
 @media (max-width: 850px) {

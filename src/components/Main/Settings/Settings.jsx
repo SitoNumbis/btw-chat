@@ -97,7 +97,7 @@ function Settings() {
             }
           />
           <button
-            className={`top-0 right-0 absolute text-2xl rounded-full w-10 h-10 main-transition-ease ${cameraEmotion}`}
+            className={`!cursor-pointer top-0 right-0 absolute text-2xl rounded-full w-10 h-10 main-transition-ease ${cameraEmotion}`}
           >
             <FontAwesomeIcon icon={faCamera} />
           </button>

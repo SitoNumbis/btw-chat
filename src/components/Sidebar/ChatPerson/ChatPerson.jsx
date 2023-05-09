@@ -11,7 +11,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 import noPhoto from "../../../assets/images/no-photo.webp";
 
 // utils
-import { parseSentAsDate } from "../../../utils/parseSent";
+import { parseSent } from "../../../utils/parseSent";
 
 // styles
 import Colors from "../../../assets/emotion/color";
@@ -50,19 +50,15 @@ function ChatPerson(props) {
 
   const { languageState } = useLanguage();
 
-  const { aux, messageT } = useMemo(() => {
+  const { aux } = useMemo(() => {
     return {
       aux: languageState.texts.aux,
-      messageT: languageState.texts.main.message,
     };
   }, [languageState]);
 
-  const printDate = useCallback(
-    (date) => {
-      if (date) return parseSentAsDate(date, messageT);
-    },
-    [messageT]
-  );
+  const printDate = useCallback((date) => {
+    if (date) return parseSent(date);
+  }, []);
 
   const [updateLastMessage, setUpdateLastMessage] = useState(false);
 
@@ -76,7 +72,7 @@ function ChatPerson(props) {
   const printLastMessage = useCallback(() => {
     return (
       <div className="w-full flex items-center justify-between">
-        <p className="appear">
+        <p className="appear-small">
           {`${
             lastMessage.sender.user === localStorage.getItem(config.userCookie)
               ? aux.you

@@ -11,7 +11,7 @@
 
 @media (max-width: 850px) {
   .navbar {
-    @apply pl-2 pr-2;
+    @apply pl-0 pr-2;
   }
 
   .closeButton {

@@ -54,6 +54,10 @@ function Chat() {
       console.log("connect", localStorage.getItem(config.userCookie));
       newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
     });
+    newSocket.on("user-logged", (options) => {
+      const { date } = options;
+      localStorage.setItem("date", date);
+    });
     newSocket.on("plus-minute", (date) => {
       localStorage.setItem("date", date);
     });
@@ -172,7 +176,7 @@ function Chat() {
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }
-        const data = await response.json();
+        const { data } = response;
         const list = data.list.map((remoteItem) => {
           const { key, lastMessage } = remoteItem;
           if (lastMessage) {
@@ -216,7 +220,18 @@ function Chat() {
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }
-        const { list } = await response.json();
+        const { data } = response;
+
+        const list = data.list.map((remoteItem) => {
+          const { key, lastMessage } = remoteItem;
+          if (lastMessage) {
+            remoteItem.lastMessage = JSON.parse(
+              CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)
+            );
+          }
+          return remoteItem;
+        });
+
         if (list.length) setSelectedChat(list[0]);
       } else {
         const found = chats.find((localUser) => localUser.user === user);

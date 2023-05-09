@@ -85,6 +85,7 @@
       }
     },
     "errors": {
+      "notSent": "Error",
       "notConnected": "No tienes conexión con el servidor"
     },
     "buttons": {

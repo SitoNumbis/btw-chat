@@ -69,7 +69,7 @@ function ProfileInformationDialog({ editing }) {
         );
       default:
         return (
-          <div className={`flex items-center gap-2 ${whiteText}}`}>
+          <div className={`flex items-center gap-2 ${whiteText}`}>
             {languageState.texts.states.connected}
             <div className="w-3 h-3 rounded-full bg-success"></div>
           </div>
@@ -130,7 +130,7 @@ function ProfileInformationDialog({ editing }) {
     setLoading(true);
     try {
       const response = await fetchChat(editing, true);
-      const { list } = await response.json();
+      const { list } = response.data;
       const [data] = list;
       const { user, name, photo, bio, state } = data;
       localStorage.setItem(`${editing}user`, user);

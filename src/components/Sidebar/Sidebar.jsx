@@ -1,5 +1,5 @@
 import { memo, useEffect, useCallback, useState, useMemo } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import loadable from "@loadable/component";
 import { useDebounce } from "use-lodash-debounce";
 
@@ -20,6 +20,7 @@ import {
   faUserGroup,
   faSadCry,
   faRotateLeft,
+  faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
 // @emotion/css
@@ -211,6 +212,17 @@ function Sidebar({
     });
   }, []);
 
+  const linkEmotion = useMemo(() => {
+    return css({
+      "@media (min-width:851px)": {
+        display: "none",
+      },
+      ":hover": {
+        color: localStorage.getItem("chat-text-primary"),
+      },
+    });
+  }, []);
+
   return (
     <div
       className={`${styles.sidebar} ${css({
@@ -240,6 +252,12 @@ function Sidebar({
             {localStorage.getItem(config.userNameCookie)}
           </h2>
           {printState}
+          <Link
+            to="/sign-out"
+            className={`appear relative flex items-center justify-center main-transition-ease ${whiteText} ${linkEmotion}`}
+          >
+            <FontAwesomeIcon icon={faArrowRightFromBracket} />
+          </Link>
         </button>
         <button
           tabIndex={-1}
