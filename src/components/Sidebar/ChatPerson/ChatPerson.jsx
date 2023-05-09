@@ -1,4 +1,5 @@
 import { memo, useMemo, useState, useCallback, useEffect } from "react";
+import loadable from "@loadable/component";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -19,8 +20,12 @@ import Colors from "../../../assets/emotion/color";
 // config
 import config from "../../../config";
 
+// components
+const Typing = loadable(() => import("../../Main/Typing/Typing"));
+
 function ChatPerson(props) {
   const {
+    socket,
     photo,
     user,
     name,
@@ -100,6 +105,28 @@ function ChatPerson(props) {
     });
   }, []);
 
+  const [typing, setTyping] = useState(false);
+  const targetTyping = useCallback(
+    (userR) => {
+      if (userR.user === user) {
+        setTyping(true);
+        setTimeout(() => {
+          setTyping(false);
+        }, 5000);
+      }
+    },
+    [user, setTyping]
+  );
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("typing", targetTyping);
+      return () => {
+        socket.off("typing", targetTyping);
+      };
+    }
+  }, [socket, user]);
+
   return (
     <button
       type="button"
@@ -121,26 +148,30 @@ function ChatPerson(props) {
           </p>
           {printState()}
         </div>
-        <div className={`!text-placeholder-dark !italic !text-left h-6`}>
-          {!updateLastMessage ? (
-            <>
-              {lastMessage ? (
-                printLastMessage()
-              ) : (
-                <p>
-                  {bio?.substring(0, 18)}
-                  {!lastMessage && bio && bio.length > 18 ? "..." : ""}
-                </p>
-              )}
-            </>
-          ) : null}
-        </div>
+        <Typing typing={typing} />
+        {typing ? (
+          <div className={`!text-placeholder-dark !italic !text-left h-6`}>
+            {!updateLastMessage ? (
+              <>
+                {lastMessage ? (
+                  printLastMessage()
+                ) : (
+                  <p>
+                    {bio?.substring(0, 18)}
+                    {!lastMessage && bio && bio.length > 18 ? "..." : ""}
+                  </p>
+                )}
+              </>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </button>
   );
 }
 
 ChatPerson.propTypes = {
+  socket: PropTypes.object,
   photo: PropTypes.string,
   name: PropTypes.string,
   user: PropTypes.string,
@@ -160,6 +191,7 @@ const ChatPersonMemo = memo(
 
 function arePropsEqual(oldProps, newProps) {
   return (
+    oldProps.socket === newProps.socket &&
     oldProps.photo === newProps.photo &&
     oldProps.user === newProps.user &&
     oldProps.name === newProps.name &&

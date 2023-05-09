@@ -201,12 +201,17 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   );
 
   const [typing, setTyping] = useState(false);
-  const targetTyping = useCallback(() => {
-    setTyping(true);
-    setTimeout(() => {
-      setTyping(false);
-    }, 5000);
-  }, [selectedChat, setTyping]);
+  const targetTyping = useCallback(
+    (user) => {
+      if (user.user === selectedChat.user) {
+        setTyping(true);
+        setTimeout(() => {
+          setTyping(false);
+        }, 5000);
+      }
+    },
+    [selectedChat, setTyping]
+  );
 
   useEffect(() => {
     if (socket) {
