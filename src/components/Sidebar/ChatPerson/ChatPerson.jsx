@@ -160,8 +160,9 @@ function ChatPerson(props) {
           </p>
           {printState()}
         </div>
+
         <Typing typing={typing} />
-        {typing ? (
+        {!typing ? (
           <div className={`!text-placeholder-dark !italic !text-left h-6`}>
             {!updateLastMessage ? (
               <>
