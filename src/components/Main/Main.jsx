@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect, useReducer } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
+import { useDebounce } from "use-lodash-debounce";
 
 import useScreenSize from "use-screen-witdh";
 
@@ -198,17 +199,25 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   );
 
   const [typing, setTyping] = useState(false);
+  const [typingV, setTypingV] = useState("");
+
+  const debouncedValue = useDebounce(typingV, 5000);
+
+  useEffect(() => {
+    console.log("debounced", debouncedValue);
+    setTyping(false);
+    setTypingV("");
+  }, [debouncedValue]);
+
   const targetTyping = useCallback(
     (user) => {
-      if (selectedChat)
-        if (user.user === selectedChat.user) {
-          setTyping(true);
-          setTimeout(() => {
-            setTyping(false);
-          }, 5000);
-        }
+      if (selectedChat && user.user === selectedChat.user) {
+        console.log("typing...");
+        setTypingV(typingV + "a");
+        setTyping(true);
+      }
     },
-    [selectedChat, setTyping]
+    [selectedChat, setTyping, typingV, setTypingV]
   );
 
   useEffect(() => {
@@ -220,7 +229,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         socket.off("typing", targetTyping);
       };
     }
-  }, [socket, selectedChat]);
+  }, [socket, targetTyping, onMessageReceived]);
 
   const sendMessage = useCallback(
     async (message, resent = false) => {

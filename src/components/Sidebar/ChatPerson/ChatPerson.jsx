@@ -1,6 +1,7 @@
 import { memo, useMemo, useState, useCallback, useEffect } from "react";
 import loadable from "@loadable/component";
 import PropTypes from "prop-types";
+import { useDebounce } from "use-lodash-debounce";
 
 // @emotion/css
 import { css } from "@emotion/css";
@@ -112,16 +113,23 @@ function ChatPerson(props) {
   }, []);
 
   const [typing, setTyping] = useState(false);
+  const [typingV, setTypingV] = useState("");
+
+  const debouncedValue = useDebounce(typingV, 5000);
+  useEffect(() => {
+    console.log("debounced", debouncedValue);
+    setTyping(false);
+    setTypingV("");
+  }, [debouncedValue]);
+
   const targetTyping = useCallback(
     (userR) => {
       if (userR.user === user) {
+        setTypingV(typingV + "B");
         setTyping(true);
-        setTimeout(() => {
-          setTyping(false);
-        }, 5000);
       }
     },
-    [user, setTyping]
+    [user, setTyping, typingV, setTypingV]
   );
 
   const personUpdateState = useCallback(
@@ -165,7 +173,6 @@ function ChatPerson(props) {
           {printState()}
         </div>
 
-        <Typing typing={typing} />
         {!typing ? (
           <div className={`!text-placeholder-dark !italic !text-left h-6`}>
             {!updateLastMessage ? (
@@ -181,7 +188,9 @@ function ChatPerson(props) {
               </>
             ) : null}
           </div>
-        ) : null}
+        ) : (
+          <Typing typing={typing} />
+        )}
       </div>
     </button>
   );

@@ -112,7 +112,8 @@ function Navbar({
   const personUpdateState = useCallback(
     (options) => {
       const { to } = options;
-      if (options.user === selectedChat.user) setLocalState(to);
+      if (selectedChat)
+        if (options.user === selectedChat.user) setLocalState(to);
     },
     [setLocalState, selectedChat]
   );

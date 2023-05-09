@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo, useEffect } from "react";
+import { useCallback, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -45,44 +45,17 @@ function Input({ socket, onSend, selectedChat }) {
   const onKeyDown = useCallback(() => {}, [history]);
   const onKeyUp = useCallback(() => {}, [history]);
 
-  const [typing, setTyping] = useState(false);
-
-  const [timerId, setTimerId] = useState(null);
-
-  useEffect(() => {
-    // Set up the timer when the component mounts
-    const id = setTimeout(() => {
-      setTyping(false);
-    }, 5000);
-    setTimerId(id);
-
-    // Clear the timer when the component unmounts
-    return () => {
-      clearTimeout(timerId);
-      setTyping(false);
-    };
-  }, [typing]);
-
-  // Cancel the timer when the component updates
-  useEffect(() => {
-    if (timerId) {
-      clearTimeout(timerId);
-      setTyping(false);
-    }
-  }, [timerId]);
-
   const handleText = useCallback(
     (e) => {
       setMessage(e.target.value);
-      if (socket && !typing) {
-        setTyping(true);
+      if (socket) {
         socket.emit("typing", {
           user: localStorage.getItem(config.userCookie),
           target: selectedChat.user,
         });
       }
     },
-    [socket, typing, selectedChat]
+    [socket, selectedChat]
   );
 
   const inputEmotion = useMemo(() => {
