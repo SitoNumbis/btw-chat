@@ -77,7 +77,7 @@ function Sidebar({
       const { user } = sender;
       fetchPerson(user, true, false);
     },
-    [chats, searchChats, multiChats, fetchPerson]
+    [chats, searchChats, multiChats, fetchPerson, location]
   );
 
   useEffect(() => {
@@ -173,10 +173,11 @@ function Sidebar({
         {...chat}
         selectChat={selectLocalChat}
         searching
+        socket={socket}
         active={chat.user === user}
       />
     ));
-  }, [searchChats, selectLocalChat, location]);
+  }, [searchChats, selectLocalChat, location, socket]);
 
   const printChats = useCallback(() => {
     const { search } = location;
@@ -189,10 +190,11 @@ function Sidebar({
         {...chat}
         selectChat={selectLocalChat}
         searching={false}
+        socket={socket}
         active={chat.user === user}
       />
     ));
-  }, [chats, selectLocalChat, location]);
+  }, [chats, selectLocalChat, location, socket]);
 
   const printState = useMemo(() => {
     switch (localStorage.getItem(config.userStateCookie)) {

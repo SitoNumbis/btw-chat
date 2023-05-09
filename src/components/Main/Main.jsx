@@ -192,23 +192,21 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       const senderUser = sender.user;
       if (selectedChat && selectedChat.user === senderUser)
         fetchMessages(target, senderUser, false);
-      else {
-        setNotificationState({ type: "set-badge", count: 1 });
-        isPushNotificationSupported();
-      }
+      else setNotificationState({ type: "set-badge", count: 1 });
     },
-    [selectedChat, fetchMessages]
+    [selectedChat, fetchMessages, setNotificationState]
   );
 
   const [typing, setTyping] = useState(false);
   const targetTyping = useCallback(
     (user) => {
-      if (user.user === selectedChat.user) {
-        setTyping(true);
-        setTimeout(() => {
-          setTyping(false);
-        }, 5000);
-      }
+      if (selectedChat)
+        if (user.user === selectedChat.user) {
+          setTyping(true);
+          setTimeout(() => {
+            setTyping(false);
+          }, 5000);
+        }
     },
     [selectedChat, setTyping]
   );
@@ -336,6 +334,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   return (
     <div className={`${styles.main} ${mainBG(88)}`}>
       <Navbar
+        socket={socket}
         settings={settings}
         goToSettings={goToSettings}
         toggleSidebar={toggleSidebar}

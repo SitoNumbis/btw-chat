@@ -30,6 +30,9 @@ import { parseQueries } from "../../utils/parsers";
 // contexts
 import { useDialog } from "../../context/DialogProvider";
 
+// images
+import noPhoto from "../../assets/images/no-photo.webp";
+
 // components
 import Loading from "../../components/Loading/Loading";
 
@@ -166,6 +169,8 @@ function Chat() {
   const [searchChats, setSearchChats] = useReducer(chatsReducer, []);
   const [multiChats, setMultiChats] = useReducer(chatsReducer, []);
 
+  const [selectedChat, setSelectedChat] = useState(undefined);
+
   const fetchPerson = useCallback(
     async (name, newOne, loading = true) => {
       setErrorLoadingPerson(false);
@@ -195,16 +200,29 @@ function Chat() {
             setLoading(false);
           }, 1000);
         else setLoading(false);
+        if (name && name.length) {
+          const [lastUser] = list;
+          const { lastMessage } = lastUser;
+          const theMessage = lastMessage.message;
+          try {
+            new Notification(lastUser.name, {
+              body: theMessage,
+              icon: lastMessage.sender.photo
+                ? lastMessage.sender.photo
+                : noPhoto,
+            });
+          } catch (err) {
+            console.error(err);
+          }
+        }
       } catch (err) {
         console.error(err);
         setErrorLoadingPerson(true);
         setLoading(false);
       }
     },
-    [setSearchChats, setChats]
+    [setSearchChats, setChats, selectedChat, chats]
   );
-
-  const [selectedChat, setSelectedChat] = useState(undefined);
 
   const selectChat = useCallback(
     async (user, searching, from = "") => {

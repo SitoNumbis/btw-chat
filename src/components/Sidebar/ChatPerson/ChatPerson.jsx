@@ -40,7 +40,11 @@ function ChatPerson(props) {
 
   const { whiteText } = Colors();
 
-  const [localState, setLocalState] = useState(state);
+  const [localState, setLocalState] = useState("disconnected");
+
+  useEffect(() => {
+    setLocalState(state);
+  }, [state]);
 
   const printState = useCallback(() => {
     switch (localState) {
@@ -137,7 +141,7 @@ function ChatPerson(props) {
         socket.off("user-update-state", personUpdateState);
       };
     }
-  }, [socket, user]);
+  }, [socket, personUpdateState, targetTyping]);
 
   return (
     <button

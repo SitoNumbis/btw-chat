@@ -54,6 +54,10 @@ function Navbar({
 
   const [localState, setLocalState] = useState(selectedChat?.state);
 
+  useEffect(() => {
+    setLocalState(selectedChat?.state);
+  }, [selectedChat]);
+
   const printState = useMemo(() => {
     switch (localState) {
       case "disconnected":

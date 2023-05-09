@@ -19,7 +19,7 @@ import { logoutUser, userLogged } from "./utils/auth";
 
 // components
 import Loading from "./components/Loading/Loading";
-const Notification = loadable(() =>
+const NotificationC = loadable(() =>
   import("./components/Notification/Notification")
 );
 
@@ -59,6 +59,28 @@ function App() {
 
   const [loading, setLoading] = useState(true);
 
+  /**
+   * asks user consent to receive push notifications and returns the response of the user, one of granted, default, denied
+   */
+  async function askUserPermission() {
+    if ("Notification" in window) {
+      Notification.requestPermission()
+        .then(function (permission) {
+          if (permission === "granted") {
+            // User has granted permission to show notifications
+          }
+        })
+        .catch(function (error) {
+          console.error(
+            "Error requesting permission for notifications:",
+            error
+          );
+        });
+    } else {
+      console.error("Notifications are not supported in this browser.");
+    }
+  }
+
   useEffect(() => {
     try {
       setLanguageState({ type: "set", lang: getUserLanguage(config.language) });
@@ -73,11 +95,13 @@ function App() {
     if (userLogged()) fetch();
     // else window.location.href = "/auth";
     setLoading(false);
+
+    askUserPermission();
   }, []);
 
   return (
     <Suspense>
-      <Notification />
+      <NotificationC />
       <BrowserRouter>
         <Routes>
           {localStorage.getItem(config.userCookie) === null ? (
