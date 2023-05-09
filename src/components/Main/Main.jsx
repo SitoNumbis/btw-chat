@@ -139,27 +139,29 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           const response = await fetchMessagesRemote(target, sender, page, 100);
           const { data } = response;
           localStorage.setItem("date", data.date);
-          const list = data.list.map((message) => {
-            const parsedMessage = CryptoJS.AES.decrypt(
-              message,
-              selectedChat.key
-            ).toString(CryptoJS.enc.Utf8);
-            return JSON.parse(parsedMessage);
-          });
-          if (list) {
-            if (oldChat === target)
-              setMessages({
-                type: "add",
-                messages: list,
-              });
-            else
-              setMessages({
-                type: "init",
-                messages: list,
-              });
-          }
+          if (data.list) {
+            const list = data.list.map((message) => {
+              const parsedMessage = CryptoJS.AES.decrypt(
+                message,
+                selectedChat.key
+              ).toString(CryptoJS.enc.Utf8);
+              return JSON.parse(parsedMessage);
+            });
+            if (list) {
+              if (oldChat === target)
+                setMessages({
+                  type: "add",
+                  messages: list,
+                });
+              else
+                setMessages({
+                  type: "init",
+                  messages: list,
+                });
+            }
 
-          setOldChat(target);
+            setOldChat(target);
+          }
         } catch (err) {
           console.error(err);
         }
