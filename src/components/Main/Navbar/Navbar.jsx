@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useState, useEffect, useCallback, useMemo } from "react";
 import loadable from "@loadable/component";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -52,14 +52,16 @@ function Navbar({
     };
   }, [languageState]);
 
-  const printState = useCallback(() => {
-    switch (selectedChat?.state) {
+  const [localState, setLocalState] = useState(selectedChat?.state);
+
+  const printState = useMemo(() => {
+    switch (localState) {
       case "disconnected":
         return <span className="w-3 h-3 rounded-full bg-l-error"></span>;
       default:
         return <span className="w-3 h-3 rounded-full bg-success"></span>;
     }
-  }, [selectedChat]);
+  }, [localState]);
 
   const barsEmotion = useMemo(() => {
     return css({
@@ -103,6 +105,23 @@ function Navbar({
     });
   }, []);
 
+  const personUpdateState = useCallback(
+    (options) => {
+      const { to } = options;
+      if (options.user === selectedChat.user) setLocalState(to);
+    },
+    [setLocalState, selectedChat]
+  );
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("user-update-state", personUpdateState);
+      return () => {
+        socket.off("user-update-state", personUpdateState);
+      };
+    }
+  }, [socket, personUpdateState]);
+
   return (
     <div className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
       <div className="flex gap-3 items-center w-full h-full justify-between">
@@ -131,7 +150,7 @@ function Navbar({
               <p className={`font-semibold ${whiteText}`}>
                 {selectedChat?.name}
               </p>
-              {printState()}
+              {printState}
             </button>
           ) : (
             <h2 className={`${whiteText}`}>{navbar.title}</h2>

@@ -362,8 +362,9 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
                 showConnectionState={showConnectionState}
                 onRetry={onRetry}
               />
-              <Typing typing={typing} />
+
               <div className={styles.inputContainer}>
+                <Typing typing={typing} />
                 <Input
                   onSend={sendMessage}
                   socket={socket}

@@ -40,14 +40,16 @@ function ChatPerson(props) {
 
   const { whiteText } = Colors();
 
+  const [localState, setLocalState] = useState(state);
+
   const printState = useCallback(() => {
-    switch (state) {
+    switch (localState) {
       case "disconnected":
         return <span className="w-3 h-3 rounded-full bg-l-error"></span>;
       default:
         return <span className="w-3 h-3 rounded-full bg-success"></span>;
     }
-  }, [state]);
+  }, [localState]);
 
   const handleClick = useCallback(() => {
     selectChat(user, searching);
@@ -118,11 +120,21 @@ function ChatPerson(props) {
     [user, setTyping]
   );
 
+  const personUpdateState = useCallback(
+    (options) => {
+      const { to } = options;
+      if (options.user === user) setLocalState(to);
+    },
+    [setLocalState, user]
+  );
+
   useEffect(() => {
     if (socket) {
       socket.on("typing", targetTyping);
+      socket.on("user-update-state", personUpdateState);
       return () => {
         socket.off("typing", targetTyping);
+        socket.off("user-update-state", personUpdateState);
       };
     }
   }, [socket, user]);
