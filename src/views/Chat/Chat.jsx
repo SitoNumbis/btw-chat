@@ -205,7 +205,6 @@ function Chat() {
           }, 1000);
         else setLoading(false);
         if (name && name.length && newOne && list) {
-          console.log(list);
           const [lastUser] = list;
           const { lastMessage } = lastUser;
           const theMessage = lastMessage.message;
@@ -247,7 +246,7 @@ function Chat() {
 
         const list = data.list.map((remoteItem) => {
           const { key, lastMessage } = remoteItem;
-          console.log(key, lastMessage);
+
           if (lastMessage) {
             remoteItem.lastMessage = JSON.parse(
               CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)

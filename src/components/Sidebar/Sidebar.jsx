@@ -346,7 +346,7 @@ function Sidebar({
           </button>
         </div>
       ) : (
-        <>
+        <div>
           {seeing === "search" ? (
             <>
               <SearchInput
@@ -397,7 +397,7 @@ function Sidebar({
               ) : null}
             </>
           ) : null}
-        </>
+        </div>
       )}
     </div>
   );
