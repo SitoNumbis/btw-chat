@@ -1,6 +1,7 @@
 import { useMemo, useRef, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
+import useScreenSize from "use-screen-witdh";
 import loadable from "@loadable/component";
 
 import { scrollTo } from "some-javascript-utils/browser";
@@ -25,15 +26,10 @@ const Message = loadable(() => import("../Message/Message"));
 const SentDate = loadable(() => import("../Message/SentDate"));
 const Bubble = loadable(() => import("../Message/Bubble"));
 
-function Messages({
-  showConnectionState,
-  messages,
-  settings,
-  selectedChat,
-  loading,
-  onRetry,
-}) {
+function Messages({ messages, settings, selectedChat, loading, onRetry }) {
   const messagesList = useRef(null);
+
+  const { width } = useScreenSize();
 
   const { canGoBottomState, setCanGoBottomState } = useCanGoBottom();
 
@@ -76,7 +72,7 @@ function Messages({
 
   useEffect(() => {
     if (selectedChat && !loading) {
-      scrollTo(window.innerHeight);
+      // scrollTo(window.innerHeight);
       setTimeout(() => {
         if (messagesList.current !== null)
           messagesList.current.scrollTo({
@@ -93,12 +89,12 @@ function Messages({
   }, [messages]);
 
   const listEmotion = useMemo(() => {
-    return css({
-      height: showConnectionState
-        ? `calc(${window.innerHeight}px - 170px)`
-        : `calc(${window.innerHeight}px - 130px)`,
-    });
-  }, [showConnectionState]);
+    return width > 850
+      ? css({
+          height: `calc(${window.innerHeight}px - 170px)`,
+        })
+      : css({ height: `calc(${window.innerHeight}px - 130px)` });
+  }, [width]);
 
   const user = useCallback((sender) => {
     if (sender !== null && sender) return isSelf(sender.user);
@@ -115,7 +111,7 @@ function Messages({
       className={`${styles.messages} ${listEmotion}`}
     >
       <ToBottom />
-      <p className="text-placeholder-dark italic mx-auto">
+      <p className="text-placeholder-dark italic mx-auto text-center">
         {selectedChat?.bio}
       </p>
       {loading ? (
@@ -229,7 +225,7 @@ Messages.propTypes = {
     lastMessage: PropTypes.any,
     key: PropTypes.string,
   }),
-  showConnectionState: PropTypes.bool,
+
   onRetry: PropTypes.func,
 };
 

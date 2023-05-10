@@ -7,7 +7,7 @@
 }
 
 .main {
-  @apply h-full p-10 w-full;
+  @apply h-full w-full;
 }
 
 @media (max-width: 850px) {

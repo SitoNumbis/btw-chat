@@ -54,3 +54,15 @@
   -webkit-animation-delay: 400ms;
   animation-delay: 400ms;
 }
+
+.typing {
+  position: fixed;
+  bottom: 55px;
+  left: 2.5rem;
+}
+
+@media (max-width: 850px) {
+  .typing {
+    left: 8px;
+  }
+}

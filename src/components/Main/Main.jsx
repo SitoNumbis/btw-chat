@@ -12,6 +12,7 @@ import loadable from "@loadable/component";
 
 // contexts
 import { useNotification } from "../../context/NotificationProvider";
+import { useCanGoBottom } from "../../context/CanGoBottomProvider";
 
 // styles
 import styles from "./styles.module.css";
@@ -49,6 +50,7 @@ function Main({
 }) {
   const { mainBG } = Colors();
 
+  const { canGoBottomState } = useCanGoBottom();
   const { setNotificationState } = useNotification();
 
   const [showOffState, setShowOffState] = useState(false);
@@ -74,7 +76,6 @@ function Main({
         const toReturn = [...state];
         messages.forEach((message) => {
           const found = toReturn.find((localMessage) => {
-            console.log(localMessage.date, message.date);
             return localMessage.date === message.date;
           });
           if (!found) toReturn.push(message);
@@ -86,7 +87,6 @@ function Main({
         const { message } = action;
         const toReturn = [...state];
         const found = toReturn.find((localMessage) => {
-          console.log(localMessage.date, message.date);
           return localMessage.date === message.date;
         });
         if (!found) toReturn.push(message);
@@ -202,11 +202,14 @@ function Main({
       console.info("receiving messages");
       const { target, sender } = conversation;
       const senderUser = sender.user;
-      if (selectedChat && selectedChat.user === senderUser)
+      if (selectedChat && selectedChat.user === senderUser) {
         fetchMessages(target, senderUser, false);
-      else setNotificationState({ type: "set-badge", count: 1 });
+
+        if (canGoBottomState)
+          setNotificationState({ type: "set-badge", count: 1 });
+      } else setNotificationState({ type: "set-badge", count: 1 });
     },
-    [selectedChat, fetchMessages, setNotificationState]
+    [selectedChat, fetchMessages, setNotificationState, canGoBottomState]
   );
 
   const [typing, setTyping] = useState(false);
@@ -356,14 +359,6 @@ function Main({
     if (selectedChat) setSettings(false);
   }, [selectedChat]);
 
-  const [showConnectionState, setShowConnectionState] = useState(true);
-  const handleShowConnectionState = useCallback(
-    (value) => {
-      setShowConnectionState(value);
-    },
-    [setShowConnectionState]
-  );
-
   const onRetry = useCallback(
     (date) => {
       const find = messages.find((localMessage) => localMessage.date === date);
@@ -382,14 +377,7 @@ function Main({
         selectedChat={selectedChat}
       />
       {showOffState ? (
-        <ConnectionState
-          isInNavbar
-          main
-          socket={socket}
-          settings={settings}
-          stateConnectionState={showConnectionState}
-          listenChangeState={handleShowConnectionState}
-        />
+        <ConnectionState isInNavbar main socket={socket} settings={settings} />
       ) : null}
       {!settings ? (
         <>
@@ -400,12 +388,10 @@ function Main({
                 settings={settings}
                 messages={messages}
                 selectedChat={selectedChat}
-                showConnectionState={showConnectionState}
                 onRetry={onRetry}
               />
-
               <div className={styles.inputContainer}>
-                <Typing typing={typing} />
+                <Typing typing={typing} main />
                 <Input
                   onSend={sendMessage}
                   socket={socket}

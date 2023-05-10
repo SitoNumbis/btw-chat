@@ -19,14 +19,7 @@ import { useLanguage } from "../../context/LanguageProvider";
 // styles
 import "./styles.css";
 
-function ConnectionState({
-  socket,
-  main,
-  settings,
-  stateConnectionState,
-  listenChangeState,
-  isInNavbar,
-}) {
+function ConnectionState({ socket, main, settings, isInNavbar }) {
   const { languageState } = useLanguage();
 
   const { states } = useMemo(() => {
@@ -132,22 +125,20 @@ function ConnectionState({
 
   const [height, setHeight] = useState("44px");
 
+  useEffect(() => {
+    switch (currentState) {
+      case "connected":
+        setTimeout(() => setHeight("0px"), 1000);
+        break;
+      default:
+        return setHeight("44px");
+    }
+  }, [currentState]);
+
   const margin = useMemo(() => {
     if (main && settings) return "-13px 0 10px -8px";
     else if (main) return "-3px 0 10px -8px";
   }, [main, settings]);
-
-  useEffect(() => {
-    switch (currentState) {
-      case "connected":
-        setTimeout(() => setHeight("0"), 1000);
-        if (listenChangeState) listenChangeState(false);
-        break;
-      default:
-        if (listenChangeState) listenChangeState(true);
-        return setHeight("44px");
-    }
-  }, [currentState]);
 
   const [dots, setDots] = useState(".");
 
@@ -205,10 +196,24 @@ function ConnectionState({
     });
   }, []);
 
+  const absoluteEmotion = useMemo(() => {
+    return css({
+      top: "50px",
+      position: "absolute",
+      left: "8px",
+      width: "100%",
+      zIndex: 20,
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      paddingLeft: "8px",
+    });
+  }, []);
+
   return (
     <div
       className={`${
-        isInNavbar ? "margin" : ""
+        isInNavbar ? absoluteEmotion : ""
       } flex items-center justify-between gap-2 overflow-hidden ${color} ${connectionStateEmotion}`}
     >
       <div className="flex items-center gap-2">
@@ -236,8 +241,6 @@ ConnectionState.propTypes = {
   socket: PropTypes.object,
   main: PropTypes.bool,
   settings: PropTypes.bool,
-  stateConnectionState: PropTypes.bool,
-  listenChangeState: PropTypes.func,
   isInNavbar: PropTypes.bool,
 };
 
@@ -253,8 +256,6 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.socket === newProps.socket &&
     oldProps.main === newProps.main &&
     oldProps.settings === newProps.settings &&
-    oldProps.stateConnectionState === newProps.stateConnectionState &&
-    oldProps.listenChangeState === newProps.listenChangeState &&
     oldProps.isInNavbar === newProps.isInNavbar
   );
 }

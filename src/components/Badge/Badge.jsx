@@ -13,6 +13,7 @@ import { memo } from "react";
 
 function Badge({ local }) {
   const { notificationState } = useNotification();
+
   const [see, setSee] = useState(false);
 
   useEffect(() => {
@@ -24,17 +25,30 @@ function Badge({ local }) {
   }, [notificationState.count]);
 
   const badgeEmotion = useMemo(() => {
-    return css({
-      background: localStorage.getItem("chat-text-primary"),
-      border: `2px solid ${localStorage.getItem("chat-main-bg")}`,
-    });
-  }, []);
+    return !local
+      ? css({
+          background: localStorage.getItem("chat-text-primary"),
+          border: `2px solid ${localStorage.getItem("chat-main-bg")}`,
+        })
+      : css({
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "auto !important",
+          height: "auto !important",
+          padding: "5px 7px",
+          right: "-13px !important",
+          top: "-10px !important",
+          background: localStorage.getItem("chat-text-primary"),
+          border: `2px solid ${localStorage.getItem("chat-main-bg")}`,
+        });
+  }, [local]);
 
   return see ? (
     <div
       className={`${styles.badge} ${see ? "aGrow" : "aShrink"} ${badgeEmotion}`}
     >
-      +{notificationState.count}
+      {/* local ? <p className="text-xs">+{notificationState.count}</p> : null */}
     </div>
   ) : null;
 }

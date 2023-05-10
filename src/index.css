@@ -32,11 +32,17 @@ input[type="file"] {
 }
 
 body {
-  @apply h-screen flex items-center justify-center;
+  @apply flex items-center justify-center overflow-hidden;
 }
 
 #root {
-  @apply h-full w-full;
+  @apply h-screen w-full;
+}
+
+@media (max-width: 850px) {
+  #root {
+    @apply h-full;
+  }
 }
 
 * {

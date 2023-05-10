@@ -128,7 +128,7 @@ function Navbar({
   }, [socket, personUpdateState]);
 
   return (
-    <header className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
+    <header className={`${styles.navbar} z-10 flex flex-col px-4`}>
       <div className="flex gap-3 items-center w-full h-full justify-between">
         <div className="flex gap-3 items-center w-full h-full">
           <div className="relative">
@@ -184,7 +184,7 @@ function Navbar({
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
         </Link>
       </div>
-      <hr className={`w-full mb-3 mx-auto mt-3 border-dark`} />
+      <hr className={`w-full mx-auto border-dark`} />
     </header>
   );
 }

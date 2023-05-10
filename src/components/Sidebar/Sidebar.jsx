@@ -157,7 +157,7 @@ function Sidebar({
       let node = e.target;
       while (node.id.indexOf("action") !== 0) node = node.parentNode;
       const action = node.id.split("-")[1];
-      console.log(action);
+
       if (action === "multi") return;
       if (action === "search") handleSidebarSearching(false);
       else handleSidebarSearching(true);

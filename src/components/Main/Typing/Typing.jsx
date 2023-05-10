@@ -10,7 +10,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 // styles
 import "./styles.css";
 
-function Typing({ typing }) {
+function Typing({ typing, main }) {
   const { languageState } = useLanguage();
 
   const { aux } = useMemo(() => {
@@ -43,7 +43,7 @@ function Typing({ typing }) {
     <div
       className={`${
         typing ? typingEmotionOn : typingEmotionOff
-      } flex items-center gap-2`}
+      } flex items-center gap-2 ${main ? "typing" : ""}`}
     >
       <p className="italic text-placeholder-dark text-sm">{aux.typing}</p>
       <div className="ticontainer">
@@ -59,6 +59,7 @@ function Typing({ typing }) {
 
 Typing.propTypes = {
   typing: PropTypes.bool,
+  main: PropTypes.bool,
 };
 
 const TypingMemo = memo((props) => <Typing {...props} />, arePropEqual);
@@ -66,7 +67,7 @@ const TypingMemo = memo((props) => <Typing {...props} />, arePropEqual);
 TypingMemo.displayName = "Typing";
 
 function arePropEqual(oldProps, newProps) {
-  return oldProps.typing === newProps.typing;
+  return oldProps.typing === newProps.typing && oldProps.main === newProps.main;
 }
 
 export default TypingMemo;
