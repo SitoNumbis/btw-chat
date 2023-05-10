@@ -204,7 +204,7 @@ function ConnectionState({ socket, main, settings, isInNavbar }) {
       width: "100%",
       zIndex: 20,
       display: "flex",
-      justifyContent: "flex-start",
+      justifyContent: "space-between",
       alignItems: "center",
       paddingLeft: "8px",
     });
