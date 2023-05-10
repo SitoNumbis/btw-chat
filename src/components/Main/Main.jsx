@@ -184,10 +184,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat, location]);
 
-  function isPushNotificationSupported() {
-    return "serviceWorker" in navigator && "PushManager" in window;
-  }
-
   const onMessageReceived = useCallback(
     (conversation) => {
       console.info("receiving messages");
@@ -206,7 +202,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const debouncedValue = useDebounce(typingV, 5000);
 
   useEffect(() => {
-    console.log("debounced", debouncedValue);
     setTyping(false);
     setTypingV("");
   }, [debouncedValue]);
@@ -214,7 +209,6 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
   const targetTyping = useCallback(
     (user) => {
       if (selectedChat && user.user === selectedChat.user) {
-        console.log("typing...");
         setTypingV(typingV + "a");
         setTyping(true);
       }
@@ -255,6 +249,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
             type: "add-new",
             message: { ...parsedMessage, loading: true },
           });
+
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: localStorage.getItem(config.userCookie) },

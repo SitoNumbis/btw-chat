@@ -184,11 +184,15 @@ function Chat() {
         const { data } = response;
         const list = data.list.map((remoteItem) => {
           const { key, lastMessage } = remoteItem;
+
           if (lastMessage) {
-            remoteItem.lastMessage = JSON.parse(
-              CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)
-            );
+            const parsedMessage = CryptoJS.AES.decrypt(
+              lastMessage,
+              key
+            ).toString(CryptoJS.enc.Utf8);
+            remoteItem.lastMessage = JSON.parse(parsedMessage);
           }
+
           return remoteItem;
         });
 
@@ -242,6 +246,7 @@ function Chat() {
 
         const list = data.list.map((remoteItem) => {
           const { key, lastMessage } = remoteItem;
+          console.log(key, lastMessage);
           if (lastMessage) {
             remoteItem.lastMessage = JSON.parse(
               CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)
