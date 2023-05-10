@@ -190,7 +190,8 @@ function Chat() {
         const { data } = response;
         const list = data.list.map((remoteItem) => {
           const { key, lastMessage, photo, user } = remoteItem;
-          if (photo) localStorage.getItem(`${user}photo`, photo);
+          console.log(remoteItem, user);
+          if (photo) localStorage.setItem(`${user}photo`, photo);
           if (lastMessage) {
             const parsedMessage = CryptoJS.AES.decrypt(
               lastMessage,
@@ -266,7 +267,7 @@ function Chat() {
 
         const list = data.list.map((remoteItem) => {
           const { key, lastMessage, user, photo } = remoteItem;
-          if (photo) localStorage.getItem(`${user}photo`, photo);
+          if (photo) localStorage.setItem(`${user}photo`, photo);
           if (lastMessage) {
             remoteItem.lastMessage = JSON.parse(
               CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)

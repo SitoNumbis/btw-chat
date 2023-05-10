@@ -150,6 +150,21 @@ function ChatPerson(props) {
     }
   }, [socket, personUpdateState, targetTyping]);
 
+  const getPhoto = useMemo(() => {
+    if (user === localStorage.getItem(config.userCookie))
+      return localStorage.getItem(config.userPhotoCookie) &&
+        localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
+        localStorage.getItem(config.userPhotoCookie) !== null
+        ? localStorage.getItem(config.userPhotoCookie)
+        : noPhoto;
+    else
+      return localStorage.getItem(`${user}photo`) &&
+        localStorage.getItem(`${user}photo`) !== "undefined" &&
+        localStorage.getItem(`${user}photo`) !== null
+        ? localStorage.getItem(`${user}photo`)
+        : noPhoto;
+  }, [user]);
+
   return (
     <button
       type="button"
@@ -161,7 +176,7 @@ function ChatPerson(props) {
     >
       <img
         className="w-10 h-10 rounded-full cursor-pointer"
-        src={photo ? photo : noPhoto}
+        src={getPhoto}
         alt={user ? user : ""}
       />
       <div className="flex flex-col w-full">

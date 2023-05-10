@@ -51,6 +51,21 @@ function Bubble({ join, loading, sender }) {
     });
   }, []);
 
+  const getPhoto = useMemo(() => {
+    if (sender.user === localStorage.getItem(config.userCookie))
+      return localStorage.getItem(config.userPhotoCookie) &&
+        localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
+        localStorage.getItem(config.userPhotoCookie) !== null
+        ? localStorage.getItem(config.userPhotoCookie)
+        : noPhoto;
+    else
+      return localStorage.getItem(`${sender.user}photo`) &&
+        localStorage.getItem(`${sender.user}photo`) !== "undefined" &&
+        localStorage.getItem(`${sender.user}photo`) !== null
+        ? localStorage.getItem(`${sender.user}photo`)
+        : noPhoto;
+  }, [sender]);
+
   return (
     <div>
       {!join ? (
@@ -61,15 +76,7 @@ function Bubble({ join, loading, sender }) {
             <button className="w-full h-full" onClick={seeProfile}>
               <img
                 className={`w-full h-full rounded-full cursor-pointer ${growEmotion}`}
-                src={
-                  sender !== null &&
-                  sender &&
-                  localStorage.getItem(`${sender.user}photo`) &&
-                  localStorage.getItem(`${sender.user}photo`) !== "undefined" &&
-                  localStorage.getItem(`${sender.user}photo`) !== null
-                    ? localStorage.getItem(`${sender.user}photo`)
-                    : noPhoto
-                }
+                src={getPhoto}
                 alt={sender !== null && sender ? sender.user : ""}
               />
             </button>
