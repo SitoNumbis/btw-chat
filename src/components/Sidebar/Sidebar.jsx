@@ -71,6 +71,7 @@ function Sidebar({
   selectChat,
   open,
   onClose,
+  handleSidebarSearching,
 }) {
   const { whiteText } = Colors();
 
@@ -151,13 +152,19 @@ function Sidebar({
 
   const [seeing, setSeeing] = useState("simple");
 
-  const handleSeeing = useCallback((e) => {
-    let node = e.target;
-    while (node.id.indexOf("action") !== 0) node = node.parentNode;
-    const action = node.id.split("-")[1];
-    if (action === "multi") return;
-    setSeeing(action);
-  }, []);
+  const handleSeeing = useCallback(
+    (e) => {
+      let node = e.target;
+      while (node.id.indexOf("action") !== 0) node = node.parentNode;
+      const action = node.id.split("-")[1];
+      console.log(action);
+      if (action === "multi") return;
+      if (action === "search") handleSidebarSearching(false);
+      else handleSidebarSearching(true);
+      setSeeing(action);
+    },
+    [handleSidebarSearching]
+  );
 
   useEffect(() => {
     if (seeing === "search")
@@ -441,6 +448,7 @@ Sidebar.propTypes = {
       photo: PropTypes.string,
     })
   ),
+  handleSidebarSearching: PropTypes.func,
 };
 
 export default Sidebar;

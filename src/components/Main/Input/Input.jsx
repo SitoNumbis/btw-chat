@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // @emotion/css
@@ -14,7 +14,7 @@ import Colors from "../../../assets/emotion/color";
 // config
 import config from "../../../config";
 
-function Input({ socket, onSend, selectedChat }) {
+function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
   const { mainBG, whiteText } = Colors();
 
   const [message, setMessage] = useState("");
@@ -42,8 +42,22 @@ function Input({ socket, onSend, selectedChat }) {
 
   const [history, setHistory] = useState([]);
 
+  const inputRef = useRef();
+
   const onKeyDown = useCallback(() => {}, [history]);
   const onKeyUp = useCallback(() => {}, [history]);
+
+  const gainFocus = useCallback(() => {
+    if (inputRef.current !== null && noSidebarSearching)
+      inputRef.current.focus();
+  }, [inputRef, noSidebarSearching]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", gainFocus);
+    return () => {
+      window.removeEventListener("keydown", gainFocus);
+    };
+  }, [gainFocus]);
 
   const handleText = useCallback(
     (e) => {
@@ -78,6 +92,7 @@ function Input({ socket, onSend, selectedChat }) {
       className={`${mainBG()} main-transition-ease ${styles.div}`}
     >
       <input
+        ref={inputRef}
         type="text"
         value={message}
         onKeyDown={onKeyDown}
@@ -109,6 +124,7 @@ Input.propTypes = {
     lastMessage: PropTypes.any,
     key: PropTypes.string,
   }),
+  noSidebarSearching: PropTypes.bool,
 };
 
 export default Input;

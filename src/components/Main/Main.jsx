@@ -40,7 +40,13 @@ const ConnectionState = loadable(() =>
 );
 const Messages = loadable(() => import("./Messages/Messages"));
 
-function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
+function Main({
+  socket,
+  selectedChat,
+  selectChat,
+  toggleSidebar,
+  noSidebarSearching,
+}) {
   const { mainBG } = Colors();
 
   const { setNotificationState } = useNotification();
@@ -402,6 +408,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
                   onSend={sendMessage}
                   socket={socket}
                   selectedChat={selectedChat}
+                  noSidebarSearching={noSidebarSearching}
                 />
               </div>
             </>
@@ -428,6 +435,7 @@ Main.propTypes = {
     lastMessage: PropTypes.any,
     key: PropTypes.string,
   }),
+  noSidebarSearching: PropTypes.bool,
 };
 
 export default Main;

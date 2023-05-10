@@ -196,7 +196,6 @@ function Chat() {
         const { data } = response;
         const list = data.list.map((remoteItem) => {
           const { key, lastMessage, photo, user } = remoteItem;
-          console.log(remoteItem, user);
           if (photo) localStorage.setItem(`${user}photo`, photo);
           if (lastMessage) {
             const parsedMessage = CryptoJS.AES.decrypt(
@@ -334,6 +333,12 @@ function Chat() {
     });
   }, []);
 
+  const [noSidebarSearching, setNoSidebarSearching] = useState(true);
+
+  const handleSidebarSearching = (value) => {
+    setNoSidebarSearching(value);
+  };
+
   return (
     <div className={`entrance ${styles.main}`}>
       {dialogState.editing !== undefined ? (
@@ -363,6 +368,7 @@ function Chat() {
             open={openSidebar}
             onClose={toggleSidebar}
             socket={socket}
+            handleSidebarSearching={handleSidebarSearching}
           />
           <div className={`flex flex-col flex-1 main-transition-ease`}>
             <Main
@@ -371,6 +377,7 @@ function Chat() {
               sidebar={openSidebar}
               toggleSidebar={toggleSidebar}
               socket={socket}
+              noSidebarSearching={noSidebarSearching}
             />
           </div>
         </Suspense>
