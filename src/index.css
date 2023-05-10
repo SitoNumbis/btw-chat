@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.margin {
+  margin-top: 70px !important;
+}
+
 input[type="file"] {
   display: none;
 }

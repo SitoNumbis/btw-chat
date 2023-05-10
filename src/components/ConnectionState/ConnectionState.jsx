@@ -25,6 +25,7 @@ function ConnectionState({
   settings,
   stateConnectionState,
   listenChangeState,
+  isInNavbar,
 }) {
   const { languageState } = useLanguage();
 
@@ -206,7 +207,9 @@ function ConnectionState({
 
   return (
     <div
-      className={`flex items-center justify-between gap-2 overflow-hidden ${color} ${connectionStateEmotion}`}
+      className={`${
+        isInNavbar ? "margin" : ""
+      } flex items-center justify-between gap-2 overflow-hidden ${color} ${connectionStateEmotion}`}
     >
       <div className="flex items-center gap-2">
         <div className={`pr-2 transform-rotate-y-180`}>{icon}</div>
@@ -235,6 +238,7 @@ ConnectionState.propTypes = {
   settings: PropTypes.bool,
   stateConnectionState: PropTypes.bool,
   listenChangeState: PropTypes.func,
+  isInNavbar: PropTypes.bool,
 };
 
 const ConnectionStateMemo = memo(
@@ -250,7 +254,8 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.main === newProps.main &&
     oldProps.settings === newProps.settings &&
     oldProps.stateConnectionState === newProps.stateConnectionState &&
-    oldProps.listenChangeState === newProps.listenChangeState
+    oldProps.listenChangeState === newProps.listenChangeState &&
+    oldProps.isInNavbar === newProps.isInNavbar
   );
 }
 

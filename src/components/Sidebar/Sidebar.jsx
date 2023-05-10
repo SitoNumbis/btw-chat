@@ -155,6 +155,7 @@ function Sidebar({
     let node = e.target;
     while (node.id.indexOf("action") !== 0) node = node.parentNode;
     const action = node.id.split("-")[1];
+    if (action === "multi") return;
     setSeeing(action);
   }, []);
 

@@ -128,7 +128,7 @@ function Navbar({
   }, [socket, personUpdateState]);
 
   return (
-    <div className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
+    <header className={`${styles.navbar} z-10 flex flex-col px-4 py-4`}>
       <div className="flex gap-3 items-center w-full h-full justify-between">
         <div className="flex gap-3 items-center w-full h-full">
           <div className="relative">
@@ -151,7 +151,8 @@ function Navbar({
                 className="w-10 h-10 rounded-full cursor-pointer"
                 src={
                   localStorage.getItem(`${selectedChat?.user}photo`) &&
-                  localStorage.getItem(`${selectedChat?.user}photo`) !== "undefined" &&
+                  localStorage.getItem(`${selectedChat?.user}photo`) !==
+                    "undefined" &&
                   localStorage.getItem(`${selectedChat?.user}photo`) !== null
                     ? localStorage.getItem(`${selectedChat?.user}photo`)
                     : noPhoto
@@ -184,7 +185,7 @@ function Navbar({
         </Link>
       </div>
       <hr className={`w-full mb-3 mx-auto mt-3 border-dark`} />
-    </div>
+    </header>
   );
 }
 

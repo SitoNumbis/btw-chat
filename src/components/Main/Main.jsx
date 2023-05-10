@@ -348,6 +348,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       />
       {showOffState ? (
         <ConnectionState
+          isInNavbar
           main
           socket={socket}
           settings={settings}
