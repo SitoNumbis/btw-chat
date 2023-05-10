@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback, useEffect } from "react";
+import { useMemo, useRef, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import loadable from "@loadable/component";
@@ -11,11 +11,15 @@ import { css } from "@emotion/css";
 // utils
 import { isSelf } from "../../../utils/users";
 
+// contexts
+import { useCanGoBottom } from "../../../context/CanGoBottomProvider";
+
 // styles
 import styles from "../styles.module.css";
 
 // components
 import Loading from "../../../components/Loading/Loading";
+
 const ToBottom = loadable(() => import("../../ToBottom/ToBottom"));
 const Message = loadable(() => import("../Message/Message"));
 const SentDate = loadable(() => import("../Message/SentDate"));
@@ -31,7 +35,7 @@ function Messages({
 }) {
   const messagesList = useRef(null);
 
-  const [canGoBottom, setCanGoBottom] = useState(false);
+  const { canGoBottomState, setCanGoBottomState } = useCanGoBottom();
 
   const onScroll = useCallback(() => {
     if (messagesList.current !== null) {
@@ -43,10 +47,10 @@ function Messages({
           messagesList.current.offsetHeight -
           500
       )
-        setCanGoBottom(true);
-      else setCanGoBottom(false);
+        setCanGoBottomState(true);
+      else setCanGoBottomState(false);
     }
-  }, [setCanGoBottom, messagesList]);
+  }, [setCanGoBottomState, messagesList]);
 
   useEffect(() => {
     if (messagesList.current !== null) {
@@ -60,7 +64,7 @@ function Messages({
   }, [onScroll, messagesList, settings]);
 
   const scrollToBottom = useCallback(() => {
-    if (!canGoBottom)
+    if (!canGoBottomState)
       setTimeout(() => {
         messagesList.current.scrollTo({
           top: messagesList.current.scrollHeight,
@@ -68,7 +72,7 @@ function Messages({
           behavior: "smooth",
         });
       }, 10);
-  }, [canGoBottom]);
+  }, [canGoBottomState]);
 
   useEffect(() => {
     if (selectedChat && !loading) {
@@ -110,7 +114,7 @@ function Messages({
       ref={messagesList}
       className={`${styles.messages} ${listEmotion}`}
     >
-      <ToBottom canGoBottom={canGoBottom} />
+      <ToBottom />
       <p className="text-placeholder-dark italic mx-auto">
         {selectedChat?.bio}
       </p>

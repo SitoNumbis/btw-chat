@@ -25,6 +25,11 @@ import {
   fetchMessages as fetchMessagesRemote,
 } from "../../services/chat/post";
 
+// sound
+import good from "../../assets/sounds/good.mp3";
+import sound from "../../assets/sounds/message.mp3";
+import error from "../../assets/sounds/error.mp3";
+
 // components
 const Input = loadable(() => import("./Input/Input"));
 const Typing = loadable(() => import("./Typing/Typing"));
@@ -227,6 +232,24 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
     }
   }, [socket, targetTyping, onMessageReceived]);
 
+  const play = () => {
+    const audio = new Audio(sound);
+    audio.volume = 0.1;
+    audio.play();
+  };
+
+  const playGood = () => {
+    const audio = new Audio(good);
+    audio.volume = 0.1;
+    audio.play();
+  };
+
+  const playError = () => {
+    const audio = new Audio(error);
+    audio.volume = 0.2;
+    audio.play();
+  };
+
   const sendMessage = useCallback(
     async (message, resent = false) => {
       const date = new Date().getTime();
@@ -244,6 +267,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
       else parsedMessage = message;
       try {
         let data = undefined;
+        play();
         if (!resent) {
           setMessages({
             type: "add-new",
@@ -274,7 +298,9 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
           );
           data = response.data;
         }
+
         localStorage.setItem("date", data.date);
+        playGood();
         setMessages({
           type: "set-as-sent",
           date,
@@ -282,6 +308,7 @@ function Main({ socket, selectedChat, selectChat, toggleSidebar }) {
         });
       } catch (err) {
         console.error(err);
+        playError();
         setMessages({
           type: "set-as-error",
           date: parsedMessage.date,

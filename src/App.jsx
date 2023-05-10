@@ -2,8 +2,6 @@ import { Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import loadable from "@loadable/component";
 
-
-
 // some-javascript-utils
 import { getUserLanguage } from "some-javascript-utils/browser";
 
@@ -15,12 +13,14 @@ import { validateBasicKey } from "./services/auth";
 // contexts
 import { useLanguage } from "./context/LanguageProvider";
 import { DialogProvider } from "./context/DialogProvider";
+import { CanGoBottomProvider } from "./context/CanGoBottomProvider.jsx";
 
 // utils
 import { logoutUser, userLogged } from "./utils/auth";
 
 // components
 import Loading from "./components/Loading/Loading";
+
 const NotificationC = loadable(() =>
   import("./components/Notification/Notification")
 );
@@ -140,7 +140,9 @@ function App() {
               element={
                 <Suspense>
                   <DialogProvider>
-                    <Chat />
+                    <CanGoBottomProvider>
+                      <Chat />
+                    </CanGoBottomProvider>
                   </DialogProvider>
                 </Suspense>
               }

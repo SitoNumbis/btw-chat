@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 // @emotion/css
 import { css } from "@emotion/css";
@@ -8,8 +9,9 @@ import { useNotification } from "../../context/NotificationProvider";
 
 // styles
 import styles from "./styles.module.css";
+import { memo } from "react";
 
-function Badge() {
+function Badge({ local }) {
   const { notificationState } = useNotification();
   const [see, setSee] = useState(false);
 
@@ -31,8 +33,22 @@ function Badge() {
   return see ? (
     <div
       className={`${styles.badge} ${see ? "aGrow" : "aShrink"} ${badgeEmotion}`}
-    ></div>
+    >
+      +{notificationState.count}
+    </div>
   ) : null;
+}
+
+Badge.propTypes = {
+  local: PropTypes.bool,
+};
+
+const BadgeMemo = memo((props) => <Badge {...props} />, arePropsEqual);
+
+BadgeMemo.displayName = "Badge";
+
+function arePropsEqual(oldProps, newProps) {
+  return oldProps.local === newProps.local;
 }
 
 export default Badge;

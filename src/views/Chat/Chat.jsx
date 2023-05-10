@@ -30,6 +30,8 @@ import { parseQueries } from "../../utils/parsers";
 
 // contexts
 import { useDialog } from "../../context/DialogProvider";
+import { useCanGoBottom } from "../../context/CanGoBottomProvider.jsx";
+import { useNotification } from "../../context/NotificationProvider";
 
 // images
 import noPhoto from "../../assets/images/no-photo.webp";
@@ -46,6 +48,10 @@ const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
 function Chat() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { setNotificationState } = useNotification();
+
+  const { canGoBottomState } = useCanGoBottom();
 
   const { dialogState } = useDialog();
 
@@ -119,7 +125,7 @@ function Chat() {
   const toggleSidebar = useCallback(
     (to) => {
       if (typeof to === "boolean") return setOpenSidebar(to);
-
+      setNotificationState({ type: "set-badge", count: 0 });
       return setOpenSidebar(!openSidebar);
     },
     [openSidebar, setOpenSidebar]
@@ -199,10 +205,8 @@ function Chat() {
             ).toString(CryptoJS.enc.Utf8);
             remoteItem.lastMessage = JSON.parse(parsedMessage);
           }
-
           return remoteItem;
         });
-
         if (name && name.length && !newOne)
           setSearchChats({ type: "add", list });
         else setChats({ type: "add", list });
@@ -212,22 +216,32 @@ function Chat() {
           }, 1000);
         else setLoading(false);
         if (name && name.length && newOne && list) {
-          const [lastUser] = list;
-          const { lastMessage } = lastUser;
-          const theMessage = lastMessage.message;
-          try {
-            new Notification(lastUser.name, {
-              body: theMessage,
-              icon:
-                localStorage.getItem(`${lastMessage.sender.user}photo`) &&
-                localStorage.getItem(`${lastMessage.sender.user}photo`) !==
-                  "undefined" &&
-                localStorage.getItem(`${lastMessage.sender.user}photo`) !== null
-                  ? localStorage.getItem(`${lastMessage.sender.user}photo`)
-                  : noPhoto,
-            });
-          } catch (err) {
-            console.error(err);
+          if (
+            (selectedChat?.user !== name && !canGoBottomState) ||
+            (selectedChat?.user === name && canGoBottomState)
+          ) {
+            const [lastUser] = list;
+            const { lastMessage } = lastUser;
+            const theMessage = lastMessage.message;
+            if (
+              lastMessage.sender.user !==
+              localStorage.getItem(config.userCookie)
+            )
+              try {
+                new Notification(lastUser.name, {
+                  body: theMessage,
+                  icon:
+                    localStorage.getItem(`${lastMessage.sender.user}photo`) &&
+                    localStorage.getItem(`${lastMessage.sender.user}photo`) !==
+                      "undefined" &&
+                    localStorage.getItem(`${lastMessage.sender.user}photo`) !==
+                      null
+                      ? localStorage.getItem(`${lastMessage.sender.user}photo`)
+                      : noPhoto,
+                });
+              } catch (err) {
+                console.error(err);
+              }
           }
         }
       } catch (err) {
@@ -241,7 +255,7 @@ function Chat() {
         setLoading(false);
       }
     },
-    [setSearchChats, setChats, selectedChat, chats]
+    [setSearchChats, setChats, selectedChat, chats, canGoBottomState]
   );
 
   const selectChat = useCallback(
