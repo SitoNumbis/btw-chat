@@ -31,6 +31,7 @@
     "react-cool-onclickoutside": "^1.7.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.0",
+    "react-virtualized": "^9.22.5",
     "socket.io-client": "^4.6.1",
     "some-javascript-utils": "^0.7.1",
     "tailwindcss": "3.3.1",

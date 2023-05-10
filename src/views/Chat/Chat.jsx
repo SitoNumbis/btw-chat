@@ -204,7 +204,8 @@ function Chat() {
             setLoading(false);
           }, 1000);
         else setLoading(false);
-        if (name && name.length && newOne) {
+        if (name && name.length && newOne && list) {
+          console.log(list);
           const [lastUser] = list;
           const { lastMessage } = lastUser;
           const theMessage = lastMessage.message;

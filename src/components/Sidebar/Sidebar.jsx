@@ -29,6 +29,9 @@ import { css } from "@emotion/css";
 // images
 import noPhoto from "../../assets/images/no-photo.webp";
 
+// utils
+import { parseQueries } from "../../utils/parsers";
+
 // styles
 import styles from "./styles.module.css";
 import Colors from "../../assets/emotion/color.js";
@@ -37,8 +40,7 @@ import config from "../../config";
 
 // components
 import Loading from "../Loading/Loading";
-import { parseQueries } from "../../utils/parsers";
-
+import VList from "../Externals/ReactVirtualized/List";
 const ConnectionState = loadable(() =>
   import("../ConnectionState/ConnectionState")
 );
@@ -47,6 +49,15 @@ const ChatPerson = loadable(() => import("./ChatPerson/ChatPerson"));
 const EmptyChats = loadable(() => import("./EmptyChats/EmptyChats"));
 const SearchInput = loadable(() => import("./SearchInput/SearchInput"));
 const ActionButton = loadable(() => import("./ActionButton/ActionButton"));
+
+function compareFn(a, b) {
+  if (a.lastMessage.date > b.lastMessage.date) return -1;
+
+  if (a.lastMessage.date < b.lastMessage.date) return 1;
+
+  // a must be equal to b
+  return 0;
+}
 
 function Sidebar({
   socket,
@@ -72,12 +83,13 @@ function Sidebar({
 
   const onMessageReceived = useCallback(
     (conversation) => {
-      console.info("receiving messages");
-      const { sender } = conversation;
+      const { sender, target } = conversation;
       const { user } = sender;
-      fetchPerson(user, true, false);
+      if (user !== localStorage.getItem(config.userCookie))
+        fetchPerson(user, true, false);
+      else fetchPerson(target, true, false);
     },
-    [chats, searchChats, multiChats, fetchPerson, location]
+    [fetchPerson]
   );
 
   useEffect(() => {
@@ -87,7 +99,7 @@ function Sidebar({
         socket.off("message", onMessageReceived);
       };
     }
-  }, [socket]);
+  }, [socket, onMessageReceived]);
 
   const { languageState } = useLanguage();
 
@@ -183,7 +195,16 @@ function Sidebar({
     const { search } = location;
     const params = parseQueries(search);
     const user = params.chat;
-    return chats.map((chat, i) => (
+
+    /*  return (
+      <VList
+        items={}
+      />
+    ); */
+    return [
+      ...chats.filter((message) => message.lastMessage).sort(compareFn),
+      ...chats.filter((message) => !message.lastMessage),
+    ].map((chat, i) => (
       <ChatPerson
         index={i}
         key={chat.id}
@@ -325,9 +346,9 @@ function Sidebar({
           </button>
         </div>
       ) : (
-        <div>
+        <>
           {seeing === "search" ? (
-            <div>
+            <>
               <SearchInput
                 value={searchInput}
                 onChange={handleSearchInput}
@@ -350,10 +371,10 @@ function Sidebar({
                   )}
                 </>
               )}
-            </div>
+            </>
           ) : null}
           {seeing === "simple" ? (
-            <div>
+            <>
               {loading ? (
                 <Loading />
               ) : (
@@ -367,16 +388,16 @@ function Sidebar({
                   )}
                 </>
               )}
-            </div>
+            </>
           ) : null}
           {seeing === "multi" ? (
-            <div>
+            <>
               {!multiChats.length && !loading && !error ? (
                 <EmptyChats searching={false} />
               ) : null}
-            </div>
+            </>
           ) : null}
-        </div>
+        </>
       )}
     </div>
   );
