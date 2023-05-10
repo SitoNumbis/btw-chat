@@ -24,6 +24,7 @@ import { fetchChat } from "../../services/chat/post";
 import styles from "./styles.module.css";
 
 // utils
+import { logoutUser } from "../../utils/auth";
 import { loadImage } from "../../utils/services";
 import { parseQueries } from "../../utils/parsers";
 
@@ -177,7 +178,9 @@ function Chat() {
       if (loading) setLoading(true);
       try {
         const response = await fetchChat(name, newOne ? true : false);
+
         if (response.status !== 200 && response.status !== 204) {
+          if (response.status === 401) window.location.reload();
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }
@@ -221,6 +224,11 @@ function Chat() {
         }
       } catch (err) {
         console.error(err);
+        const { response } = err;
+        if (response.status === 401) {
+          logoutUser();
+          window.location.reload();
+        }
         setErrorLoadingPerson(true);
         setLoading(false);
       }
@@ -238,7 +246,9 @@ function Chat() {
         navigate(`/?chat=${found.user}`);
       } else if (from === "location") {
         const response = await fetchChat(user, true);
+        console.log("hola");
         if (response.status !== 200 && response.status !== 204) {
+          if (response.status === 401) window.location.reload();
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }

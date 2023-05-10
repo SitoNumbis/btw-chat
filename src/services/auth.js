@@ -122,3 +122,23 @@ export const saveInfo = async (name, bio) => {
   const data = await response.data;
   return data;
 };
+
+/**
+ * @param {string} image
+ * @returns The response from the server.
+ */
+export const savePhoto = async (image) => {
+  const response = await axios.post(
+    // @ts-ignore
+    `${config.apiUrl}/image/upload`,
+    { user: localStorage.getItem(config.userCookie), blob: image },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
+  const data = await response.data;
+  return data;
+};

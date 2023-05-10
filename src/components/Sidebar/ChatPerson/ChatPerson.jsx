@@ -117,7 +117,6 @@ function ChatPerson(props) {
 
   const debouncedValue = useDebounce(typingV, 5000);
   useEffect(() => {
-    console.log("debounced", debouncedValue);
     setTyping(false);
     setTypingV("");
   }, [debouncedValue]);

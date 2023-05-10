@@ -165,11 +165,6 @@ function Sidebar({
       }, 500);
   }, [seeing]);
 
-  /*   useEffect(() => {
-    if (seeing === "simple" || seeing === "multi") fetchPerson();
-    else handleSearch(searchInput);
-  }, [searchInput, seeing]); */
-
   const reconnect = useCallback(() => {
     fetchPerson(searchInput);
   }, [fetchPerson, searchInput]);

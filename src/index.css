@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+input[type="file"] {
+  display: none;
+}
+
 .ReactVirtualized__List {
   height: 100% !important;
   width: 100% !important;

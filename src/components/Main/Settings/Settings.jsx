@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect, useState } from "react";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,10 @@ import { css } from "@emotion/css";
 // contexts
 import { useDialog } from "../../../context/DialogProvider";
 import { useLanguage } from "../../../context/LanguageProvider";
+import { useNotification } from "../../../context/NotificationProvider";
+
+// services
+import { savePhoto as savePhotoRemote } from "../../../services/auth";
 
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
@@ -23,12 +27,25 @@ import config from "../../../config";
 function Settings() {
   const { whiteText, mainBG } = Colors();
 
+  const { setNotificationState } = useNotification();
+
+  const showNotification = useCallback(
+    (ntype, message) =>
+      setNotificationState({
+        type: "set",
+        ntype,
+        message,
+      }),
+    [setNotificationState]
+  );
+
   const { setDialogState } = useDialog();
 
   const { languageState } = useLanguage();
 
-  const { buttons, buttonsArias } = useMemo(() => {
+  const { buttons, buttonsArias, errors } = useMemo(() => {
     return {
+      errors: languageState.texts.errors,
       buttons: languageState.texts.buttons,
       buttonsArias: languageState.texts.buttonsArias,
     };
@@ -40,6 +57,9 @@ function Settings() {
 
   const imageEmotion = useMemo(() => {
     return css({
+      label: {
+        display: "none !important",
+      },
       width: "130px",
       height: "130px",
     });
@@ -82,21 +102,77 @@ function Settings() {
           </div>
         );
     }
-  }, [languageState]);
+  }, [languageState, whiteText]);
+
+  const uploadImage = useCallback(() => {
+    const inputs = document.getElementsByTagName("input");
+    if (inputs && inputs !== null) {
+      for (let index = 0; index < inputs.length; ++index) {
+        if (inputs[index].type === "file") inputs[index].click();
+      }
+    }
+  }, []);
+
+  const [photo, setPhoto] = useState("");
+
+  const savePhoto = useCallback(
+    async (base64) => {
+      try {
+        await savePhotoRemote(base64);
+        localStorage.setItem(config.userPhotoCookie, base64);
+      } catch (err) {
+        console.error(err);
+        const { response } = err;
+        if (response && response.status === 401) window.location.reload();
+        if (String(err) === "AxiosError: Network Error")
+          showNotification("error", errors.notConnected);
+        else showNotification("error", String(err));
+      }
+    },
+    [errors, showNotification]
+  );
+
+  const onFileLoad = useCallback(
+    (elem) => {
+      if (elem.target.files[0].size > 152880) {
+        showNotification("error", errors.fileToBig);
+
+        elem.target.value = "";
+      } else {
+        if (!elem.target.files || !elem.target.files[0]) return;
+
+        const FR = new FileReader();
+
+        FR.addEventListener("load", function (evt) {
+          setPhoto(evt.target.result);
+          savePhoto(evt.target.result);
+        });
+
+        FR.readAsDataURL(elem.target.files[0]);
+      }
+    },
+    [errors, showNotification]
+  );
+
+  useEffect(() => {
+    setPhoto(
+      localStorage.getItem(config.userPhotoCookie) !== null
+        ? localStorage.getItem(config.userPhotoCookie)
+        : noPhoto
+    );
+  }, []);
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="appear w-full flex flex-col items-center justify-center gap-2">
         <div className={`relative ${imageEmotion} rounded-sm cursor-pointer`}>
+          <input type="file" onChange={onFileLoad} />
           <img
             className={`w-full h-full cursor-pointer rounded-full`}
-            src={
-              localStorage.getItem(config.userPhotoCookie) !== null
-                ? localStorage.getItem(config.userPhotoCookie)
-                : noPhoto
-            }
+            src={photo}
           />
           <button
+            onClick={uploadImage}
             className={`!cursor-pointer top-0 right-0 absolute text-2xl rounded-full w-10 h-10 main-transition-ease ${cameraEmotion}`}
           >
             <FontAwesomeIcon icon={faCamera} />

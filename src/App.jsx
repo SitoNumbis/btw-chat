@@ -2,6 +2,8 @@ import { Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import loadable from "@loadable/component";
 
+
+
 // some-javascript-utils
 import { getUserLanguage } from "some-javascript-utils/browser";
 
@@ -102,6 +104,7 @@ function App() {
   return (
     <Suspense>
       <NotificationC />
+
       <BrowserRouter>
         <Routes>
           {localStorage.getItem(config.userCookie) === null ? (

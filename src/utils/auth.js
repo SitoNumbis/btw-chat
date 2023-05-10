@@ -66,6 +66,11 @@ export const logoutUser = () => {
   // @ts-ignore
   deleteCookie(config.basicKeyCookie);
   localStorage.removeItem(config.userCookie);
+  localStorage.removeItem(config.stateCookie);
+  localStorage.removeItem(config.idCookie);
+  localStorage.removeItem(config.nameCookie);
+  localStorage.removeItem(config.photoCookie);
+  localStorage.removeItem(config.bioCookie);
 };
 export const userData = () => {
   let user = {};

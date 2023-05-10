@@ -86,6 +86,7 @@
     },
     "errors": {
       "notSent": "Error",
+      "fileToBig": "Fichero muy grande",
       "notConnected": "No tienes conexión con el servidor"
     },
     "buttons": {
