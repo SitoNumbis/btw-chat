@@ -2,6 +2,7 @@ import { memo, useEffect, useCallback, useState, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import loadable from "@loadable/component";
 import { useDebounce } from "use-lodash-debounce";
+import useOnclickOutside from "react-cool-onclickoutside";
 
 import useScreenSize from "use-screen-witdh";
 
@@ -241,6 +242,10 @@ function Sidebar({
     });
   }, []);
 
+  const ref = useOnclickOutside(() => {
+    if (width < 850 && open) onClose();
+  }, [width, open]);
+
   return (
     <div
       className={`${styles.sidebar} ${css({
@@ -249,7 +254,7 @@ function Sidebar({
         backgroundColor: `${localStorage.getItem("chat-other-bg")}CC`,
       })} relative z-10 py-4`}
     >
-      <div className={styles.userRow}>
+      <div className={styles.userRow} ref={ref}>
         <button
           onClick={goSettings}
           className="flex items-center gap-2 cursor-pointer"
