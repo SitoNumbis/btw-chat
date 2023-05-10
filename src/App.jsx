@@ -78,6 +78,20 @@ function App() {
             error
           );
         });
+
+      navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+        serviceWorkerRegistration.pushManager
+          .subscribe({
+            userVisibleOnly: true,
+          })
+          .then(function (subscription) {
+            console.log("User is subscribed:", subscription);
+            // Send the subscription data to your server
+          })
+          .catch(function (error) {
+            console.error("Error subscribing to push notifications:", error);
+          });
+      });
     } else {
       console.error("Notifications are not supported in this browser.");
     }
@@ -99,6 +113,32 @@ function App() {
     setLoading(false);
 
     askUserPermission();
+    /* self.addEventListener("push", function (event) {
+      if (event.data) {
+        const data = event.data.json();
+        self.registration.showNotification(data.title, {
+          body: data.message,
+          icon: "/path/to/icon.png",
+        });
+      }
+    });
+
+    self.addEventListener("notificationclick", function (event) {
+      event.notification.close();
+      event.waitUntil(
+        clients.matchAll({ type: "window" }).then(function (clientList) {
+          for (let i = 0; i < clientList.length; i++) {
+            const client = clientList[i];
+            if (client.url === "/" && "focus" in client) {
+              return client.focus();
+            }
+          }
+          if (clients.openWindow) {
+            return clients.openWindow("/");
+          }
+        })
+      );
+    }); */
   }, []);
 
   return (

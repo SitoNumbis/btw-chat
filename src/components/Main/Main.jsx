@@ -73,11 +73,10 @@ function Main({
         const { messages } = action;
         const toReturn = [...state];
         messages.forEach((message) => {
-          const found = toReturn.find(
-            (localMessage) =>
-              localMessage.date === message.date &&
-              localMessage.target === message.target
-          );
+          const found = toReturn.find((localMessage) => {
+            console.log(localMessage.date, message.date);
+            return localMessage.date === message.date;
+          });
           if (!found) toReturn.push(message);
         });
 
@@ -86,8 +85,11 @@ function Main({
       case "add-new": {
         const { message } = action;
         const toReturn = [...state];
-        toReturn.push(message);
-
+        const found = toReturn.find((localMessage) => {
+          console.log(localMessage.date, message.date);
+          return localMessage.date === message.date;
+        });
+        if (!found) toReturn.push(message);
         return toReturn;
       }
       case "plus-minute": {
