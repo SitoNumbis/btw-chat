@@ -87,7 +87,7 @@ function Input({ socket, onSend, selectedChat }) {
         className={`w-full ${whiteText} ${styles.input} ${inputEmotion}`}
       />
       <button
-        className={`absolute right-3 text-placeholder-dark transition font-semibold ${styles.button} ${buttonEmotion}`}
+        className={`absolute h-full w-20 right-0 text-placeholder-dark transition font-semibold ${styles.button} ${buttonEmotion}`}
         onClick={onSubmit}
         aria-label={buttonsArias.send}
       >
