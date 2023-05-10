@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.ReactVirtualized__List {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.ReactVirtualized__Grid__innerScrollContainer {
+  max-width: 100% !important;
+}
+
 .main-backdrop-filter {
   backdrop-filter: blur(4px);
 }
