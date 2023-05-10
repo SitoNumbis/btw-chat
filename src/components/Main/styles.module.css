@@ -28,6 +28,7 @@
   }
 
   .messages {
+    margin-bottom: 55px;
     @apply pr-2 pl-0;
   }
 
