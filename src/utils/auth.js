@@ -66,11 +66,11 @@ export const logoutUser = () => {
   // @ts-ignore
   deleteCookie(config.basicKeyCookie);
   localStorage.removeItem(config.userCookie);
-  localStorage.removeItem(config.stateCookie);
-  localStorage.removeItem(config.idCookie);
-  localStorage.removeItem(config.nameCookie);
-  localStorage.removeItem(config.photoCookie);
-  localStorage.removeItem(config.bioCookie);
+  localStorage.removeItem(config.userStateCookie);
+  localStorage.removeItem(config.userIdCookie);
+  localStorage.removeItem(config.userNameCookie);
+  localStorage.removeItem(config.userPhotoCookie);
+  localStorage.removeItem(config.userBioCookie);
 };
 export const userData = () => {
   let user = {};
@@ -100,6 +100,7 @@ export const logUser = (remember, user) => {
     localStorage.setItem(config.userIdCookie, user.id);
     localStorage.setItem(config.userStateCookie, user.state);
     localStorage.setItem(config.userBioCookie, user.bio);
+    localStorage.setItem(config.userPhotoCookie, user.photo);
   }
   // @ts-ignore
   else {
@@ -108,5 +109,6 @@ export const logUser = (remember, user) => {
     localStorage.setItem(config.userIdCookie, user.id);
     localStorage.setItem(config.userStateCookie, user.state);
     localStorage.setItem(config.userBioCookie, user.bio);
+    localStorage.setItem(config.userPhotoCookie, user.photo);
   }
 };

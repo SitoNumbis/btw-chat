@@ -257,6 +257,8 @@ function Sidebar({
           <img
             className="w-10 h-10 rounded-full cursor-pointer"
             src={
+              localStorage.getItem(config.userPhotoCookie) &&
+              localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
               localStorage.getItem(config.userPhotoCookie) !== null
                 ? localStorage.getItem(config.userPhotoCookie)
                 : noPhoto

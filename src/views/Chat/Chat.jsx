@@ -180,14 +180,17 @@ function Chat() {
         const response = await fetchChat(name, newOne ? true : false);
 
         if (response.status !== 200 && response.status !== 204) {
-          if (response.status === 401) window.location.reload();
+          if (response.status === 401) {
+            logoutUser();
+            window.location.reload();
+          }
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }
         const { data } = response;
         const list = data.list.map((remoteItem) => {
-          const { key, lastMessage } = remoteItem;
-
+          const { key, lastMessage, photo, user } = remoteItem;
+          if (photo) localStorage.getItem(`${user}photo`, photo);
           if (lastMessage) {
             const parsedMessage = CryptoJS.AES.decrypt(
               lastMessage,
@@ -214,9 +217,13 @@ function Chat() {
           try {
             new Notification(lastUser.name, {
               body: theMessage,
-              icon: lastMessage.sender.photo
-                ? lastMessage.sender.photo
-                : noPhoto,
+              icon:
+                localStorage.getItem(`${lastMessage.sender.user}photo`) &&
+                localStorage.getItem(`${lastMessage.sender.user}photo`) !==
+                  "undefined" &&
+                localStorage.getItem(`${lastMessage.sender.user}photo`) !== null
+                  ? localStorage.getItem(`${lastMessage.sender.user}photo`)
+                  : noPhoto,
             });
           } catch (err) {
             console.error(err);
@@ -246,17 +253,20 @@ function Chat() {
         navigate(`/?chat=${found.user}`);
       } else if (from === "location") {
         const response = await fetchChat(user, true);
-        console.log("hola");
+
         if (response.status !== 200 && response.status !== 204) {
-          if (response.status === 401) window.location.reload();
+          if (response.status === 401) {
+            logoutUser();
+            window.location.reload();
+          }
           console.error(response.statusText);
           setErrorLoadingPerson(true);
         }
         const { data } = response;
 
         const list = data.list.map((remoteItem) => {
-          const { key, lastMessage } = remoteItem;
-
+          const { key, lastMessage, user, photo } = remoteItem;
+          if (photo) localStorage.getItem(`${user}photo`, photo);
           if (lastMessage) {
             remoteItem.lastMessage = JSON.parse(
               CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)

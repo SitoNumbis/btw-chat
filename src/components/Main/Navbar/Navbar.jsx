@@ -149,7 +149,13 @@ function Navbar({
             >
               <img
                 className="w-10 h-10 rounded-full cursor-pointer"
-                src={selectedChat?.photo ? selectedChat?.photo : noPhoto}
+                src={
+                  localStorage.getItem(`${selectedChat?.user}photo`) &&
+                  localStorage.getItem(`${selectedChat?.user}photo`) !== "undefined" &&
+                  localStorage.getItem(`${selectedChat?.user}photo`) !== null
+                    ? localStorage.getItem(`${selectedChat?.user}photo`)
+                    : noPhoto
+                }
                 alt={selectedChat?.user ? selectedChat?.user : ""}
               />
               <p className={`font-semibold ${whiteText}`}>

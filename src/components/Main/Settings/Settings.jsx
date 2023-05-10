@@ -12,6 +12,9 @@ import { useDialog } from "../../../context/DialogProvider";
 import { useLanguage } from "../../../context/LanguageProvider";
 import { useNotification } from "../../../context/NotificationProvider";
 
+// utils
+import { logoutUser } from "../../../utils/auth";
+
 // services
 import { savePhoto as savePhotoRemote } from "../../../services/auth";
 
@@ -123,7 +126,10 @@ function Settings() {
       } catch (err) {
         console.error(err);
         const { response } = err;
-        if (response && response.status === 401) window.location.reload();
+        if (response && response.status === 401) {
+          logoutUser();
+          window.location.reload();
+        }
         if (String(err) === "AxiosError: Network Error")
           showNotification("error", errors.notConnected);
         else showNotification("error", String(err));
@@ -156,7 +162,9 @@ function Settings() {
 
   useEffect(() => {
     setPhoto(
-      localStorage.getItem(config.userPhotoCookie) !== null
+      localStorage.getItem(config.userPhotoCookie) &&
+        localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
+        localStorage.getItem(config.userPhotoCookie) !== null
         ? localStorage.getItem(config.userPhotoCookie)
         : noPhoto
     );

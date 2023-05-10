@@ -62,8 +62,12 @@ function Bubble({ join, loading, sender }) {
               <img
                 className={`w-full h-full rounded-full cursor-pointer ${growEmotion}`}
                 src={
-                  sender !== null && sender && sender.photo
-                    ? sender.photo
+                  sender !== null &&
+                  sender &&
+                  localStorage.getItem(`${sender.user}photo`) &&
+                  localStorage.getItem(`${sender.user}photo`) !== "undefined" &&
+                  localStorage.getItem(`${sender.user}photo`) !== null
+                    ? localStorage.getItem(`${sender.user}photo`)
                     : noPhoto
                 }
                 alt={sender !== null && sender ? sender.user : ""}

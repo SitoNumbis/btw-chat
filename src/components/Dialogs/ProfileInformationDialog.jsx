@@ -23,6 +23,9 @@ import { fetchChat } from "../../services/chat/post";
 import styles from "./styles.module.css";
 import colors from "../../assets/emotion/color";
 
+// utils
+import { logoutUser } from "../../utils/auth";
+
 // images
 import noPhoto from "../../assets/images/no-photo.webp";
 
@@ -130,19 +133,26 @@ function ProfileInformationDialog({ editing }) {
     setLoading(true);
     try {
       const response = await fetchChat(editing, true);
-      if (response.status === 401) window.location.reload();
+      if (response.status === 401) {
+        logoutUser();
+        window.location.reload();
+      }
       const { list } = response.data;
       const [data] = list;
       const { user, name, photo, bio, state } = data;
-      localStorage.setItem(`${editing}user`, user);
-      localStorage.setItem(`${editing}name`, name);
-      localStorage.setItem(`${editing}photo`, photo);
-      localStorage.setItem(`${editing}bio`, bio);
+      localStorage.setItem(`${user}user`, user);
+      localStorage.setItem(`${user}name`, name);
+      localStorage.setItem(`${user}photo`, photo?.url);
+      localStorage.setItem(`${user}bio`, bio);
+
       setState(state);
     } catch (err) {
       console.error(err);
       const { response } = err;
-      if (response && response.status === 401) window.location.reload();
+      if (response && response.status === 401) {
+        logoutUser();
+        window.location.reload();
+      }
       if (String(err) === "AxiosError: Network Error")
         showNotification("error", errors.notConnected);
       else showNotification("error", String(err));
