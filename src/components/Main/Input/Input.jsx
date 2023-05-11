@@ -29,17 +29,6 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
     };
   }, [languageState]);
 
-  const onSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (message.length) {
-        setMessage("");
-        onSend(message);
-      }
-    },
-    [message, onSend]
-  );
-
   const [history, setHistory] = useState([]);
 
   const inputRef = useRef();
@@ -52,6 +41,17 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
       inputRef.current.focus();
   }, [inputRef, noSidebarSearching]);
 
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (message.length) {
+        setMessage("");
+        onSend(message);
+      }
+      gainFocus();
+    },
+    [message, onSend, gainFocus]
+  );
   useEffect(() => {
     window.addEventListener("keydown", gainFocus);
     return () => {
