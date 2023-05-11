@@ -207,7 +207,8 @@ function Main({
 
         if (canGoBottomState)
           setNotificationState({ type: "set-badge", count: 1 });
-      } else setNotificationState({ type: "set-badge", count: 1 });
+      } else if (sender.user !== localStorage.getItem(config.userCookie))
+        setNotificationState({ type: "set-badge", count: 1 });
     },
     [selectedChat, fetchMessages, setNotificationState, canGoBottomState]
   );
