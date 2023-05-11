@@ -1,11 +1,13 @@
 import { memo, useState, useEffect, useCallback, useMemo } from "react";
 import loadable from "@loadable/component";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
+import useScreenWidth from "use-screen-witdh";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faGear } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 // @emotion/css
@@ -31,6 +33,9 @@ function Navbar({
   goToSettings,
   toggleSidebar,
 }) {
+  const location = useLocation();
+  const { width } = useScreenWidth();
+
   const { whiteText } = Colors();
 
   const { setDialogState } = useDialog();
@@ -41,7 +46,7 @@ function Navbar({
       key: "editing",
       value: selectedChat.user,
     });
-  }, [selectedChat, goToSettings]);
+  }, [selectedChat, setDialogState]);
 
   const { languageState } = useLanguage();
 
@@ -131,17 +136,19 @@ function Navbar({
     <header className={`${styles.navbar} z-10 flex flex-col px-4`}>
       <div className="flex gap-3 items-center w-full h-full justify-between">
         <div className="flex gap-3 items-center w-full h-full">
-          <div className="relative">
-            <Badge />
-            <button
-              tabIndex={-1}
-              className={`${styles.closeButton} main-transition-ease ${whiteText} ${barsEmotion} font-bold text-xl`}
-              onClick={toggleSidebar}
-              aria-label={buttonsArias.openSidebar}
-            >
-              <FontAwesomeIcon icon={faBars} />
-            </button>
-          </div>
+          {width <= 850 ? (
+            <Link to="/" className="relative no-underline">
+              <Badge />
+              <button
+                tabIndex={-1}
+                className={`${styles.closeButton} main-transition-ease ${whiteText} ${barsEmotion} font-bold text-xl`}
+                onClick={toggleSidebar}
+                aria-label={buttonsArias.openSidebar}
+              >
+                <FontAwesomeIcon icon={faArrowLeft} />
+              </button>
+            </Link>
+          ) : null}
           {selectedChat && !settings ? (
             <button
               onClick={goToProfile}
@@ -168,21 +175,35 @@ function Navbar({
             <h2 className={`${whiteText}`}>{navbar.title}</h2>
           )}
         </div>
-        <button
-          onClick={goToSettings}
-          className={`appear main-transition-ease ${settingsEmotion}`}
-        >
-          <FontAwesomeIcon
-            className={`appear main-transition-ease ${gearEmotion}`}
-            icon={faGear}
-          />
-        </button>
-        <Link
-          to="/sign-out"
-          className={`appear relative flex items-center justify-center main-transition-ease ${whiteText} ${linkEmotion}`}
-        >
-          <FontAwesomeIcon icon={faArrowRightFromBracket} />
-        </Link>
+        {width > 850 ? (
+          <button
+            onClick={goToSettings}
+            className={`main-transition-ease ${settingsEmotion}`}
+          >
+            <FontAwesomeIcon
+              className={`main-transition-ease ${gearEmotion}`}
+              icon={faGear}
+            />
+          </button>
+        ) : (
+          <Link
+            to="/settings"
+            className={`main-transition-ease ${settingsEmotion}`}
+          >
+            <FontAwesomeIcon
+              className={`main-transition-ease ${gearEmotion}`}
+              icon={faGear}
+            />
+          </Link>
+        )}
+        {location.pathname === "/settings" ? (
+          <Link
+            to="/sign-out"
+            className={`relative flex items-center justify-center main-transition-ease ${whiteText} ${linkEmotion}`}
+          >
+            <FontAwesomeIcon icon={faArrowRightFromBracket} />
+          </Link>
+        ) : null}
       </div>
       <hr className={`w-full mx-auto border-dark`} />
     </header>

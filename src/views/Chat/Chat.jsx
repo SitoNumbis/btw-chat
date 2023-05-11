@@ -8,8 +8,10 @@ import {
 } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
-import io from "socket.io-client";
+
 import loadable from "@loadable/component";
+
+import PropTypes from "prop-types";
 
 // css
 import { css } from "@emotion/css";
@@ -44,7 +46,7 @@ const ProfileInformationDialog = loadable(() =>
 const Main = loadable(() => import("../../components/Main/Main"));
 const Sidebar = loadable(() => import("../../components/Sidebar/Sidebar"));
 
-function Chat() {
+function Chat({ socket }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -53,29 +55,6 @@ function Chat() {
   const { canGoBottomState } = useCanGoBottom();
 
   const { dialogState } = useDialog();
-
-  const [socket, setSocket] = useState(null);
-
-  useEffect(() => {
-    const newSocket = io(config.apiSocketUrl, { transports: ["polling"] });
-
-    newSocket.on("connect", () => {
-      console.log("connect", localStorage.getItem(config.userCookie));
-      newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
-    });
-    newSocket.on("user-logged", (options) => {
-      const { date } = options;
-      localStorage.setItem("date", date);
-    });
-    newSocket.on("plus-minute", (date) => {
-      localStorage.setItem("date", date);
-    });
-
-    setSocket(newSocket);
-    return () => {
-      newSocket.close();
-    };
-  }, []);
 
   /*  const pickColor = useCallback((e) => {
     const img = e.target;
@@ -359,5 +338,9 @@ function Chat() {
     </div>
   );
 }
+
+Chat.propTypes = {
+  socket: PropTypes.object,
+};
 
 export default Chat;

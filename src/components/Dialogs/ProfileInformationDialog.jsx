@@ -140,7 +140,7 @@ function ProfileInformationDialog({ editing }) {
       const { list } = response.data;
       const [data] = list;
       const { user, name, photo, bio, state } = data;
-      console.log(data);
+
       localStorage.setItem(`${user}user`, user);
       localStorage.setItem(`${user}name`, name);
       localStorage.setItem(`${user}photo`, photo);

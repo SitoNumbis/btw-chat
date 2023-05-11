@@ -27,7 +27,6 @@ const Typing = loadable(() => import("../../Main/Typing/Typing"));
 function ChatPerson(props) {
   const {
     socket,
-    photo,
     user,
     name,
     state,
@@ -57,7 +56,7 @@ function ChatPerson(props) {
   }, [localState]);
 
   const handleClick = useCallback(() => {
-    selectChat(user, searching);
+    if (selectChat) selectChat(user, searching);
   }, [user, selectChat, searching]);
 
   const { languageState } = useLanguage();
@@ -168,7 +167,7 @@ function ChatPerson(props) {
   return (
     <button
       type="button"
-      disabled={active}
+      disabled={active ? true : false}
       onClick={handleClick}
       className={`flex items-center justify-start px-4 py-3 w-full gap-3 main-transition-ease cursor-pointer ${
         index === 0 ? "-mt-0" : ""
@@ -212,7 +211,6 @@ function ChatPerson(props) {
 
 ChatPerson.propTypes = {
   socket: PropTypes.object,
-  photo: PropTypes.string,
   name: PropTypes.string,
   user: PropTypes.string,
   state: PropTypes.string,
@@ -232,7 +230,6 @@ const ChatPersonMemo = memo(
 function arePropsEqual(oldProps, newProps) {
   return (
     oldProps.socket === newProps.socket &&
-    oldProps.photo === newProps.photo &&
     oldProps.user === newProps.user &&
     oldProps.name === newProps.name &&
     oldProps.state === newProps.state &&

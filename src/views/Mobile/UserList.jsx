@@ -1,10 +1,9 @@
-import { memo, useEffect, useCallback, useState, useMemo } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useCallback, useState, useMemo, useReducer } from "react";
+import { Link } from "react-router-dom";
 import loadable from "@loadable/component";
 import { useDebounce } from "use-lodash-debounce";
-import useOnclickOutside from "react-cool-onclickoutside";
 
-import useScreenSize from "use-screen-witdh";
+import CryptoJS from "crypto-js";
 
 import PropTypes from "prop-types";
 
@@ -14,8 +13,6 @@ import { useLanguage } from "../../context/LanguageProvider";
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowRight,
-  faArrowLeft,
   faSearch,
   faUser,
   faUserGroup,
@@ -30,25 +27,41 @@ import { css } from "@emotion/css";
 // images
 import noPhoto from "../../assets/images/no-photo.webp";
 
-// utils
-import { parseQueries } from "../../utils/parsers";
-
 // styles
-import styles from "./styles.module.css";
+import styles from "./users.module.css";
 import Colors from "../../assets/emotion/color.js";
+
+// services
+import { fetchChat } from "../../services/chat/post";
+
+// utils
+import { logoutUser } from "../../utils/auth";
 
 import config from "../../config";
 
 // components
-import Loading from "../Loading/Loading";
-const ConnectionState = loadable(() =>
-  import("../ConnectionState/ConnectionState")
+import Loading from "../../components/Loading/Loading";
+const VList = loadable(() =>
+  import("../../components/Externals/ReactVirtualized/List")
 );
-const Empty = loadable(() => import("./EmptyChats/Empty"));
-const ChatPerson = loadable(() => import("./ChatPerson/ChatPerson"));
-const EmptyChats = loadable(() => import("./EmptyChats/EmptyChats"));
-const SearchInput = loadable(() => import("./SearchInput/SearchInput"));
-const ActionButton = loadable(() => import("./ActionButton/ActionButton"));
+const ConnectionState = loadable(() =>
+  import("../../components/ConnectionState/ConnectionState")
+);
+const Empty = loadable(() =>
+  import("../../components/Sidebar/EmptyChats/Empty")
+);
+const ChatPerson = loadable(() =>
+  import("../../components/Sidebar/ChatPerson/ChatPerson")
+);
+const EmptyChats = loadable(() =>
+  import("../../components/Sidebar/EmptyChats/EmptyChats")
+);
+const SearchInput = loadable(() =>
+  import("../../components/Sidebar/SearchInput/SearchInput")
+);
+const ActionButton = loadable(() =>
+  import("../../components/Sidebar/ActionButton/ActionButton")
+);
 
 function compareFn(a, b) {
   if (a.lastMessage.date > b.lastMessage.date) return -1;
@@ -59,28 +72,125 @@ function compareFn(a, b) {
   return 0;
 }
 
-function Sidebar({
-  socket,
-  chats,
-  searchChats,
-  multiChats,
-  error,
-  loading,
-  fetchPerson,
-  selectChat,
-  open,
-  onClose,
-  handleSidebarSearching,
-}) {
+function UserList({ socket }) {
   const { whiteText } = Colors();
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const goSettings = useCallback(() => {
-    const { pathname } = location;
-    if (pathname.indexOf("/settings" !== 0)) navigate("/settings");
-  }, [navigate, location]);
+  const chatsReducer = (oldState, action) => {
+    const { type } = action;
+    switch (type) {
+      case "add-message": {
+        const { message, user } = action;
+        const newOldState = [...oldState];
+        const found = newOldState.find((localUser) => localUser.user === user);
+        if (found) found.lastMessage = message;
+        return newOldState;
+      }
+      case "add": {
+        const { list, from } = action;
+        const newOldState = [...oldState];
+        if (from === "back") {
+          list.forEach((user) => {
+            const found = newOldState.find(
+              (localUser) => localUser.id === user.id
+            );
+            if (!found) newOldState.push(user);
+            else found.lastMessage = user.lastMessage;
+          });
+        } else {
+          list.forEach((user) => {
+            const found = newOldState.find(
+              (localUser) => localUser.id === user.id
+            );
+            if (!found) newOldState.push(user);
+            else found.lastMessage = user.lastMessage;
+          });
+        }
+        return newOldState;
+      }
+      default:
+        return oldState;
+    }
+  };
+
+  const [chats, setChats] = useReducer(chatsReducer, []);
+  const [searchChats, setSearchChats] = useReducer(chatsReducer, []);
+  const [multiChats, setMultiChats] = useReducer(chatsReducer, []);
+
+  const fetchPerson = useCallback(
+    async (name, newOne, loading = true) => {
+      setError(false);
+      if (loading) setLoading(true);
+      try {
+        const response = await fetchChat(name, newOne ? true : false);
+
+        if (response.status !== 200 && response.status !== 204) {
+          if (response.status === 401) {
+            logoutUser();
+            window.location.reload();
+          }
+          console.error(response.statusText);
+          setError(true);
+        }
+        const { data } = response;
+        const list = data.list.map((remoteItem) => {
+          const { key, lastMessage, photo, user } = remoteItem;
+          if (photo) localStorage.setItem(`${user}photo`, photo);
+          if (lastMessage) {
+            const parsedMessage = CryptoJS.AES.decrypt(
+              lastMessage,
+              key
+            ).toString(CryptoJS.enc.Utf8);
+            remoteItem.lastMessage = JSON.parse(parsedMessage);
+          }
+          return remoteItem;
+        });
+        if (name && name.length && !newOne)
+          setSearchChats({ type: "add", list });
+        else setChats({ type: "add", list });
+        if (name?.length)
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        else setLoading(false);
+        if (name && name.length && newOne && list) {
+          const [lastUser] = list;
+          const { lastMessage } = lastUser;
+          const theMessage = lastMessage.message;
+          if (
+            lastMessage.sender.user !== localStorage.getItem(config.userCookie)
+          )
+            try {
+              new Notification(lastUser.name, {
+                body: theMessage,
+                icon:
+                  localStorage.getItem(`${lastMessage.sender.user}photo`) &&
+                  localStorage.getItem(`${lastMessage.sender.user}photo`) !==
+                    "undefined" &&
+                  localStorage.getItem(`${lastMessage.sender.user}photo`) !==
+                    null
+                    ? localStorage.getItem(`${lastMessage.sender.user}photo`)
+                    : noPhoto,
+              });
+            } catch (err) {
+              console.error(err);
+            }
+        }
+      } catch (err) {
+        console.error(err);
+        const { response } = err;
+        if (response.status === 401) {
+          logoutUser();
+          window.location.reload();
+        }
+        setError(true);
+        setLoading(false);
+      }
+    },
+    [setSearchChats, setChats]
+  );
 
   const onMessageReceived = useCallback(
     (conversation) => {
@@ -103,8 +213,6 @@ function Sidebar({
   }, [socket, onMessageReceived]);
 
   const { languageState } = useLanguage();
-
-  const { width } = useScreenSize();
 
   const { buttonsArias, inputs, sidebar } = useMemo(() => {
     return {
@@ -129,41 +237,16 @@ function Sidebar({
     [setSearchInput]
   );
 
-  const [showOffState, setShowOffState] = useState(false);
-
-  useEffect(() => {
-    if (width < 850) {
-      onClose(false);
-      setShowOffState(true);
-    } else {
-      onClose(true);
-      setShowOffState(false);
-    }
-  }, [width]);
-
-  const selectLocalChat = useCallback(
-    (user, searching) => {
-      if (width < 850) onClose(false);
-      selectChat(user, searching);
-    },
-    [width, selectChat, onClose]
-  );
-
   const [seeing, setSeeing] = useState("simple");
 
-  const handleSeeing = useCallback(
-    (e) => {
-      let node = e.target;
-      while (node.id.indexOf("action") !== 0) node = node.parentNode;
-      const action = node.id.split("-")[1];
+  const handleSeeing = useCallback((e) => {
+    let node = e.target;
+    while (node.id.indexOf("action") !== 0) node = node.parentNode;
+    const action = node.id.split("-")[1];
 
-      if (action === "multi") return;
-      if (action === "search") handleSidebarSearching(false);
-      else handleSidebarSearching(true);
-      setSeeing(action);
-    },
-    [handleSidebarSearching]
-  );
+    if (action === "multi") return;
+    setSeeing(action);
+  }, []);
 
   useEffect(() => {
     if (seeing === "search")
@@ -178,27 +261,24 @@ function Sidebar({
   }, [fetchPerson, searchInput]);
 
   const printSearchChats = useCallback(() => {
-    const { search } = location;
-    const params = parseQueries(search);
-    const user = params.chat;
     return searchChats.map((chat, i) => (
-      <ChatPerson
-        index={i}
+      <Link
         key={chat.id}
-        {...chat}
-        selectChat={selectLocalChat}
-        searching
-        socket={socket}
-        active={chat.user === user}
-      />
+        to={`/chat?user=${chat.user}`}
+        className="no-underline"
+      >
+        <ChatPerson
+          index={i}
+          key={chat.id}
+          {...chat}
+          searching
+          socket={socket}
+        />
+      </Link>
     ));
-  }, [searchChats, selectLocalChat, location, socket]);
+  }, [searchChats, socket]);
 
   const printChats = useCallback(() => {
-    const { search } = location;
-    const params = parseQueries(search);
-    const user = params.chat;
-
     /*  return (
       <VList
         items={}
@@ -208,17 +288,11 @@ function Sidebar({
       ...chats.filter((message) => message.lastMessage).sort(compareFn),
       ...chats.filter((message) => !message.lastMessage),
     ].map((chat, i) => (
-      <ChatPerson
-        index={i}
-        key={chat.id}
-        {...chat}
-        selectChat={selectLocalChat}
-        searching={false}
-        socket={socket}
-        active={chat.user === user}
-      />
+      <Link key={chat.id} to={`/chat?user=${chat.user}`} className="no-underline">
+        <ChatPerson index={i} {...chat} searching={false} socket={socket} />
+      </Link>
     ));
-  }, [chats, selectLocalChat, location, socket]);
+  }, [chats, socket]);
 
   const printState = useMemo(() => {
     switch (localStorage.getItem(config.userStateCookie)) {
@@ -249,22 +323,20 @@ function Sidebar({
     });
   }, []);
 
-  const ref = useOnclickOutside(() => {
-    if (width < 850 && open) onClose();
-  }, [width, open]);
+  const mainEmotion = useMemo(() => {
+    return css({
+      zIndex: 1,
+      transform: open ? "translateX(0)" : "translateX(-360px)",
+      backgroundColor: `${localStorage.getItem("chat-secondary-bg")}`,
+    });
+  }, []);
 
   return (
-    <div
-      className={`${styles.sidebar} ${css({
-        zIndex: 1,
-        transform: open ? "translateX(0)" : "translateX(-360px)",
-        backgroundColor: `${localStorage.getItem("chat-other-bg")}CC`,
-      })} relative z-10 py-4`}
-    >
-      <div className={styles.userRow} ref={ref}>
-        <button
-          onClick={goSettings}
-          className="flex items-center gap-2 cursor-pointer"
+    <div className={`${styles.sidebar} ${mainEmotion} relative z-10 py-4`}>
+      <div className={styles.userRow}>
+        <Link
+          to="/settings"
+          className="flex items-center gap-2 cursor-pointer no-underline"
         >
           <img
             className="w-10 h-10 rounded-full cursor-pointer"
@@ -284,35 +356,15 @@ function Sidebar({
             {localStorage.getItem(config.userNameCookie)}
           </h2>
           {printState}
-          <Link
-            to="/sign-out"
-            className={`appear relative flex items-center justify-center main-transition-ease ${whiteText} ${linkEmotion}`}
-          >
-            <FontAwesomeIcon icon={faArrowRightFromBracket} />
-          </Link>
-        </button>
-        <button
-          tabIndex={-1}
-          className={`${styles.closeButton} ${css({
-            transition: "all 500ms ease",
-            color: localStorage.getItem("chat-text-basic"),
-            ":hover": {
-              color: localStorage.getItem("chat-text-primary"),
-            },
-          })} font-bold text-xl`}
-          onClick={onClose}
-          aria-label={
-            open ? buttonsArias.closeSidebar : buttonsArias.openSidebar
-          }
+        </Link>
+
+        <Link
+          to="/sign-out"
+          className={`appear relative flex items-center justify-center main-transition-ease ${whiteText} ${linkEmotion}`}
         >
-          <FontAwesomeIcon icon={open ? faArrowLeft : faArrowRight} />
-        </button>
+          <FontAwesomeIcon icon={faArrowRightFromBracket} />
+        </Link>
       </div>
-      {/* <hr
-        className={`${css({
-          width: "100%",
-        })} mx-auto my-3 border-placeholder-dark`}
-      /> */}
       <div className={`${styles.actionButtonRow}`}>
         <ActionButton
           id="search"
@@ -336,12 +388,7 @@ function Sidebar({
           active={seeing === "multi"}
         />
       </div>
-      {/* <hr
-        className={`${css({
-          width: "100%",
-        })} mx-auto my-0 border-placeholder-dark`}
-      /> */}
-      {!showOffState ? <ConnectionState socket={socket} /> : null}
+      <ConnectionState socket={socket} />
 
       {error ? (
         <div className="flex flex-col px-12 p-5 gap-2 appear items-center justify-start">
@@ -412,42 +459,8 @@ function Sidebar({
   );
 }
 
-Sidebar.propTypes = {
+UserList.propTypes = {
   socket: PropTypes.object,
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
-  loading: PropTypes.bool,
-  selectChat: PropTypes.func,
-  fetchPerson: PropTypes.func,
-  error: PropTypes.bool,
-  chats: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      user: PropTypes.string,
-      id: PropTypes.string,
-      bio: PropTypes.string,
-      photo: PropTypes.string,
-    })
-  ),
-  searchChats: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      user: PropTypes.string,
-      id: PropTypes.string,
-      bio: PropTypes.string,
-      photo: PropTypes.string,
-    })
-  ),
-  multiChats: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      user: PropTypes.string,
-      id: PropTypes.string,
-      bio: PropTypes.string,
-      photo: PropTypes.string,
-    })
-  ),
-  handleSidebarSearching: PropTypes.func,
 };
 
-export default Sidebar;
+export default UserList;

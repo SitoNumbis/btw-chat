@@ -1,6 +1,5 @@
 .sidebar {
-  min-width: 360px;
-  width: 360px;
+  width: 100%;
   height: 100%;
   backdrop-filter: blur(10px);
   transition: transform 500ms ease;

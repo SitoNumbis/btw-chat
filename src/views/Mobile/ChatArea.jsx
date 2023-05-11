@@ -1,9 +1,10 @@
-import { useCallback, useState, useEffect, useReducer } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useMemo, useCallback, useState, useEffect, useReducer } from "react";
+import { useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
 import { useDebounce } from "use-lodash-debounce";
 
-import useScreenSize from "use-screen-witdh";
+// @emotion/css
+import { css } from "@emotion/css";
 
 import PropTypes from "prop-types";
 import loadable from "@loadable/component";
@@ -11,15 +12,20 @@ import loadable from "@loadable/component";
 // contexts
 import { useNotification } from "../../context/NotificationProvider";
 import { useCanGoBottom } from "../../context/CanGoBottomProvider";
+import { useDialog } from "../../context/DialogProvider";
 
 // styles
-import styles from "./styles.module.css";
-import Colors from "../../assets/emotion/color";
+import styles from "./chat.module.css";
 
 import config from "../../config";
 
+// utils
+import { logoutUser } from "../../utils/auth";
+import { parseQueries } from "../../utils/parsers";
+
 // services
 import {
+  fetchChat as fetchChatRemote,
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
 } from "../../services/chat/post";
@@ -30,37 +36,23 @@ import sound from "../../assets/sounds/message.mp3";
 import error from "../../assets/sounds/error.mp3";
 
 // components
-const Input = loadable(() => import("./Input/Input"));
-const Typing = loadable(() => import("./Typing/Typing"));
-const Navbar = loadable(() => import("./Navbar/Navbar"));
-const Settings = loadable(() => import("./Settings/Settings"));
-const ConnectionState = loadable(() =>
-  import("../ConnectionState/ConnectionState")
+const Input = loadable(() => import("../../components/Main/Input/Input"));
+const Typing = loadable(() => import("../../components/Main/Typing/Typing"));
+const Navbar = loadable(() => import("../../components/Main/Navbar/Navbar"));
+const ProfileInformationDialog = loadable(() =>
+  import("../../components/Dialogs/ProfileInformationDialog")
 );
-const Messages = loadable(() => import("./Messages/Messages"));
+const ConnectionState = loadable(() =>
+  import("../../components/ConnectionState/ConnectionState")
+);
+const Messages = loadable(() =>
+  import("../../components/Main/Messages/Messages")
+);
 
-function Main({
-  socket,
-  selectedChat,
-  selectChat,
-  toggleSidebar,
-  noSidebarSearching,
-}) {
-  const { mainBG } = Colors();
-
+function ChatArea({ socket }) {
+  const { dialogState } = useDialog();
   const { canGoBottomState } = useCanGoBottom();
   const { setNotificationState } = useNotification();
-
-  const [showOffState, setShowOffState] = useState(false);
-
-  const [settings, setSettings] = useState(true);
-
-  const { width } = useScreenSize();
-
-  useEffect(() => {
-    if (width < 850) setShowOffState(true);
-    else setShowOffState(false);
-  }, [width]);
 
   const messagesReducer = (state, action) => {
     const { type } = action;
@@ -140,7 +132,8 @@ function Main({
   const [messages, setMessages] = useReducer(messagesReducer, []);
   const [page, setPage] = useState(0);
 
-  const [oldChat, setOldChat] = useState("");
+  const [errorE, setError] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(undefined);
 
   const fetchMessages = useCallback(
     async (target, sender, loadingL = true) => {
@@ -158,20 +151,11 @@ function Main({
               ).toString(CryptoJS.enc.Utf8);
               return JSON.parse(parsedMessage);
             });
-            if (list) {
-              if (oldChat === target)
-                setMessages({
-                  type: "add",
-                  messages: list,
-                });
-              else
-                setMessages({
-                  type: "init",
-                  messages: list,
-                });
-            }
-
-            setOldChat(target);
+            if (list)
+              setMessages({
+                type: "add",
+                messages: list,
+              });
           }
         } catch (err) {
           console.error(err);
@@ -180,20 +164,62 @@ function Main({
         setTyping(false);
       }
     },
-    [page, oldChat, loading, selectedChat]
+    [page, loading, selectedChat]
   );
 
-  const navigate = useNavigate();
   const location = useLocation();
+
+  const fetchPerson = async (user) => {
+    try {
+      const response = await fetchChatRemote(user, true);
+      if (response.status !== 200 && response.status !== 204) {
+        if (response.status === 401) {
+          logoutUser();
+          window.location.reload();
+        }
+        console.error(response.statusText);
+        setError(true);
+      }
+      const { data } = response;
+      const list = data.list.map((remoteItem) => {
+        const { key, lastMessage, photo, user } = remoteItem;
+        if (photo) localStorage.setItem(`${user}photo`, photo);
+        if (lastMessage) {
+          const parsedMessage = CryptoJS.AES.decrypt(lastMessage, key).toString(
+            CryptoJS.enc.Utf8
+          );
+          remoteItem.lastMessage = JSON.parse(parsedMessage);
+        }
+        return remoteItem;
+      });
+      setSelectedChat(list[0]);
+    } catch (err) {
+      console.error(err);
+      const { response } = err;
+      if (response.status === 401) {
+        logoutUser();
+        window.location.reload();
+      }
+      setError(true);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const { search } = location;
+    const params = parseQueries(search);
+    if (params.user) fetchPerson(params.user);
+  }, [location]);
 
   useEffect(() => {
     if (
       selectedChat &&
+      selectedChat.user &&
       localStorage.getItem(config.userCookie) !== null &&
       !loading
     )
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
-  }, [selectedChat, location]);
+  }, [selectedChat]);
 
   const onMessageReceived = useCallback(
     (conversation) => {
@@ -228,7 +254,7 @@ function Main({
         setTyping(true);
       }
     },
-    [selectedChat, setTyping, typingV, setTypingV]
+    [setTyping, typingV, setTypingV, selectedChat]
   );
 
   useEffect(() => {
@@ -325,7 +351,7 @@ function Main({
         });
       }
     },
-    [selectedChat]
+    [selectedChat, playError]
   );
 
   const [minuteOut, setMinuteOut] = useState(false);
@@ -339,25 +365,6 @@ function Main({
     }, 60000);
   }, [minuteOut]);
 
-  const goToSettings = useCallback(() => {
-    setSettings(true);
-    const { pathname } = location;
-    if (pathname.indexOf("/settings" !== 0)) navigate("/settings");
-    selectChat(undefined);
-  }, [navigate, location, selectChat]);
-
-  useEffect(() => {
-    const { pathname } = location;
-    if (pathname.indexOf("/settings") === 0) {
-      setSettings(true);
-      selectChat(undefined);
-    }
-  }, [location]);
-
-  useEffect(() => {
-    if (selectedChat) setSettings(false);
-  }, [selectedChat]);
-
   const onRetry = useCallback(
     (date) => {
       const find = messages.find((localMessage) => localMessage.date === date);
@@ -366,63 +373,46 @@ function Main({
     [messages, sendMessage]
   );
 
+  const mainEmotion = useMemo(() => {
+    return css({
+      background: localStorage.getItem("chat-other-bg"),
+      height: `${window.innerHeight}px`,
+    });
+  }, []);
+
   return (
-    <div className={`${styles.main} ${mainBG(88)}`}>
-      <Navbar
-        socket={socket}
-        settings={settings}
-        goToSettings={goToSettings}
-        toggleSidebar={toggleSidebar}
-        selectedChat={selectedChat}
-      />
-      {showOffState ? (
-        <ConnectionState isInNavbar main socket={socket} settings={settings} />
+    <div className={`${styles.main} ${mainEmotion}`}>
+      <Navbar socket={socket} selectedChat={selectedChat} />
+      <ConnectionState isInNavbar main socket={socket} settings={false} />
+      {dialogState.editing !== undefined ? (
+        <ProfileInformationDialog editing={dialogState.editing} />
       ) : null}
-      {!settings ? (
+      {selectedChat ? (
         <>
-          {selectedChat ? (
-            <>
-              <Messages
-                loading={loading}
-                settings={settings}
-                messages={messages}
-                selectedChat={selectedChat}
-                onRetry={onRetry}
-              />
-              <div className={styles.inputContainer}>
-                <Typing typing={typing} main />
-                <Input
-                  onSend={sendMessage}
-                  socket={socket}
-                  selectedChat={selectedChat}
-                  noSidebarSearching={noSidebarSearching}
-                />
-              </div>
-            </>
-          ) : null}
+          <Messages
+            loading={loading}
+            settings={false}
+            messages={messages}
+            selectedChat={selectedChat}
+            onRetry={onRetry}
+          />
+          <div className={styles.inputContainer}>
+            <Typing typing={typing} main />
+            <Input
+              onSend={sendMessage}
+              socket={socket}
+              selectedChat={selectedChat}
+              noSidebarSearching={true}
+            />
+          </div>
         </>
-      ) : (
-        <Settings />
-      )}
+      ) : null}
     </div>
   );
 }
 
-Main.propTypes = {
+ChatArea.propTypes = {
   socket: PropTypes.object,
-  sidebar: PropTypes.bool,
-  toggleSidebar: PropTypes.func,
-  selectChat: PropTypes.func,
-  selectedChat: PropTypes.shape({
-    photo: PropTypes.string,
-    user: PropTypes.string,
-    name: PropTypes.string,
-    bio: PropTypes.string,
-    state: PropTypes.string,
-    lastMessage: PropTypes.any,
-    key: PropTypes.string,
-  }),
-  noSidebarSearching: PropTypes.bool,
 };
 
-export default Main;
+export default ChatArea;

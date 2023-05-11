@@ -1,7 +1,10 @@
 import { Suspense, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import loadable from "@loadable/component";
 
+import io from "socket.io-client";
+
+import useScreenWidth from "use-screen-witdh";
 // some-javascript-utils
 import { getUserLanguage } from "some-javascript-utils/browser";
 
@@ -37,8 +40,38 @@ const SignOut = loadable(() => import("./views/Auth/SignOut"));
 const ResetPassword = loadable(() => import("./views/Auth/ResetPassword"));
 const EmailValidation = loadable(() => import("./views/Auth/EmailValidation"));
 
+// mobile
+const UserList = loadable(() => import("./views/Mobile/UserList"));
+const Settings = loadable(() => import("./views/Mobile/Settings"));
+const ChatArea = loadable(() => import("./views/Mobile/ChatArea"));
+
 function App() {
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io(config.apiSocketUrl, { transports: ["polling"] });
+
+    newSocket.on("connect", () => {
+      console.log("connect", localStorage.getItem(config.userCookie));
+      newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
+    });
+    newSocket.on("user-logged", (options) => {
+      const { date } = options;
+      localStorage.setItem("date", date);
+    });
+    newSocket.on("plus-minute", (date) => {
+      localStorage.setItem("date", date);
+    });
+
+    setSocket(newSocket);
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
   const { setLanguageState } = useLanguage();
+
+  const { width } = useScreenWidth();
 
   const fetch = async () => {
     try {
@@ -108,6 +141,7 @@ function App() {
     localStorage.setItem("chat-other-bg", "#222222");
     localStorage.setItem("chat-text-primary", "#Fb2b2b");
     localStorage.setItem("chat-text-basic", "#ffffff");
+    
     if (userLogged()) fetch();
     // else window.location.href = "/auth";
     setLoading(false);
@@ -176,17 +210,37 @@ function App() {
           ) : (
             <Route
               exact
-              path="/*"
+              path="/"
               element={
                 <Suspense>
                   <DialogProvider>
                     <CanGoBottomProvider>
-                      <Chat />
+                      <Outlet />
                     </CanGoBottomProvider>
                   </DialogProvider>
                 </Suspense>
               }
-            />
+            >
+              {width > 850 ? (
+                <Route index element={<Chat socket={socket} />} />
+              ) : (
+                <Route index element={<UserList socket={socket} />} />
+              )}
+              {width < 850 ? (
+                <>
+                  <Route
+                    exact
+                    path="/settings"
+                    element={<Settings socket={socket} />}
+                  />
+                  <Route
+                    exact
+                    path="/chat"
+                    element={<ChatArea socket={socket} />}
+                  />
+                </>
+              ) : null}
+            </Route>
           )}
           <Route exact path="/sign-out" element={<SignOut />} />
           <Route path="*" element={<NotFound />} />

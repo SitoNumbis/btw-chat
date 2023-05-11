@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background-color: #222;
+}
+
 .margin {
   margin-top: 70px !important;
 }
