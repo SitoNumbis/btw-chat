@@ -26,7 +26,6 @@ import { useNotification } from "../../context/NotificationProvider";
 import styles from "./styles.module.css";
 
 // utils
-import { loadImage } from "../../utils/services";
 import { logUser, userLogged } from "../../utils/auth";
 
 // services
@@ -161,20 +160,7 @@ function SignIn() {
     setShowPassword(!showPassword);
   }, [showPassword]);
 
-  const [imageBG, setImageBG] = useState(
-    "https://ik.imagekit.io/lgqp0wffgtp/tr:q-1/Beyon_the_world/Chat/auth_vNlQJ5l45.webp?updatedAt=1683111316564"
-  );
-
   useEffect(() => {
-    loadImage(
-      "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Chat/auth_vNlQJ5l45.webp?updatedAt=1683111316564"
-    )
-      .then((base64) => {
-        setImageBG(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
     setLoading(false);
   }, []);
 
@@ -200,13 +186,14 @@ function SignIn() {
     });
   }, []);
 
+  const background = useMemo(() => {
+    return css({ backgroundColor: localStorage.getItem("chat-other-bg") });
+  }, []);
+
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
-      <img
-        className="w-full h-full object-cover absolute top-0 left-0 kenburns"
-        src={imageBG}
-        alt="space-wallpaper"
-      />
+    <div
+      className={`min-h-screen w-full relative overflow-hidden ${background}`}
+    >
       {loading ? (
         <Loading
           className={`absolute z-10 w-full h-screen items-center main-backdrop-filter`}

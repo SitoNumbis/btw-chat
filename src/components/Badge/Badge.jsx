@@ -25,11 +25,11 @@ function Badge({ local }) {
   }, [notificationState.count]);
 
   const badgeEmotion = useMemo(() => {
-    return !local
-      ? css({
-          background: localStorage.getItem("chat-text-primary"),
-          border: `2px solid ${localStorage.getItem("chat-main-bg")}`,
-        })
+    return css({
+      background: localStorage.getItem("chat-text-primary"),
+      border: `2px solid ${localStorage.getItem("chat-main-bg")}`,
+    }); /* !local
+      ? 
       : css({
           display: "flex",
           alignItems: "center",
@@ -41,7 +41,7 @@ function Badge({ local }) {
           top: "-10px !important",
           background: localStorage.getItem("chat-text-primary"),
           border: `2px solid ${localStorage.getItem("chat-main-bg")}`,
-        });
+        }); */
   }, [local]);
 
   return see ? (

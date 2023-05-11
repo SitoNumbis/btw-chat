@@ -67,7 +67,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
           left: 0,
           behavior: "smooth",
         });
-      }, 10);
+      }, 500);
   }, [canGoBottomState]);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
             left: 0,
             behavior: "auto",
           });
-      }, 100);
+      }, 500);
     }
   }, [selectedChat, messagesList, loading]);
 

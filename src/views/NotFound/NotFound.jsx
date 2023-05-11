@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 // font awesome
@@ -8,9 +8,6 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 // @emotion/css
 import { css } from "@emotion/css";
 
-// utils
-import { loadImage } from "../../utils/services";
-
 // styles
 import styles from "./styles.module.css";
 import Colors from "../../assets/emotion/color";
@@ -18,20 +15,8 @@ import Colors from "../../assets/emotion/color";
 function NotFound() {
   const { whiteText } = Colors();
 
-  const [imageBG, setImageBG] = useState(
-    "https://ik.imagekit.io/lgqp0wffgtp/tr:q-1/Beyon_the_world/Chat/auth_vNlQJ5l45.webp?updatedAt=1683111316564"
-  );
-
-  useEffect(() => {
-    loadImage(
-      "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Chat/auth_vNlQJ5l45.webp?updatedAt=1683111316564"
-    )
-      .then((base64) => {
-        setImageBG(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const background = useMemo(() => {
+    return css({ backgroundColor: localStorage.getItem("chat-other-bg") });
   }, []);
 
   const linkEmotion = useMemo(() => {
@@ -43,12 +28,7 @@ function NotFound() {
   }, []);
 
   return (
-    <div className="w-full h-screen">
-      <img
-        className="absolute left-0 top-0 w-full min-h-screen object-cover"
-        src={imageBG}
-        alt="space-background"
-      />
+    <div className={`w-full h-screen ${background}`}>
       <div
         className={`entrance flex flex-col items-center justify-center w-full h-full ${
           styles.glass

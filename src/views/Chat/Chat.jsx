@@ -25,7 +25,6 @@ import styles from "./styles.module.css";
 
 // utils
 import { logoutUser } from "../../utils/auth";
-import { loadImage } from "../../utils/services";
 import { parseQueries } from "../../utils/parsers";
 
 // contexts
@@ -305,32 +304,8 @@ function Chat() {
     if (params.chat) selectChat(params.chat, false, "location");
   }, [location]);
 
-  const [imageBG, setImageBG] = useState(
-    "https://ik.imagekit.io/lgqp0wffgtp/tr:q-1/Beyon_the_world/Chat/image_12QNJKZ2w.jpg?updatedAt=1683111900098"
-  );
-
   useEffect(() => {
-    loadImage(
-      "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Chat/image_12QNJKZ2w.jpg?updatedAt=1683111900098"
-    )
-      .then((base64) => {
-        setImageBG(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
     setLoadingF(false);
-  }, []);
-
-  const imageEmotion = useMemo(() => {
-    return css({
-      objectFit: "cover",
-      width: "100%",
-      position: "absolute",
-      height: "100vh",
-      top: 0,
-      left: 0,
-    });
   }, []);
 
   const [noSidebarSearching, setNoSidebarSearching] = useState(true);
@@ -339,17 +314,16 @@ function Chat() {
     setNoSidebarSearching(value);
   };
 
+  const background = useMemo(() => {
+    return css({ backgroundColor: localStorage.getItem("chat-other-bg") });
+  }, []);
+
   return (
-    <div className={`entrance ${styles.main}`}>
+    <div className={`entrance ${styles.main} ${background}`}>
       {dialogState.editing !== undefined ? (
         <ProfileInformationDialog editing={dialogState.editing} />
       ) : null}
-      <img
-        src={imageBG}
-        alt="space-background"
-        /* onLoad={pickColor} */
-        className={imageEmotion}
-      />
+
       {loadingF ? (
         <Loading
           className={`absolute z-10 w-full h-screen items-center main-backdrop-filter`}
