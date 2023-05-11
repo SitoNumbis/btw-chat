@@ -7,12 +7,12 @@
 }
 
 .userRow {
-  height: 45px;
-  @apply flex w-full justify-between items-center px-4 pb-4;
+  height: 55px;
+  @apply flex w-full justify-between items-center p-4;
 }
 
 .actionButtonRow {
-  height: 45px;
+  height: 55px;
   @apply flex items-center justify-around w-full;
 }
 

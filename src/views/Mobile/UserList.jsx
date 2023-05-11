@@ -73,7 +73,7 @@ function compareFn(a, b) {
 }
 
 function UserList({ socket }) {
-  const { whiteText } = Colors();
+  const { whiteText, mainBG } = Colors();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -288,7 +288,11 @@ function UserList({ socket }) {
       ...chats.filter((message) => message.lastMessage).sort(compareFn),
       ...chats.filter((message) => !message.lastMessage),
     ].map((chat, i) => (
-      <Link key={chat.id} to={`/chat?user=${chat.user}`} className="no-underline">
+      <Link
+        key={chat.id}
+        to={`/chat?user=${chat.user}`}
+        className="no-underline"
+      >
         <ChatPerson index={i} {...chat} searching={false} socket={socket} />
       </Link>
     ));
@@ -327,13 +331,13 @@ function UserList({ socket }) {
     return css({
       zIndex: 1,
       transform: open ? "translateX(0)" : "translateX(-360px)",
-      backgroundColor: `${localStorage.getItem("chat-secondary-bg")}`,
+      backgroundColor: `${localStorage.getItem("chat-other-bg")}`,
     });
   }, []);
 
   return (
-    <div className={`${styles.sidebar} ${mainEmotion} relative z-10 py-4`}>
-      <div className={styles.userRow}>
+    <div className={`${styles.sidebar} ${mainEmotion} relative z-10`}>
+      <div className={`${styles.userRow} ${mainBG()}`}>
         <Link
           to="/settings"
           className="flex items-center gap-2 cursor-pointer no-underline"
