@@ -1,5 +1,5 @@
 .messages {
-  margin-bottom: 25px;
+  margin-bottom: 80px;
   @apply relative flex flex-col gap-5 overflow-auto
       px-10 pt-1 pb-5;
 }
@@ -13,20 +13,22 @@
 .main {
   backdrop-filter: blur(10px);
   border-radius: 0px 5px 5px 0;
-  @apply flex flex-col w-full h-full;
+  @apply flex flex-col w-full;
 }
 
 .inputContainer {
   flex-shrink: 0;
   min-height: 40px;
-  margin-bottom: 5px;
   @apply px-10;
 }
 
 @media (max-width: 850px) {
   .inputContainer {
+    position: fixed;
     width: 100%;
     height: 55px;
+    left: 0;
+    bottom: 0;
     min-height: 55px;
     @apply px-0;
   }
