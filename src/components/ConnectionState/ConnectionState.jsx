@@ -136,9 +136,10 @@ function ConnectionState({ socket, main, settings, isInNavbar }) {
   }, [currentState]);
 
   const margin = useMemo(() => {
+    if (isInNavbar) return "0";
     if (main && settings) return "-13px 0 10px -8px";
     else if (main) return "-3px 0 10px -8px";
-  }, [main, settings]);
+  }, [main, settings, isInNavbar]);
 
   const [dots, setDots] = useState(".");
 
@@ -200,13 +201,11 @@ function ConnectionState({ socket, main, settings, isInNavbar }) {
     return css({
       top: "50px",
       position: "absolute",
-      left: "8px",
       width: "100%",
       zIndex: 20,
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingLeft: "8px",
     });
   }, []);
 
