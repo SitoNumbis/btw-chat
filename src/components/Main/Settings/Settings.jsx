@@ -170,9 +170,15 @@ function Settings() {
     );
   }, []);
 
+  const emotion = useMemo(() => {
+    return css({ height: `${window.innerHeight}px` });
+  }, []);
+
   return (
-    <div className="w-full flex flex-col items-center justify-center">
-      <div className="appear w-full flex flex-col items-center justify-center gap-2">
+    <div
+      className={`w-full flex flex-col items-center justify-center ${emotion}`}
+    >
+      <div className="appear w-full h-full flex flex-col items-center justify-center gap-2">
         <div className={`relative ${imageEmotion} rounded-sm cursor-pointer`}>
           <input type="file" onChange={onFileLoad} />
           <img
