@@ -74,7 +74,7 @@ function Main({
         const toReturn = [...state];
         messages.forEach((message) => {
           const found = toReturn.find((localMessage) => {
-            return localMessage.date === message.date;
+            return localMessage.id === message.id;
           });
           if (!found) toReturn.push(message);
         });
@@ -85,7 +85,7 @@ function Main({
         const { message } = action;
         const toReturn = [...state];
         const found = toReturn.find((localMessage) => {
-          return localMessage.date === message.date;
+          return localMessage.id === message.id;
         });
         if (!found) toReturn.push(message);
         return toReturn;
@@ -103,7 +103,7 @@ function Main({
         delete message.error;
         const toReturn = [...state];
         const findIndex = toReturn.findIndex(
-          (localMessage) => localMessage.date === message.date
+          (localMessage) => localMessage.id === message.id
         );
         if (findIndex >= 0) toReturn.splice(findIndex, 1);
         toReturn.push(message);
