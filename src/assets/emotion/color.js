@@ -21,16 +21,22 @@ const Colors = () => {
     });
   }, []);
 
-
-
   const mainBG = useCallback((opacity = "FF", important = false) => {
+    return css({
+      background: `${localStorage.getItem("chat-main-bg")}${opacity}${
+        important ? " !important" : ""
+      }`,
+    });
+  }, []);
+
+  const secondaryBG = useCallback((opacity = "FF", important = false) => {
     return css({
       background: `${localStorage.getItem("chat-secondary-bg")}${opacity}${
         important ? " !important" : ""
       }`,
     });
   }, []);
-5
+
   const otherBG = useCallback((opacity = "FF", important = false) => {
     return css({
       background: `${localStorage.getItem("chat-other-bg")}${opacity}${
@@ -39,7 +45,7 @@ const Colors = () => {
     });
   }, []);
 
-  return { whiteText, primaryText, mainBG, otherBG };
+  return { whiteText, primaryText, mainBG, secondaryBG, otherBG };
 };
 
 export default Colors;

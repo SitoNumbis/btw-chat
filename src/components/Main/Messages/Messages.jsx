@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import useScreenSize from "use-screen-witdh";
 import loadable from "@loadable/component";
 
-import { scrollTo } from "some-javascript-utils/browser";
-
 // @emotion/css
 import { css } from "@emotion/css";
 

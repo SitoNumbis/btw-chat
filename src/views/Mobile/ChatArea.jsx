@@ -16,6 +16,7 @@ import { useDialog } from "../../context/DialogProvider";
 
 // styles
 import styles from "./chat.module.css";
+import Colors from "../../assets/emotion/color";
 
 import config from "../../config";
 
@@ -36,6 +37,7 @@ import sound from "../../assets/sounds/message.mp3";
 import error from "../../assets/sounds/error.mp3";
 
 // components
+import Loading from "../../components/Loading/Loading";
 const Input = loadable(() => import("../../components/Main/Input/Input"));
 const Typing = loadable(() => import("../../components/Main/Typing/Typing"));
 const Navbar = loadable(() => import("../../components/Main/Navbar/Navbar"));
@@ -50,6 +52,8 @@ const Messages = loadable(() =>
 );
 
 function ChatArea({ socket }) {
+  const { mainBG } = Colors();
+
   const { dialogState } = useDialog();
   const { canGoBottomState } = useCanGoBottom();
   const { setNotificationState } = useNotification();
@@ -128,6 +132,7 @@ function ChatArea({ socket }) {
     }
   };
 
+  const [bigLoading, setBigLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useReducer(messagesReducer, []);
   const [page, setPage] = useState(0);
@@ -157,10 +162,15 @@ function ChatArea({ socket }) {
                 messages: list,
               });
           }
+          setLoading(false);
         } catch (err) {
           console.error(err);
+          setLoading(false);
         }
-        setLoading(false);
+        setTimeout(() => {
+          setBigLoading(false);
+        }, 501);
+
         setTyping(false);
       }
     },
@@ -206,6 +216,7 @@ function ChatArea({ socket }) {
   };
 
   useEffect(() => {
+    setBigLoading(true);
     const { search } = location;
     const params = parseQueries(search);
     if (params.user) fetchPerson(params.user);
@@ -382,31 +393,39 @@ function ChatArea({ socket }) {
 
   return (
     <div className={`${styles.main} ${mainEmotion}`}>
-      <Navbar socket={socket} selectedChat={selectedChat} />
-      <ConnectionState isInNavbar main socket={socket} settings={false} />
-      {dialogState.editing !== undefined ? (
-        <ProfileInformationDialog editing={dialogState.editing} />
-      ) : null}
-      {selectedChat ? (
-        <>
-          <Messages
-            loading={loading}
-            settings={false}
-            messages={messages}
-            selectedChat={selectedChat}
-            onRetry={onRetry}
+      <>
+        {bigLoading ? (
+          <Loading
+            noEntrance
+            className={`fixed w-full h-screen flex items-center justify-center z-50 ${mainBG()}`}
           />
-          <div className={styles.inputContainer}>
-            <Typing typing={typing} main />
-            <Input
-              onSend={sendMessage}
-              socket={socket}
+        ) : null}
+        <Navbar socket={socket} selectedChat={selectedChat} />
+        <ConnectionState isInNavbar main socket={socket} settings={false} />
+        {dialogState.editing !== undefined ? (
+          <ProfileInformationDialog editing={dialogState.editing} />
+        ) : null}
+        {selectedChat ? (
+          <>
+            <Messages
+              loading={loading}
+              settings={false}
+              messages={messages}
               selectedChat={selectedChat}
-              noSidebarSearching={true}
+              onRetry={onRetry}
             />
-          </div>
-        </>
-      ) : null}
+            <div className={styles.inputContainer}>
+              <Typing typing={typing} main />
+              <Input
+                onSend={sendMessage}
+                socket={socket}
+                selectedChat={selectedChat}
+                noSidebarSearching={true}
+              />
+            </div>
+          </>
+        ) : null}
+      </>
     </div>
   );
 }

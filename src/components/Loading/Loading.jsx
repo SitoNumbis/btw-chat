@@ -11,7 +11,7 @@ import { faCompass } from "@fortawesome/free-solid-svg-icons";
 // styles
 import Colors from "../../assets/emotion/color";
 
-function Loading({ className }) {
+function Loading({ className, noEntrance }) {
   const { whiteText } = Colors();
 
   const loadingEmotion = useMemo(() => {
@@ -22,7 +22,9 @@ function Loading({ className }) {
 
   return (
     <div
-      className={`entrance flex items-start justify-center w-full h-full pt-5 ${className}`}
+      className={`${
+        noEntrance ? "" : "entrance"
+      } flex items-start justify-center w-full h-full pt-5 ${className}`}
     >
       <FontAwesomeIcon
         icon={faCompass}
@@ -34,12 +36,16 @@ function Loading({ className }) {
 
 Loading.propTypes = {
   className: PropTypes.string,
+  noEntrance: PropTypes.bool,
 };
 
 const LoadingMemo = memo((props) => <Loading {...props} />, arePropsEqual);
 
 function arePropsEqual(oldProps, newProps) {
-  return oldProps.className === newProps.className;
+  return (
+    oldProps.className === newProps.className &&
+    oldProps.noEntrance === newProps.noEntrance
+  );
 }
 
 LoadingMemo.displayName = "Loading";
