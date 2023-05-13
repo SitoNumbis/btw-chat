@@ -72,9 +72,20 @@ export const logoutUser = () => {
   localStorage.removeItem(config.userPhotoCookie);
   localStorage.removeItem(config.userBioCookie);
 
-  // cache
+  //! cache
   localStorage.removeItem("need-read");
-  localStorage.removeItem("chats");
+  try {
+    if (localStorage.getItem("chats") !== null) {
+      // @ts-ignore
+      const localChats = JSON.parse(localStorage.getItem("chats"));
+      localChats.forEach((chat) => {
+        localStorage.removeItem(`chat-${chat.user}`);
+      });
+      localStorage.removeItem("chats");
+    }
+  } catch (err) {
+    console.error(err);
+  }
 };
 export const userData = () => {
   let user = {};
