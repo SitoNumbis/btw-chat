@@ -117,6 +117,10 @@ function Chat({ socket }) {
   const chatsReducer = (oldState, action) => {
     const { type } = action;
     switch (type) {
+      case "set": {
+        const { list } = action;
+        return list;
+      }
       case "add-message": {
         const { message, user } = action;
         const newOldState = [...oldState];
@@ -198,9 +202,8 @@ function Chat({ socket }) {
           return remoteItem;
         });
         localStorage.setItem("chats", JSON.stringify(list));
-
         if (name && name.length && !newOne)
-          setSearchChats({ type: "add", list });
+          setSearchChats({ type: "set", list });
         else setChats({ type: "add", list });
         if (name?.length)
           setTimeout(() => {
