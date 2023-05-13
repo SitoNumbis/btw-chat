@@ -14,6 +14,7 @@ import { useNotification } from "../../../context/NotificationProvider";
 
 // utils
 import { logoutUser } from "../../../utils/auth";
+import { validation } from "../../../utils/validation";
 
 // services
 import { savePhoto as savePhotoRemote } from "../../../services/auth";
@@ -162,9 +163,7 @@ function Settings() {
 
   useEffect(() => {
     setPhoto(
-      localStorage.getItem(config.userPhotoCookie) &&
-        localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
-        localStorage.getItem(config.userPhotoCookie) !== null
+      validation(config.userPhotoCookie)
         ? localStorage.getItem(config.userPhotoCookie)
         : noPhoto
     );

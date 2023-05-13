@@ -7,6 +7,9 @@ import { css } from "@emotion/css";
 // contexts
 import { useDialog } from "../../../context/DialogProvider";
 
+// utils
+import { validation } from "../../../utils/validation";
+
 // images
 import noPhoto from "../../../assets/images/no-photo.webp";
 
@@ -53,15 +56,11 @@ function Bubble({ join, loading, sender }) {
 
   const getPhoto = useMemo(() => {
     if (sender.user === localStorage.getItem(config.userCookie))
-      return localStorage.getItem(config.userPhotoCookie) &&
-        localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
-        localStorage.getItem(config.userPhotoCookie) !== null
+      return validation(config.userPhotoCookie)
         ? localStorage.getItem(config.userPhotoCookie)
         : noPhoto;
     else
-      return localStorage.getItem(`${sender.user}photo`) &&
-        localStorage.getItem(`${sender.user}photo`) !== "undefined" &&
-        localStorage.getItem(`${sender.user}photo`) !== null
+      return validation(`${sender.user}photo`)
         ? localStorage.getItem(`${sender.user}photo`)
         : noPhoto;
   }, [sender]);

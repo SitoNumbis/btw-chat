@@ -11,6 +11,9 @@ import PropTypes from "prop-types";
 // contexts
 import { useLanguage } from "../../context/LanguageProvider";
 
+// utils
+import { validation } from "../../utils/validation";
+
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -269,9 +272,7 @@ function Sidebar({
           <img
             className="w-10 h-10 rounded-full cursor-pointer"
             src={
-              localStorage.getItem(config.userPhotoCookie) &&
-              localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
-              localStorage.getItem(config.userPhotoCookie) !== null
+              validation(config.userPhotoCookie)
                 ? localStorage.getItem(config.userPhotoCookie)
                 : noPhoto
             }

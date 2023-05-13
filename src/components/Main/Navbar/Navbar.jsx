@@ -13,6 +13,9 @@ import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 // @emotion/css
 import { css } from "@emotion/css";
 
+// utils
+import { validation } from "../../../utils/validation";
+
 // contexts
 import { useDialog } from "../../../context/DialogProvider";
 import { useLanguage } from "../../../context/LanguageProvider";
@@ -157,10 +160,7 @@ function Navbar({
               <img
                 className="w-10 h-10 rounded-full cursor-pointer"
                 src={
-                  localStorage.getItem(`${selectedChat?.user}photo`) &&
-                  localStorage.getItem(`${selectedChat?.user}photo`) !==
-                    "undefined" &&
-                  localStorage.getItem(`${selectedChat?.user}photo`) !== null
+                  validation(`${selectedChat?.user}photo`)
                     ? localStorage.getItem(`${selectedChat?.user}photo`)
                     : noPhoto
                 }

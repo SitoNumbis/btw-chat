@@ -14,6 +14,7 @@ import noPhoto from "../../../assets/images/no-photo.webp";
 
 // utils
 import { parseSent } from "../../../utils/parseSent";
+import { validation } from "../../../utils/validation";
 
 // styles
 import Colors from "../../../assets/emotion/color";
@@ -151,15 +152,11 @@ function ChatPerson(props) {
 
   const getPhoto = useMemo(() => {
     if (user === localStorage.getItem(config.userCookie))
-      return localStorage.getItem(config.userPhotoCookie) &&
-        localStorage.getItem(config.userPhotoCookie) !== "undefined" &&
-        localStorage.getItem(config.userPhotoCookie) !== null
+      return validation(config.userPhotoCookie)
         ? localStorage.getItem(config.userPhotoCookie)
         : noPhoto;
     else
-      return localStorage.getItem(`${user}photo`) &&
-        localStorage.getItem(`${user}photo`) !== "undefined" &&
-        localStorage.getItem(`${user}photo`) !== null
+      return validation(`${user}photo`)
         ? localStorage.getItem(`${user}photo`)
         : noPhoto;
   }, [user]);

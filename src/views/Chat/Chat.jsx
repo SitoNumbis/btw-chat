@@ -28,6 +28,7 @@ import styles from "./styles.module.css";
 // utils
 import { logoutUser } from "../../utils/auth";
 import { parseQueries } from "../../utils/parsers";
+import { validation } from "../../utils/validation";
 
 // contexts
 import { useDialog } from "../../context/DialogProvider";
@@ -162,10 +163,7 @@ function Chat({ socket }) {
 
       //! reading from cache
       try {
-        if (
-          localStorage.getItem("need-read") !== "true" &&
-          localStorage.getItem("chats") !== null
-        ) {
+        if (validation("need-read", "true") && validation("chats")) {
           const chatsLocal = JSON.parse(localStorage.getItem("chats"));
 
           setChats({ type: "add", list: chatsLocal });
@@ -224,14 +222,9 @@ function Chat({ socket }) {
               try {
                 new Notification(lastUser.name, {
                   body: theMessage,
-                  icon:
-                    localStorage.getItem(`${lastMessage.sender.user}photo`) &&
-                    localStorage.getItem(`${lastMessage.sender.user}photo`) !==
-                      "undefined" &&
-                    localStorage.getItem(`${lastMessage.sender.user}photo`) !==
-                      null
-                      ? localStorage.getItem(`${lastMessage.sender.user}photo`)
-                      : noPhoto,
+                  icon: validation(`${lastMessage.sender.user}photo`)
+                    ? localStorage.getItem(`${lastMessage.sender.user}photo`)
+                    : noPhoto,
                 });
               } catch (err) {
                 console.error(err);

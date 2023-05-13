@@ -8,6 +8,9 @@ import useScreenSize from "use-screen-witdh";
 import PropTypes from "prop-types";
 import loadable from "@loadable/component";
 
+// utils
+import { validation } from "../../utils/validation";
+
 // contexts
 import { useNotification } from "../../context/NotificationProvider";
 import { useCanGoBottom } from "../../context/CanGoBottomProvider";
@@ -147,14 +150,7 @@ function Main({
     async (target, sender, loadingL = true) => {
       //! reading from cache
       try {
-        if (
-          localStorage.getItem("last-date") &&
-          localStorage.getItem("last-date") !== null &&
-          localStorage.getItem("last-date") !== "undefined" &&
-          localStorage.getItem(`chat-${target}`) &&
-          localStorage.getItem(`chat-${target}`) !== null &&
-          localStorage.getItem(`chat-${target}`) !== "undefined"
-        ) {
+        if (validation("last-date") && validation(`chat-${target}`)) {
           const response = await fetchChatLastDate(target, sender);
           const { data } = response;
           if (!data.result) {
@@ -216,11 +212,7 @@ function Main({
   const location = useLocation();
 
   useEffect(() => {
-    if (
-      selectedChat &&
-      localStorage.getItem(config.userCookie) !== null &&
-      !loading
-    )
+    if (selectedChat && validation(config.userCookie) && !loading)
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
   }, [selectedChat, location]);
 

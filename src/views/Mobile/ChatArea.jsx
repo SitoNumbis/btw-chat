@@ -23,6 +23,7 @@ import config from "../../config";
 // utils
 import { logoutUser } from "../../utils/auth";
 import { parseQueries } from "../../utils/parsers";
+import { validation } from "../../utils/validation";
 
 // services
 import {
@@ -39,6 +40,7 @@ import error from "../../assets/sounds/error.mp3";
 
 // components
 import Loading from "../../components/Loading/Loading";
+
 const Input = loadable(() => import("../../components/Main/Input/Input"));
 const Typing = loadable(() => import("../../components/Main/Typing/Typing"));
 const Navbar = loadable(() => import("../../components/Main/Navbar/Navbar"));
@@ -145,14 +147,7 @@ function ChatArea({ socket }) {
     async (target, sender, loadingL = true) => {
       //! reading from cache
       try {
-        if (
-          localStorage.getItem("last-date") &&
-          localStorage.getItem("last-date") !== null &&
-          localStorage.getItem("last-date") !== "undefined" &&
-          localStorage.getItem(`chat-${target}`) &&
-          localStorage.getItem(`chat-${target}`) !== null &&
-          localStorage.getItem(`chat-${target}`) !== "undefined"
-        ) {
+        if (validation("last-date") && validation(`chat-${target}`)) {
           const response = await fetchChatLastDate(
             target,
             sender,
@@ -219,7 +214,7 @@ function ChatArea({ socket }) {
   const fetchPerson = async (user) => {
     //! reading from cache
     try {
-      if (localStorage.getItem("chats") !== null) {
+      if (validation("chats")) {
         const chatsLocal = JSON.parse(localStorage.getItem("chats"));
         const found = chatsLocal.find((localChat) => localChat.user === user);
         if (found) {
@@ -277,7 +272,7 @@ function ChatArea({ socket }) {
     if (
       selectedChat &&
       selectedChat.user &&
-      localStorage.getItem(config.userCookie) !== null &&
+      validation(config.userCookie) &&
       !loading
     )
       fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
