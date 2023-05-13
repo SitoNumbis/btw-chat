@@ -20,6 +20,7 @@ import config from "../../config";
 
 // services
 import {
+  fetchChatLastDate,
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
 } from "../../services/chat/post";
@@ -144,6 +145,25 @@ function Main({
 
   const fetchMessages = useCallback(
     async (target, sender, loadingL = true) => {
+      //! reading from cache
+      try {
+        const response = await fetchChatLastDate(target, sender);
+        const { data } = response;
+        if (data) {
+          //* should read from cache
+          const localConversation = JSON.parse(
+            localStorage.getItem(`chat-${target}`)
+          );
+          setMessages({
+            type: "add",
+            messages: localConversation,
+          });
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+      }
       if (!loading) {
         if (loadingL) setLoading(true);
         try {

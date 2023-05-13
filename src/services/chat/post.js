@@ -75,3 +75,17 @@ export const fetchChat = async (target, single) => {
   );
   return response;
 };
+
+export const fetchChatLastDate = async (target, sender) => {
+  const response = await axios.post(
+    `${config.apiUrl}/last-date`,
+    { target, sender },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
+  return response;
+};

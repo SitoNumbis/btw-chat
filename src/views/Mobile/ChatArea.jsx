@@ -29,6 +29,7 @@ import {
   fetchChat as fetchChatRemote,
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
+  fetchChatLastDate,
 } from "../../services/chat/post";
 
 // sound
@@ -142,6 +143,25 @@ function ChatArea({ socket }) {
 
   const fetchMessages = useCallback(
     async (target, sender, loadingL = true) => {
+      //! reading from cache
+      try {
+        const response = await fetchChatLastDate(target, sender);
+        const { data } = response;
+        if (data) {
+          //* should read from cache
+          const localConversation = JSON.parse(
+            localStorage.getItem(`chat-${target}`)
+          );
+          setMessages({
+            type: "add",
+            messages: localConversation,
+          });
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+      }
       if (!loading) {
         if (loadingL) setLoading(true);
         try {
@@ -156,11 +176,13 @@ function ChatArea({ socket }) {
               ).toString(CryptoJS.enc.Utf8);
               return JSON.parse(parsedMessage);
             });
-            if (list)
+            if (list) {
+              localStorage.setItem(`chat-${target}`, JSON.stringify(list));
               setMessages({
                 type: "add",
                 messages: list,
               });
+            }
           }
           setLoading(false);
         } catch (err) {
