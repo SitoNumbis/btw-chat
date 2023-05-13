@@ -252,7 +252,7 @@ function ChatArea({ socket }) {
     } catch (err) {
       console.error(err);
       const { response } = err;
-      if (response.status === 401) {
+      if (response && response.status === 401) {
         logoutUser();
         window.location.reload();
       }

@@ -22,6 +22,9 @@ import { css } from "@emotion/css";
 import { useLanguage } from "../../context/LanguageProvider";
 import { useNotification } from "../../context/NotificationProvider";
 
+// image
+import image from "../../assets/images/250.jpg";
+
 // styles
 import styles from "./styles.module.css";
 
@@ -138,7 +141,15 @@ function SignIn() {
           response.data.token
         );
         logUser(remember, data);
-
+        if (data.notifications.length)
+          try {
+            new Notification("Beyond the World", {
+              body: `${data.notifications.length} ${languageState.texts.dialogs.notifications.title}`,
+              icon: image,
+            });
+          } catch (err) {
+            console.error(err);
+          }
         setTimeout(() => {
           if (userLogged()) window.location.href = "/";
         }, 100);

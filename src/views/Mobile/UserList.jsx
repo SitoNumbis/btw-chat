@@ -127,7 +127,6 @@ function UserList({ socket }) {
       try {
         if (validation("need-read", "true") && validation("chats")) {
           const chatsLocal = JSON.parse(localStorage.getItem("chats"));
-
           setChats({ type: "add", list: chatsLocal });
           setLoading(false);
           return;
@@ -190,7 +189,7 @@ function UserList({ socket }) {
       } catch (err) {
         console.error(err);
         const { response } = err;
-        if (response.status === 401) {
+        if (response && response.status === 401) {
           logoutUser();
           window.location.reload();
         }

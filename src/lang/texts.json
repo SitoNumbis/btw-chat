@@ -1,6 +1,9 @@
 {
   "es": {
     "dialogs": {
+      "notifications": {
+        "title": "notificationes"
+      },
       "profileInfo": {
         "title": "Información de perfil"
       }
