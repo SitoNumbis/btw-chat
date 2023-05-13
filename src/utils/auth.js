@@ -71,6 +71,10 @@ export const logoutUser = () => {
   localStorage.removeItem(config.userNameCookie);
   localStorage.removeItem(config.userPhotoCookie);
   localStorage.removeItem(config.userBioCookie);
+
+  // cache
+  localStorage.removeItem("need-read");
+  localStorage.removeItem("chats");
 };
 export const userData = () => {
   let user = {};
@@ -101,6 +105,8 @@ export const logUser = (remember, user) => {
     localStorage.setItem(config.userStateCookie, user.state);
     localStorage.setItem(config.userBioCookie, user.bio);
     localStorage.setItem(config.userPhotoCookie, user.photo);
+    if (user.notifications && user.notifications.length)
+      localStorage.setItem("need-read", "true");
   }
   // @ts-ignore
   else {
@@ -110,5 +116,7 @@ export const logUser = (remember, user) => {
     localStorage.setItem(config.userStateCookie, user.state);
     localStorage.setItem(config.userBioCookie, user.bio);
     localStorage.setItem(config.userPhotoCookie, user.photo);
+    if (user.notifications && user.notifications.length)
+      localStorage.setItem("need-read", "true");
   }
 };

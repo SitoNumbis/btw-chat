@@ -196,7 +196,7 @@ function Navbar({
             />
           </Link>
         )}
-        {location.pathname === "/settings" ? (
+        {location.pathname !== "/settings" ? (
           <Link
             to="/sign-out"
             className={`relative flex items-center justify-center main-transition-ease ${whiteText} ${linkEmotion}`}

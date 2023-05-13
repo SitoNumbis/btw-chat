@@ -159,10 +159,20 @@ function Chat({ socket }) {
   const fetchPerson = useCallback(
     async (name, newOne, loading = true) => {
       setErrorLoadingPerson(false);
+
+      if (
+        localStorage.getItem("need-read") !== "true" &&
+        localStorage.getItem("chats") !== null
+      ) {
+        const chatsLocal = JSON.parse(localStorage.getItem("chats"));
+
+        setChats({ type: "add", list: chatsLocal });
+        setLoading(false);
+        return;
+      }
       if (loading) setLoading(true);
       try {
         const response = await fetchChat(name, newOne ? true : false);
-
         if (response.status !== 200 && response.status !== 204) {
           if (response.status === 401) {
             logoutUser();
@@ -184,6 +194,8 @@ function Chat({ socket }) {
           }
           return remoteItem;
         });
+        localStorage.setItem("chats", JSON.stringify(list));
+
         if (name && name.length && !newOne)
           setSearchChats({ type: "add", list });
         else setChats({ type: "add", list });
