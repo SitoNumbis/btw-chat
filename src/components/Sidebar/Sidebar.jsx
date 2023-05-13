@@ -360,7 +360,9 @@ function Sidebar({
                   {searchInput.length ? (
                     <>
                       {searchChats.length ? (
-                        <div className="appear">{printSearchChats()}</div>
+                        <div className={`appear ${styles.listSearch}`}>
+                          {printSearchChats()}
+                        </div>
                       ) : (
                         <Empty />
                       )}

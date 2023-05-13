@@ -17,6 +17,11 @@
   @apply overflow-auto;
 }
 
+.listSearch {
+  height: calc(100vh - 72px - 45px - 45px);
+  @apply overflow-auto;
+}
+
 .actionButtonRow {
   height: 45px;
   @apply flex items-center justify-around w-full;
