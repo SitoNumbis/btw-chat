@@ -73,6 +73,7 @@ export const logoutUser = () => {
   localStorage.removeItem(config.userBioCookie);
 
   //! cache
+  localStorage.removeItem("last-date");
   localStorage.removeItem("need-read");
   try {
     if (localStorage.getItem("chats") !== null) {
@@ -116,6 +117,7 @@ export const logUser = (remember, user) => {
     localStorage.setItem(config.userStateCookie, user.state);
     localStorage.setItem(config.userBioCookie, user.bio);
     localStorage.setItem(config.userPhotoCookie, user.photo);
+    localStorage.setItem("last-date", user.lastDate);
     if (user.notifications && user.notifications.length)
       localStorage.setItem("need-read", "true");
   }
@@ -127,6 +129,7 @@ export const logUser = (remember, user) => {
     localStorage.setItem(config.userStateCookie, user.state);
     localStorage.setItem(config.userBioCookie, user.bio);
     localStorage.setItem(config.userPhotoCookie, user.photo);
+    localStorage.setItem("last-date", user.lastDate);
     if (user.notifications && user.notifications.length)
       localStorage.setItem("need-read", "true");
   }

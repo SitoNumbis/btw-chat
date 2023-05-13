@@ -139,9 +139,9 @@ function SignIn() {
         );
         logUser(remember, data);
 
-        /*  setTimeout(() => {
+        setTimeout(() => {
           if (userLogged()) window.location.href = "/";
-        }, 100); */
+        }, 100);
       } catch (err) {
         console.error(err);
         const { response } = err;
