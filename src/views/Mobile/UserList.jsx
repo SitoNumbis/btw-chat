@@ -344,7 +344,7 @@ function UserList({ socket }) {
   }, []);
 
   return (
-    <div className={`${styles.sidebar} ${mainEmotion} relative z-10`}>
+    <div className={`${styles.sidebar} ${mainEmotion}`}>
       <div className={`${styles.userRow} ${mainBG()}`}>
         <Link
           to="/settings"
@@ -448,7 +448,7 @@ function UserList({ socket }) {
                   {!chats.length ? (
                     <EmptyChats searching={false} />
                   ) : (
-                    <div className="appear h-full overflow-auto">
+                    <div className={`appear ${styles.list}`}>
                       {printChats()}
                     </div>
                   )}
