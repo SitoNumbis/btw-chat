@@ -151,8 +151,9 @@ function ChatArea({ socket }) {
             sender,
             Number(localStorage.getItem("last-date"))
           );
+
           const { data } = response;
-          if (data.result) {
+          if (!data.result) {
             //* should read from cache
             const localConversation = JSON.parse(
               localStorage.getItem(`chat-${target}`)
@@ -162,6 +163,7 @@ function ChatArea({ socket }) {
               messages: localConversation,
             });
             setLoading(false);
+            setBigLoading(false);
             return;
           }
         }

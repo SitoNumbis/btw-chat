@@ -76,10 +76,17 @@ export const fetchChat = async (target, single) => {
   return response;
 };
 
-export const fetchChatLastDate = async (target, sender) => {
+/**
+ *
+ * @param {string} target
+ * @param {string} sender
+ * @param {number} lastDate
+ * @returns
+ */
+export const fetchChatLastDate = async (target, sender, lastDate) => {
   const response = await axios.post(
     `${config.apiUrl}/last-date`,
-    { target, sender },
+    { target, sender, lastDate },
     {
       headers: {
         "Content-Type": "application/json",
