@@ -180,6 +180,19 @@ function ChatArea({ socket }) {
   const location = useLocation();
 
   const fetchPerson = async (user) => {
+    //! reading from cache
+    try {
+      if (localStorage.getItem("chats") !== null) {
+        const chatsLocal = JSON.parse(localStorage.getItem("chats"));
+        const found = chatsLocal.find((localChat) => localChat.user === user);
+        if (found) {
+          setSelectedChat(found);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
     try {
       const response = await fetchChatRemote(user, true);
       if (response.status !== 200 && response.status !== 204) {
@@ -190,6 +203,7 @@ function ChatArea({ socket }) {
         console.error(response.statusText);
         setError(true);
       }
+
       const { data } = response;
       const list = data.list.map((remoteItem) => {
         const { key, lastMessage, photo, user } = remoteItem;

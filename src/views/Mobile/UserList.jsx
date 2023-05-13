@@ -122,17 +122,22 @@ function UserList({ socket }) {
   const fetchPerson = useCallback(
     async (name, newOne, loading = true) => {
       setError(false);
+      //! reading from cache
+      try {
+        if (
+          localStorage.getItem("need-read") !== "true" &&
+          localStorage.getItem("chats") !== null
+        ) {
+          const chatsLocal = JSON.parse(localStorage.getItem("chats"));
 
-      if (
-        localStorage.getItem("need-read") !== "true" &&
-        localStorage.getItem("chats") !== null
-      ) {
-        const chatsLocal = JSON.parse(localStorage.getItem("chats"));
-
-        setChats({ type: "add", list: chatsLocal });
-        setLoading(false);
-        return;
+          setChats({ type: "add", list: chatsLocal });
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error(err);
       }
+
       if (loading) setLoading(true);
       try {
         const response = await fetchChat(name, newOne ? true : false);

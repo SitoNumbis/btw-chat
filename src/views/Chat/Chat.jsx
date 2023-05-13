@@ -160,15 +160,20 @@ function Chat({ socket }) {
     async (name, newOne, loading = true) => {
       setErrorLoadingPerson(false);
 
-      if (
-        localStorage.getItem("need-read") !== "true" &&
-        localStorage.getItem("chats") !== null
-      ) {
-        const chatsLocal = JSON.parse(localStorage.getItem("chats"));
+      //! reading from cache
+      try {
+        if (
+          localStorage.getItem("need-read") !== "true" &&
+          localStorage.getItem("chats") !== null
+        ) {
+          const chatsLocal = JSON.parse(localStorage.getItem("chats"));
 
-        setChats({ type: "add", list: chatsLocal });
-        setLoading(false);
-        return;
+          setChats({ type: "add", list: chatsLocal });
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error(err);
       }
       if (loading) setLoading(true);
       try {
