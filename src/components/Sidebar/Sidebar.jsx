@@ -262,7 +262,7 @@ function Sidebar({
         zIndex: 1,
         transform: open ? "translateX(0)" : "translateX(-360px)",
         backgroundColor: `${localStorage.getItem("chat-other-bg")}CC`,
-      })} relative z-10 py-4`}
+      })} `}
     >
       <div className={styles.userRow} ref={ref}>
         <button
@@ -309,11 +309,6 @@ function Sidebar({
           <FontAwesomeIcon icon={open ? faArrowLeft : faArrowRight} />
         </button>
       </div>
-      {/* <hr
-        className={`${css({
-          width: "100%",
-        })} mx-auto my-3 border-placeholder-dark`}
-      /> */}
       <div className={`${styles.actionButtonRow}`}>
         <ActionButton
           id="search"
@@ -337,13 +332,7 @@ function Sidebar({
           active={seeing === "multi"}
         />
       </div>
-      {/* <hr
-        className={`${css({
-          width: "100%",
-        })} mx-auto my-0 border-placeholder-dark`}
-      /> */}
       {!showOffState ? <ConnectionState socket={socket} /> : null}
-
       {error ? (
         <div className="flex flex-col px-12 p-5 gap-2 appear items-center justify-start">
           <FontAwesomeIcon icon={faSadCry} className="text-l-error text-4xl" />
@@ -392,7 +381,7 @@ function Sidebar({
                   {!chats.length ? (
                     <EmptyChats searching={false} />
                   ) : (
-                    <div className="appear h-full overflow-auto">
+                    <div className={`appear ${styles.list}`}>
                       {printChats()}
                     </div>
                   )}

@@ -5,11 +5,16 @@
   backdrop-filter: blur(10px);
   transition: transform 500ms ease;
   border-radius: 5px 0 0px 5px;
+  @apply relative z-10;
 }
 
 .userRow {
-  height: 45px;
-  @apply flex w-full justify-between items-center px-4 pb-4;
+  @apply flex w-full justify-between items-center p-4;
+}
+
+.list {
+  height: calc(100vh - 72px - 45px);
+  @apply overflow-auto;
 }
 
 .actionButtonRow {
