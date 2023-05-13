@@ -147,19 +147,28 @@ function Main({
     async (target, sender, loadingL = true) => {
       //! reading from cache
       try {
-        const response = await fetchChatLastDate(target, sender);
-        const { data } = response;
-        if (data) {
-          //* should read from cache
-          const localConversation = JSON.parse(
-            localStorage.getItem(`chat-${target}`)
-          );
-          setMessages({
-            type: "add",
-            messages: localConversation,
-          });
-          setLoading(false);
-          return;
+        if (
+          localStorage.getItem("last-date") &&
+          localStorage.getItem("last-date") !== null &&
+          localStorage.getItem("last-date") !== "undefined" &&
+          localStorage.getItem(`chat-${target}`) &&
+          localStorage.getItem(`chat-${target}`) !== null &&
+          localStorage.getItem(`chat-${target}`) !== "undefined"
+        ) {
+          const response = await fetchChatLastDate(target, sender);
+          const { data } = response;
+          if (!data.result) {
+            //* should read from cache
+            const localConversation = JSON.parse(
+              localStorage.getItem(`chat-${target}`)
+            );
+            setMessages({
+              type: "add",
+              messages: localConversation,
+            });
+            setLoading(false);
+            return;
+          }
         }
       } catch (err) {
         console.error(err);

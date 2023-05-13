@@ -145,7 +145,14 @@ function ChatArea({ socket }) {
     async (target, sender, loadingL = true) => {
       //! reading from cache
       try {
-        if (localStorage.getItem("last-date")) {
+        if (
+          localStorage.getItem("last-date") &&
+          localStorage.getItem("last-date") !== null &&
+          localStorage.getItem("last-date") !== "undefined" &&
+          localStorage.getItem(`chat-${target}`) &&
+          localStorage.getItem(`chat-${target}`) !== null &&
+          localStorage.getItem(`chat-${target}`) !== "undefined"
+        ) {
           const response = await fetchChatLastDate(
             target,
             sender,
