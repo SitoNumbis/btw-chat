@@ -70,7 +70,7 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
   }, [gainFocus]);
 
   const [typing, setTyping] = useState(false);
-  const debouncedValue = useDebounce(message, 5000);
+  const debouncedValue = useDebounce(message, 1000);
 
   useEffect(() => {
     setTyping(false);
