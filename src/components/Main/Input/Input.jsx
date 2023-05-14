@@ -1,5 +1,6 @@
 import { useCallback, useState, useMemo, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useDebounce } from "use-lodash-debounce";
 
 // @emotion/css
 import { css } from "@emotion/css";
@@ -33,9 +34,6 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
 
   const inputRef = useRef();
 
-  const onKeyDown = useCallback(() => {}, [history]);
-  const onKeyUp = useCallback(() => {}, [history]);
-
   const gainFocus = useCallback(() => {
     if (inputRef.current !== null && noSidebarSearching)
       inputRef.current.focus();
@@ -44,14 +42,26 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      if (message.length) {
+      if (message.length && inputRef.current !== null) {
+        inputRef.current.textContent = "";
         setMessage("");
         onSend(message);
       }
       gainFocus();
     },
-    [message, onSend, gainFocus]
+    [message, onSend, gainFocus, inputRef]
   );
+
+  const onKeyDown = useCallback(
+    (e) => {
+      const { shiftKey, keyCode } = e;
+      if (!shiftKey && keyCode === 13) onSubmit(e);
+    },
+    [onSubmit]
+  );
+
+  const onKeyUp = useCallback(() => {}, [history]);
+
   useEffect(() => {
     window.addEventListener("keydown", gainFocus);
     return () => {
@@ -59,17 +69,25 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
     };
   }, [gainFocus]);
 
+  const [typing, setTyping] = useState(false);
+  const debouncedValue = useDebounce(message, 5000);
+
+  useEffect(() => {
+    setTyping(false);
+  }, [debouncedValue]);
+
   const handleText = useCallback(
     (e) => {
-      setMessage(e.target.value);
-      if (socket) {
+      setMessage(e.target.textContent);
+      if (socket && !typing) {
+        setTyping(true);
         socket.emit("typing", {
           user: localStorage.getItem(config.userCookie),
           target: selectedChat.user,
         });
       }
     },
-    [socket, selectedChat]
+    [socket, selectedChat, typing]
   );
 
   const buttonEmotion = useMemo(() => {
@@ -88,15 +106,15 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
       <p
         contentEditable
         ref={inputRef}
+        value={message}
         type="text"
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
         placeholder={input.placeholder}
-        onChange={handleText}
+        onInput={handleText}
         className={`${whiteText} ${styles.input}`}
-      >
-        {message}
-      </p>
+      />
+
       <button
         className={`${styles.button} ${buttonEmotion}`}
         onClick={onSubmit}
