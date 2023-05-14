@@ -1,15 +1,19 @@
 .button {
-  top: 50%;
-  transform: translate(0, -50%);
+  /*   top: 50%;
+  transform: translate(0, -50%); */
+  @apply w-20 text-placeholder-dark transition font-semibold;
 }
 
 .input {
   outline: none;
   background: none;
+  max-height: 120px;
+  @apply w-full overflow-auto;
 }
 
 .div {
-  @apply relative w-full h-full flex items-center justify-between p-3 rounded-sm;
+  max-height: 145px;
+  @apply relative w-full h-full flex items-end justify-between p-3 rounded-sm overflow-auto;
 }
 
 .div:hover {

@@ -135,8 +135,16 @@ function Navbar({
     }
   }, [socket, personUpdateState]);
 
+  const navbarEmotion = useMemo(() => {
+    return css({
+      backgroundColor: localStorage.getItem("chat-main-bg"),
+    });
+  }, []);
+
   return (
-    <header className={`${styles.navbar} z-10 flex flex-col px-4`}>
+    <header
+      className={`${styles.navbar} z-10 flex flex-col px-4 ${navbarEmotion}`}
+    >
       <div className="flex gap-3 items-center w-full h-full justify-between">
         <div className="flex gap-3 items-center w-full h-full">
           {width <= 850 ? (

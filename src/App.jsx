@@ -141,7 +141,7 @@ function App() {
     localStorage.setItem("chat-other-bg", "#222222");
     localStorage.setItem("chat-text-primary", "#Fb2b2b");
     localStorage.setItem("chat-text-basic", "#ffffff");
-    
+
     if (userLogged()) fetch();
     // else window.location.href = "/auth";
     setLoading(false);
@@ -179,7 +179,7 @@ function App() {
     <Suspense>
       <NotificationC />
 
-      <BrowserRouter>
+      <BrowserRouter> 
         <Routes>
           {localStorage.getItem(config.userCookie) === null ? (
             <>

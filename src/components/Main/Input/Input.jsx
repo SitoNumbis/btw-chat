@@ -15,7 +15,7 @@ import Colors from "../../../assets/emotion/color";
 import config from "../../../config";
 
 function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
-  const { mainBG, whiteText } = Colors();
+  const { otherBG, whiteText } = Colors();
 
   const [message, setMessage] = useState("");
 
@@ -72,12 +72,6 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
     [socket, selectedChat]
   );
 
-  const inputEmotion = useMemo(() => {
-    return css({
-      paddingRight: `${buttons.send.length * 10}px`,
-    });
-  }, [buttons]);
-
   const buttonEmotion = useMemo(() => {
     return css({
       ":hover": {
@@ -89,20 +83,22 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
   return (
     <form
       onSubmit={onSubmit}
-      className={`${mainBG()} main-transition-ease ${styles.div}`}
+      className={`${otherBG()} main-transition-ease ${styles.div}`}
     >
-      <input
+      <p
+        contentEditable
         ref={inputRef}
         type="text"
-        value={message}
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
         placeholder={input.placeholder}
         onChange={handleText}
-        className={`w-full ${whiteText} ${styles.input} ${inputEmotion}`}
-      />
+        className={`${whiteText} ${styles.input}`}
+      >
+        {message}
+      </p>
       <button
-        className={`absolute h-full w-20 right-0 text-placeholder-dark transition font-semibold ${styles.button} ${buttonEmotion}`}
+        className={`${styles.button} ${buttonEmotion}`}
         onClick={onSubmit}
         aria-label={buttonsArias.send}
       >

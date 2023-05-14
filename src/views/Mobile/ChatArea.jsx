@@ -432,7 +432,7 @@ function ChatArea({ socket }) {
 
   const mainEmotion = useMemo(() => {
     return css({
-      background: localStorage.getItem("chat-other-bg"),
+      background: localStorage.getItem("chat-secondary-bg"),
       height: `${window.innerHeight}px`,
     });
   }, []);
