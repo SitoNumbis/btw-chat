@@ -12,3 +12,18 @@ export async function loadImage(url) {
       });
     });
 }
+
+export const isMyReactAppActive = () => {
+  const myAppIdentifier = "Chat Beyond the World";
+  const isActiveTab = !document.hidden;
+  const currentTitle = document.title;
+  const currentMetaTags = Array.from(document.getElementsByTagName("meta")).map(
+    (tag) => tag.getAttribute("name")
+  );
+
+  return (
+    isActiveTab &&
+    (currentTitle.includes(myAppIdentifier) ||
+      currentMetaTags.includes(myAppIdentifier))
+  );
+};

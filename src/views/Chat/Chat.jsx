@@ -29,6 +29,7 @@ import styles from "./styles.module.css";
 import { logoutUser } from "../../utils/auth";
 import { parseQueries } from "../../utils/parsers";
 import { validation } from "../../utils/validation";
+import { isMyReactAppActive } from "../../utils/services";
 
 // contexts
 import { useDialog } from "../../context/DialogProvider";
@@ -213,7 +214,8 @@ function Chat({ socket }) {
         if (name && name.length && newOne && list) {
           if (
             (selectedChat?.user !== name && !canGoBottomState) ||
-            (selectedChat?.user === name && canGoBottomState)
+            (selectedChat?.user === name && canGoBottomState) ||
+            !isMyReactAppActive()
           ) {
             const [lastUser] = list;
             const { lastMessage } = lastUser;
@@ -221,7 +223,7 @@ function Chat({ socket }) {
             if (
               lastMessage.sender.user !==
               localStorage.getItem(config.userCookie)
-            )
+            ) {
               try {
                 new Notification(lastUser.name, {
                   body: theMessage,
@@ -232,6 +234,7 @@ function Chat({ socket }) {
               } catch (err) {
                 console.error(err);
               }
+            }
           }
         }
       } catch (err) {

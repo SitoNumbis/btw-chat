@@ -60,7 +60,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
   const scrollToBottom = useCallback(() => {
     if (!canGoBottomState)
       setTimeout(() => {
-        messagesList.current.scrollTo({
+        messagesList.current?.scrollTo({
           top: messagesList.current.scrollHeight,
           left: 0,
           behavior: "smooth",
