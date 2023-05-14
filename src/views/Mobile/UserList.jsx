@@ -36,12 +36,14 @@ import { fetchChat } from "../../services/chat/post";
 
 // utils
 import { logoutUser } from "../../utils/auth";
+import { parseChats } from "../../utils/parsers";
 import { validation } from "../../utils/validation";
 
 import config from "../../config";
 
 // components
 import Loading from "../../components/Loading/Loading";
+
 const VList = loadable(() =>
   import("../../components/Externals/ReactVirtualized/List")
 );
@@ -109,6 +111,7 @@ function UserList({ socket }) {
             else found.lastMessage = user.lastMessage;
           });
         }
+
         return newOldState;
       }
       default:
@@ -127,7 +130,8 @@ function UserList({ socket }) {
       try {
         if (validation("need-read", "true") && validation("chats")) {
           const chatsLocal = JSON.parse(localStorage.getItem("chats"));
-          setChats({ type: "add", list: chatsLocal });
+          const list = parseChats(chatsLocal);
+          setChats({ type: "add", list: list });
           setLoading(false);
           return;
         }
@@ -148,18 +152,8 @@ function UserList({ socket }) {
           setError(true);
         }
         const { data } = response;
-        const list = data.list.map((remoteItem) => {
-          const { key, lastMessage, photo, user } = remoteItem;
-          if (photo) localStorage.setItem(`${user}photo`, photo);
-          if (lastMessage) {
-            const parsedMessage = CryptoJS.AES.decrypt(
-              lastMessage,
-              key
-            ).toString(CryptoJS.enc.Utf8);
-            remoteItem.lastMessage = JSON.parse(parsedMessage);
-          }
-          return remoteItem;
-        });
+        const list = parseChats(data.list);
+        localStorage.setItem("chats", JSON.stringify(data.list));
         if (name && name.length && !newOne)
           setSearchChats({ type: "add", list });
         else setChats({ type: "add", list });

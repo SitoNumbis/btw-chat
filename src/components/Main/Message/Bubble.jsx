@@ -67,7 +67,7 @@ function Bubble({ join, loading, sender }) {
 
   return (
     <div>
-      {!join ? (
+      {!join || loading ? (
         <div className={`w-7 h-7 ${imageEmotion}`}>
           {loading ? (
             <Loading className={loadingEmotion} />

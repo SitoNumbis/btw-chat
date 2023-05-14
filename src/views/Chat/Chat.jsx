@@ -202,7 +202,7 @@ function Chat({ socket }) {
           }
           return remoteItem;
         });
-        localStorage.setItem("chats", JSON.stringify(list));
+        localStorage.setItem("chats", JSON.stringify(data.list));
         if (name && name.length && !newOne)
           setSearchChats({ type: "set", list });
         else setChats({ type: "add", list });

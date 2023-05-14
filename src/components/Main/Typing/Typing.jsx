@@ -24,7 +24,7 @@ function Typing({ typing, main }) {
     else
       setTimeout(() => {
         setSee(false);
-      }, 500);
+      }, 400);
   }, [typing]);
 
   const typingEmotionOn = useMemo(() => {

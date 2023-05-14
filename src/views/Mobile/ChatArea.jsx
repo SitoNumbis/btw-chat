@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState, useEffect, useReducer } from "react";
 import { useLocation } from "react-router-dom";
-import CryptoJS from "crypto-js";
+
 import { useDebounce } from "use-lodash-debounce";
 
 // @emotion/css
@@ -22,7 +22,12 @@ import config from "../../config";
 
 // utils
 import { logoutUser } from "../../utils/auth";
-import { parseQueries } from "../../utils/parsers";
+import {
+  encryptMessage,
+  parseChats,
+  parseMessages,
+  parseQueries,
+} from "../../utils/parsers";
 import { validation } from "../../utils/validation";
 
 // services
@@ -160,9 +165,10 @@ function ChatArea({ socket }) {
             const localConversation = JSON.parse(
               localStorage.getItem(`chat-${target}`)
             );
+            const list = parseMessages(localConversation, selectedChat.key);
             setMessages({
               type: "add",
-              messages: localConversation,
+              messages: list,
             });
             setLoading(false);
             setBigLoading(false);
@@ -175,24 +181,22 @@ function ChatArea({ socket }) {
       if (!loading) {
         if (loadingL) setLoading(true);
         try {
-          const response = await fetchMessagesRemote(target, sender, page, 100);
+          const response = await fetchMessagesRemote(
+            target,
+            sender,
+            messages.length / 100,
+            100
+          );
           const { data } = response;
           localStorage.setItem("date", data.date);
           if (data.list) {
-            const list = data.list.map((message) => {
-              const parsedMessage = CryptoJS.AES.decrypt(
-                message,
-                selectedChat.key
-              ).toString(CryptoJS.enc.Utf8);
-              return JSON.parse(parsedMessage);
+            const list = parseMessages(data.list, selectedChat.key);
+
+            localStorage.setItem(`chat-${target}`, JSON.stringify(data.list));
+            setMessages({
+              type: "add",
+              messages: list,
             });
-            if (list) {
-              localStorage.setItem(`chat-${target}`, JSON.stringify(list));
-              setMessages({
-                type: "add",
-                messages: list,
-              });
-            }
           }
           setLoading(false);
         } catch (err) {
@@ -216,7 +220,9 @@ function ChatArea({ socket }) {
     try {
       if (validation("chats")) {
         const chatsLocal = JSON.parse(localStorage.getItem("chats"));
-        const found = chatsLocal.find((localChat) => localChat.user === user);
+
+        const list = parseChats(chatsLocal);
+        const found = list.find((localChat) => localChat.user === user);
         if (found) {
           setSelectedChat(found);
           return;
@@ -237,18 +243,10 @@ function ChatArea({ socket }) {
       }
 
       const { data } = response;
-      const list = data.list.map((remoteItem) => {
-        const { key, lastMessage, photo, user } = remoteItem;
-        if (photo) localStorage.setItem(`${user}photo`, photo);
-        if (lastMessage) {
-          const parsedMessage = CryptoJS.AES.decrypt(lastMessage, key).toString(
-            CryptoJS.enc.Utf8
-          );
-          remoteItem.lastMessage = JSON.parse(parsedMessage);
-        }
-        return remoteItem;
-      });
+      const list = parseChats(data.list);
       setSelectedChat(list[0]);
+      setLoading(false);
+      setBigLoading(false);
     } catch (err) {
       console.error(err);
       const { response } = err;
@@ -370,10 +368,7 @@ function ChatArea({ socket }) {
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: localStorage.getItem(config.userCookie) },
-            CryptoJS.AES.encrypt(
-              JSON.stringify(parsedMessage),
-              selectedChat.key
-            ).toString()
+            encryptMessage(parsedMessage, selectedChat.key)
           );
           data = response.data;
         } else {
@@ -384,10 +379,7 @@ function ChatArea({ socket }) {
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: localStorage.getItem(config.userCookie) },
-            CryptoJS.AES.encrypt(
-              JSON.stringify(parsedMessage),
-              selectedChat.key
-            ).toString()
+            encryptMessage(parsedMessage, selectedChat.key)
           );
           data = response.data;
         }
