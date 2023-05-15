@@ -92,6 +92,7 @@ function PhotoDialog({ visible, onClose }) {
   const loadingEmotion = useMemo(() => {
     return `${css({
       backdropFilter: "blur(4px)",
+      background: localStorage.getItem("chat-other-bg"),
     })} ${mainBG()}`;
   }, [mainBG]);
 
@@ -171,9 +172,12 @@ function PhotoDialog({ visible, onClose }) {
 
   const selectPhoto = useCallback(
     async (url) => {
+      setLoading(true);
       try {
         await savePhotoRemote(url, true);
         localStorage.setItem(config.userPhotoCookie, url);
+        setLoading(false);
+        onClose();
       } catch (err) {
         console.error(err);
         const { response } = err;
@@ -184,9 +188,10 @@ function PhotoDialog({ visible, onClose }) {
         if (String(err) === "AxiosError: Network Error")
           showNotification("error", errors.notConnected);
         else showNotification("error", String(err));
+        setLoading(false);
       }
     },
-    [errors, showNotification]
+    [errors, showNotification, onClose]
   );
 
   const printHeros = useCallback(() => {

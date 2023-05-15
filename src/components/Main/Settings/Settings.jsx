@@ -153,14 +153,6 @@ function Settings() {
     [errors, showNotification, savePhoto]
   );
 
-  useEffect(() => {
-    setPhoto(
-      validation(config.userPhotoCookie)
-        ? localStorage.getItem(config.userPhotoCookie)
-        : noPhoto
-    );
-  }, []);
-
   const emotion = useMemo(() => {
     return css({ height: `${window.innerHeight}px` });
   }, []);
@@ -170,6 +162,14 @@ function Settings() {
   const handleDialog = useCallback(() => {
     setShowDialog(!showDialog);
   }, [setShowDialog, showDialog]);
+
+  useEffect(() => {
+    setPhoto(
+      validation(config.userPhotoCookie)
+        ? localStorage.getItem(config.userPhotoCookie)
+        : noPhoto
+    );
+  }, [showDialog]);
 
   return (
     <div
