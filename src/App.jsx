@@ -222,7 +222,10 @@ function App() {
               }
             >
               {width > 850 ? (
-                <Route path="*" element={<Chat socket={socket} />} />
+                <>
+                  <Route index element={<Chat socket={socket} />} />
+                  <Route path="/*" element={<Chat socket={socket} />} />
+                </>
               ) : (
                 <Route index element={<UserList socket={socket} />} />
               )}

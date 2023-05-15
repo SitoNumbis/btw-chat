@@ -15,6 +15,7 @@ import { savePhoto as savePhotoRemote } from "../../services/auth";
 // utils
 import { logoutUser } from "../../utils/auth";
 import { validation } from "../../utils/validation";
+import { parseImageKit } from "../../utils/parsers";
 
 // styles
 import styles from "./styles.module.css";
@@ -84,7 +85,7 @@ function PhotoDialog({ visible, onClose }) {
 
   const containerEmotion = useMemo(() => {
     return `${css({
-      width: "400px",
+      width: "90%",
     })} ${otherBG()}`;
   }, [otherBG]);
 
@@ -198,7 +199,7 @@ function PhotoDialog({ visible, onClose }) {
       >
         <img
           className={imageEmotion}
-          src={`${hero.url}?tr=w:100,h=100`}
+          src={parseImageKit(hero.url, "99", "100", "100")}
           alt={hero.label}
         />
         <p className={whiteText}>{hero.label}</p>
@@ -216,7 +217,7 @@ function PhotoDialog({ visible, onClose }) {
       >
         <img
           className={imageEmotion}
-          src={`${hero.url}?tr=w:100,h=100`}
+          src={parseImageKit(hero.url, "99", "100", "100")}
           alt={hero.label}
         />
         <p className={whiteText}>{hero.label}</p>
