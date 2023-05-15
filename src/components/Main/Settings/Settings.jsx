@@ -27,6 +27,7 @@ import Colors from "../../../assets/emotion/color";
 
 // config
 import config from "../../../config";
+import PhotoDialog from "../../Dialogs/PhotoDialog";
 
 function Settings() {
   const { whiteText, mainBG } = Colors();
@@ -108,15 +109,6 @@ function Settings() {
     }
   }, [languageState, whiteText]);
 
-  const uploadImage = useCallback(() => {
-    const inputs = document.getElementsByTagName("input");
-    if (inputs && inputs !== null) {
-      for (let index = 0; index < inputs.length; ++index) {
-        if (inputs[index].type === "file") inputs[index].click();
-      }
-    }
-  }, []);
-
   const [photo, setPhoto] = useState("");
 
   const savePhoto = useCallback(
@@ -158,7 +150,7 @@ function Settings() {
         FR.readAsDataURL(elem.target.files[0]);
       }
     },
-    [errors, showNotification]
+    [errors, showNotification, savePhoto]
   );
 
   useEffect(() => {
@@ -173,10 +165,17 @@ function Settings() {
     return css({ height: `${window.innerHeight}px` });
   }, []);
 
+  const [showDialog, setShowDialog] = useState(false);
+
+  const handleDialog = useCallback(() => {
+    setShowDialog(!showDialog);
+  }, [setShowDialog, showDialog]);
+
   return (
     <div
       className={`w-full flex flex-col items-center justify-center ${emotion}`}
     >
+      <PhotoDialog visible={showDialog} onClose={handleDialog} />
       <div className="appear w-full h-full flex flex-col items-center justify-center gap-2">
         <div className={`relative ${imageEmotion} rounded-sm cursor-pointer`}>
           <input type="file" onChange={onFileLoad} />
@@ -185,7 +184,7 @@ function Settings() {
             src={photo}
           />
           <button
-            onClick={uploadImage}
+            onClick={handleDialog}
             className={`!cursor-pointer top-0 right-0 absolute text-2xl rounded-full w-10 h-10 main-transition-ease ${cameraEmotion}`}
           >
             <FontAwesomeIcon icon={faCamera} />

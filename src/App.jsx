@@ -179,7 +179,7 @@ function App() {
     <Suspense>
       <NotificationC />
 
-      <BrowserRouter> 
+      <BrowserRouter>
         <Routes>
           {localStorage.getItem(config.userCookie) === null ? (
             <>
@@ -222,7 +222,7 @@ function App() {
               }
             >
               {width > 850 ? (
-                <Route index element={<Chat socket={socket} />} />
+                <Route path="*" element={<Chat socket={socket} />} />
               ) : (
                 <Route index element={<UserList socket={socket} />} />
               )}

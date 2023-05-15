@@ -193,6 +193,7 @@ function ProfileInformationDialog({ editing }) {
         className={`appear relative rounded-sm ${styles.dialog} ${containerEmotion}`}
       >
         <button
+          aria-label={buttonsArias.closeDialog}
           onClick={handleClose}
           className="absolute top-1 right-2 text-xl text-l-error"
         >

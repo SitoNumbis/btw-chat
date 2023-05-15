@@ -127,11 +127,11 @@ export const saveInfo = async (name, bio) => {
  * @param {string} image
  * @returns The response from the server.
  */
-export const savePhoto = async (image) => {
+export const savePhoto = async (image, character = false) => {
   const response = await axios.post(
     // @ts-ignore
     `${config.apiUrl}/image/upload`,
-    { user: localStorage.getItem(config.userCookie), blob: image },
+    { user: localStorage.getItem(config.userCookie), blob: image, character },
     {
       headers: {
         "Content-Type": "application/json",

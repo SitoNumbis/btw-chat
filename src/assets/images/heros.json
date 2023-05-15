@@ -1,0 +1,56 @@
+{
+  "heros": {
+    "title": "Héroes",
+    "heros": {
+      "sito": {
+        "label": "Sito",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Sito/SitoO_LcdjAPrEr.jfif"
+      },
+      "rafael": {
+        "label": "Rafael",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Rafael/Rafael_Zl85L8kZF.jfif"
+      },
+      "alex": {
+        "label": "Alex",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Alex/Alex_jH31Qt6UM.jfif"
+      },
+      "elisa": {
+        "label": "Elisa",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Elisa/Elisa_XrQj3c-sU.jfif"
+      },
+      "ninfa": {
+        "label": "Ninfa",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Ninfa/Ninfa_dBX_LJMko.jfif"
+      }
+    }
+  },
+  "athensGal": {
+    "title": "Athens Gal",
+    "heros": {
+      "krzys": {
+        "label": "Krzys",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Athens_Gal/Heros/Krzys/Kzrys_9jAEaxXmQ.jfif"
+      },
+      "hendrik": {
+        "label": "Hendrik",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Athens_Gal/Heros/Hendrik/Hendrik_qLXyQZh1G.jfif"
+      },
+      "ruben": {
+        "label": "Ruben",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Athens_Gal/Heros/Ruben/Ruben_jWRdjJf83.jfif"
+      },
+      "elisa": {
+        "label": "Elisa",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Athens_Gal/Heros/Elisa/ElisaAG_d6xmq_l-y.jfif"
+      },
+      "ninfa": {
+        "label": "Ninfa",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Athens_Gal/Heros/Ninfa/NinfaAG_MEVLAMY3k.jfif"
+      },
+      "sito": {
+        "label": "Sito",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Athens_Gal/Heros/Sito/SitoAG_OZJDHtFeV.jfif"
+      }
+    }
+  }
+}

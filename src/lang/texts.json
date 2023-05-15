@@ -6,7 +6,8 @@
       },
       "profileInfo": {
         "title": "Información de perfil"
-      }
+      },
+      "pickPhoto": { "title": "Elige tu retrato" }
     },
     "states": {
       "connecting": "Conectando",
@@ -42,6 +43,7 @@
       "empty": "No se encontraron usuarios"
     },
     "buttonsArias": {
+      "closeDialog": "Cerrar dialogo",
       "closeSidebar": "Cerrar menú lateral",
       "openSidebar": "Abrir menú lateral",
       "showSimpleChats": "Mostrar chats simples",
