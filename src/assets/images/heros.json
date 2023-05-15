@@ -52,5 +52,26 @@
         "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Athens_Gal/Heros/Sito/SitoAG_OZJDHtFeV.jfif"
       }
     }
+  },
+  "nocheRoja": {
+    "title": "La Noche Roja",
+    "heros": {
+      "yuri": {
+        "label": "Yuri",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/La_Noche_Roja/Heros/Yuri_pvgrNJ1uq.jpeg?updatedAt=1684160624036"
+      },
+      "katyusha": {
+        "label": "Katyusha",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/La_Noche_Roja/Heros/Katyusha_oS8G-OG8P.jpeg?updatedAt=1684160623877"
+      },
+      "anastasia": {
+        "label": "Anastasia",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/La_Noche_Roja/Heros/Anastasia_3wj6ODbD2a.jpeg?updatedAt=1684160616075"
+      },
+      "rina": {
+        "label": "Rina",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/La_Noche_Roja/Heros/Rina_NxiMc6KEKz.jpg?updatedAt=1684160614105"
+      }
+    }
   }
 }

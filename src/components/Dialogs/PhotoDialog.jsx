@@ -165,9 +165,9 @@ function PhotoDialog({ visible, onClose }) {
     }
   }, []);
 
-  const { heros, athensGal } = useMemo(() => {
-    const { heros, athensGal } = herosJSON;
-    return { heros, athensGal };
+  const { heros, athensGal, nocheRoja } = useMemo(() => {
+    const { heros, athensGal, nocheRoja } = herosJSON;
+    return { heros, athensGal, nocheRoja };
   }, []);
 
   const selectPhoto = useCallback(
@@ -230,6 +230,24 @@ function PhotoDialog({ visible, onClose }) {
     ));
   }, [athensGal, buttonsArias, imageEmotion, whiteText, selectPhoto]);
 
+  const printNocheRoja = useCallback(() => {
+    return Object.values(nocheRoja.heros).map((hero) => (
+      <button
+        key={hero.label}
+        onClick={() => selectPhoto(hero.url)}
+        className="flex flex-col items-center justify-center gap-2"
+        aria-label={`${buttonsArias.select}-${hero.label}`}
+      >
+        <img
+          className={imageEmotion}
+          src={parseImageKit(hero.url, "99", "100", "100")}
+          alt={hero.label}
+        />
+        <p className={whiteText}>{hero.label}</p>
+      </button>
+    ));
+  }, [nocheRoja, buttonsArias, imageEmotion, whiteText, selectPhoto]);
+
   return see ? (
     <div
       className={`${visible ? "appear-small" : "disappear"} ${
@@ -254,8 +272,12 @@ function PhotoDialog({ visible, onClose }) {
         <h2 className={`text-center ${whiteText} text-2xl`}>
           {dialogs.pickPhoto.title}
         </h2>
+        <p className={whiteText}>{heros.title}</p>
         <div className="flex flex-wrap gap-4">{printHeros()}</div>
+        <p className={whiteText}>{athensGal.title}</p>
         <div className="flex flex-wrap gap-4">{printAthensGal()}</div>
+        <p className={whiteText}>{nocheRoja.title}</p>
+        <div className="flex flex-wrap gap-4">{printNocheRoja()}</div>
       </div>
     </div>
   ) : null;

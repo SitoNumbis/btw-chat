@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useEffect, useState } from "react";
+import loadable from "@loadable/component";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,10 +28,12 @@ import Colors from "../../assets/emotion/color";
 
 // config
 import config from "../../config";
-import loadable from "@loadable/component";
 
 // components
 const Navbar = loadable(() => import("../../components/Main/Navbar/Navbar"));
+const PhotoDialog = loadable(() =>
+  import("../../components/Dialogs/PhotoDialog")
+);
 
 function Settings() {
   const { whiteText } = Colors();
@@ -181,11 +184,26 @@ function Settings() {
     });
   }, []);
 
+  const [showDialog, setShowDialog] = useState(false);
+
+  const handleDialog = useCallback(() => {
+    setShowDialog(!showDialog);
+  }, [setShowDialog, showDialog]);
+
+  useEffect(() => {
+    setPhoto(
+      validation(config.userPhotoCookie)
+        ? localStorage.getItem(config.userPhotoCookie)
+        : noPhoto
+    );
+  }, [showDialog]);
+
   return (
     <div
       className={`w-full flex flex-col items-center justify-center ${emotion}`}
     >
       <Navbar />
+      <PhotoDialog visible={showDialog} onClose={handleDialog} />
       <div className="entrance w-full h-full flex flex-col items-center justify-center gap-2">
         <div className={`relative ${imageEmotion} rounded-sm cursor-pointer`}>
           <input type="file" onChange={onFileLoad} />
@@ -194,7 +212,7 @@ function Settings() {
             src={photo}
           />
           <button
-            onClick={uploadImage}
+            onClick={handleDialog}
             className={`!cursor-pointer top-0 right-0 absolute text-2xl rounded-full w-10 h-10 main-transition-ease ${cameraEmotion}`}
           >
             <FontAwesomeIcon icon={faCamera} />

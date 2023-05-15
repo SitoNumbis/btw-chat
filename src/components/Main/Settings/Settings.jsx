@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useEffect, useState } from "react";
+import loadable from "@loadable/component";
 
 // font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,7 +28,9 @@ import Colors from "../../../assets/emotion/color";
 
 // config
 import config from "../../../config";
-import PhotoDialog from "../../Dialogs/PhotoDialog";
+
+// components
+const PhotoDialog = loadable(() => import("../../Dialogs/PhotoDialog"));
 
 function Settings() {
   const { whiteText, mainBG } = Colors();

@@ -5,6 +5,8 @@
 
 .dialog {
   backdrop-filter: blur(4px);
+  max-height: 100vh;
+  overflow: auto;
   @apply absolute p-5 gap-3 flex flex-col;
 }
 
