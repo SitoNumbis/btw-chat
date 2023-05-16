@@ -11,6 +11,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { css } from "@emotion/css";
 
 // contexts
+import { useUser } from "../../context/UserProvider";
 import { useDialog } from "../../context/DialogProvider";
 import { useLanguage } from "../../context/LanguageProvider";
 import { useNotification } from "../../context/NotificationProvider";
@@ -38,6 +39,8 @@ const Primary = loadable(() => import("../Buttons/Primary"));
 const Secondary = loadable(() => import("../Buttons/Secondary"));
 
 function ProfileInformationDialog({ editing }) {
+  const { userState, setUserState } = useUser();
+
   const { setNotificationState } = useNotification();
 
   const showNotification = useCallback(
@@ -115,6 +118,7 @@ function ProfileInformationDialog({ editing }) {
       setLoading(true);
       try {
         await saveInfo(name, bio);
+        setUserState({ type: "login", user: { ...userState, name, bio } });
         localStorage.setItem(config.userNameCookie, name);
         localStorage.setItem(config.userBioCookie, bio);
       } catch (err) {
@@ -122,7 +126,7 @@ function ProfileInformationDialog({ editing }) {
       }
       setLoading(false);
     },
-    [name, bio]
+    [name, bio, setUserState, userState]
   );
 
   useEffect(() => {
@@ -135,7 +139,7 @@ function ProfileInformationDialog({ editing }) {
       const response = await fetchChat(editing, true);
       if (response.status === 401) {
         logoutUser();
-        window.location.reload();
+        setUserState({ type: "logout" });
       }
       const { list } = response.data;
       const [data] = list;
@@ -152,21 +156,21 @@ function ProfileInformationDialog({ editing }) {
       const { response } = err;
       if (response && response.status === 401) {
         logoutUser();
-        window.location.reload();
+        setUserState({ type: "logout" });
       }
       if (String(err) === "AxiosError: Network Error")
         showNotification("error", errors.notConnected);
       else showNotification("error", String(err));
     }
     setLoading(false);
-  }, [editing]);
+  }, [editing, setUserState, errors, showNotification]);
 
   useEffect(() => {
     if (editing === 1) {
-      setName(localStorage.getItem(config.userNameCookie));
-      setBio(localStorage.getItem(config.userBioCookie));
+      setName(userState.user);
+      setBio(userState.bio);
     } else fetchTarget();
-  }, [editing]);
+  }, [editing, userState]);
 
   const containerEmotion = useMemo(() => {
     return `${css({

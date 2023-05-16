@@ -134,3 +134,14 @@ export const logUser = (remember, user) => {
       localStorage.setItem("need-read", "true");
   }
 };
+
+export const fromLocal = () => {
+  const user = {};
+  user.user = localStorage.getItem(config.userCookie);
+  user.name = localStorage.getItem(config.userNameCookie);
+  user.id = localStorage.getItem(config.userIdCookie);
+  user.state = localStorage.getItem(config.userStateCookie);
+  user.bio = localStorage.getItem(config.userBioCookie);
+  user.photo = localStorage.getItem(config.userPhotoCookie);
+  return user;
+};

@@ -25,6 +25,7 @@ import colors from "../../assets/emotion/color";
 import noPhoto from "../../assets/images/no-photo.webp";
 
 // contexts
+import { useUser } from "../../context/UserProvider";
 import { useLanguage } from "../../context/LanguageProvider";
 import { useNotification } from "../../context/NotificationProvider";
 
@@ -37,6 +38,8 @@ import Loading from "../Loading/Loading";
 import herosJSON from "../../assets/images/heros.json";
 
 function PhotoDialog({ visible, onClose }) {
+  const { userState, setUserState } = useUser();
+
   const [see, setSee] = useState(false);
 
   useEffect(() => {
@@ -116,14 +119,14 @@ function PhotoDialog({ visible, onClose }) {
         const { response } = err;
         if (response && response.status === 401) {
           logoutUser();
-          window.location.reload();
+          setUserState({ type: "logout" });
         }
         if (String(err) === "AxiosError: Network Error")
           showNotification("error", errors.notConnected);
         else showNotification("error", String(err));
       }
     },
-    [errors, showNotification]
+    [errors, showNotification, setUserState]
   );
 
   const onFileLoad = useCallback(
@@ -149,12 +152,8 @@ function PhotoDialog({ visible, onClose }) {
   );
 
   useEffect(() => {
-    setPhoto(
-      validation(config.userPhotoCookie)
-        ? localStorage.getItem(config.userPhotoCookie)
-        : noPhoto
-    );
-  }, []);
+    setPhoto(userState.photo ? userState.photo : noPhoto);
+  }, [userState]);
 
   const uploadImage = useCallback(() => {
     const inputs = document.getElementsByTagName("input");
@@ -175,6 +174,7 @@ function PhotoDialog({ visible, onClose }) {
       setLoading(true);
       try {
         await savePhotoRemote(url, true);
+        setUserState({ type: "photo", photo: url });
         localStorage.setItem(config.userPhotoCookie, url);
         setLoading(false);
         onClose();
@@ -183,7 +183,7 @@ function PhotoDialog({ visible, onClose }) {
         const { response } = err;
         if (response && response.status === 401) {
           logoutUser();
-          window.location.reload();
+          setUserState({ type: "logout" });
         }
         if (String(err) === "AxiosError: Network Error")
           showNotification("error", errors.notConnected);
@@ -191,7 +191,7 @@ function PhotoDialog({ visible, onClose }) {
         setLoading(false);
       }
     },
-    [errors, showNotification, onClose]
+    [errors, showNotification, onClose, setUserState]
   );
 
   const printHeros = useCallback(() => {

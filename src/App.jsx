@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import loadable from "@loadable/component";
 
@@ -14,12 +14,13 @@ import config from "./config";
 import { validateBasicKey } from "./services/auth";
 
 // contexts
+import { useUser } from "./context/UserProvider";
 import { useLanguage } from "./context/LanguageProvider";
 import { DialogProvider } from "./context/DialogProvider";
 import { CanGoBottomProvider } from "./context/CanGoBottomProvider.jsx";
 
 // utils
-import { logoutUser, userLogged } from "./utils/auth";
+import { logoutUser, userLogged, fromLocal } from "./utils/auth";
 
 // components
 import Loading from "./components/Loading/Loading";
@@ -48,6 +49,8 @@ const ChatArea = loadable(() => import("./views/Mobile/ChatArea"));
 function App() {
   const [socket, setSocket] = useState(null);
 
+  const { userState, setUserState } = useUser();
+
   useEffect(() => {
     const newSocket = io(config.apiSocketUrl, { transports: ["polling"] });
 
@@ -73,24 +76,20 @@ function App() {
 
   const { width } = useScreenWidth();
 
-  const fetch = async () => {
+  const fetch = useCallback(async () => {
     try {
       const value = await validateBasicKey();
       if (!value) {
         logoutUser();
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      } else localStorage.setItem(config.userCookie, value);
+        setUserState({ type: "logout" });
+      } else setUserState({ type: "login", user: fromLocal() });
     } catch (err) {
       if (String(err) !== "AxiosError: Network Error") {
         logoutUser();
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        setUserState({ type: "logout" });
       }
     }
-  };
+  }, [setUserState]);
 
   const [loading, setLoading] = useState(true);
 
@@ -175,76 +174,68 @@ function App() {
     }); */
   }, []);
 
+  const routes = useCallback(() => {
+    return !userState.user ? (
+      <>
+        <Route
+          exact
+          path="/"
+          element={
+            <Suspense>
+              <Auth />
+            </Suspense>
+          }
+        >
+          <Route index element={<SignIn />} />
+          <Route exact path="/sign-up" element={<SignUp />} />
+          <Route exact path="/sign-in-as-guest" element={<SignUp />} />
+          <Route exact path="/reset-password" element={<ResetPassword />} />
+          <Route exact path="/email-validation" element={<EmailValidation />} />
+        </Route>
+      </>
+    ) : (
+      <Route
+        exact
+        path="/"
+        element={
+          <Suspense>
+            <DialogProvider>
+              <CanGoBottomProvider>
+                <Outlet />
+              </CanGoBottomProvider>
+            </DialogProvider>
+          </Suspense>
+        }
+      >
+        {width > 850 ? (
+          <>
+            <Route index element={<Chat socket={socket} />} />
+            <Route path="/*" element={<Chat socket={socket} />} />
+          </>
+        ) : (
+          <Route index element={<UserList socket={socket} />} />
+        )}
+        {width < 850 ? (
+          <>
+            <Route
+              exact
+              path="/settings"
+              element={<Settings socket={socket} />}
+            />
+            <Route exact path="/chat" element={<ChatArea socket={socket} />} />
+          </>
+        ) : null}
+      </Route>
+    );
+  }, [userState]);
+
   return (
     <Suspense>
       <NotificationC />
 
       <BrowserRouter>
         <Routes>
-          {localStorage.getItem(config.userCookie) === null ? (
-            <>
-              <Route
-                exact
-                path="/"
-                element={
-                  <Suspense>
-                    <Auth />
-                  </Suspense>
-                }
-              >
-                <Route index element={<SignIn />} />
-                <Route exact path="/sign-up" element={<SignUp />} />
-                <Route exact path="/sign-in-as-guest" element={<SignUp />} />
-                <Route
-                  exact
-                  path="/reset-password"
-                  element={<ResetPassword />}
-                />
-                <Route
-                  exact
-                  path="/email-validation"
-                  element={<EmailValidation />}
-                />
-              </Route>
-            </>
-          ) : (
-            <Route
-              exact
-              path="/"
-              element={
-                <Suspense>
-                  <DialogProvider>
-                    <CanGoBottomProvider>
-                      <Outlet />
-                    </CanGoBottomProvider>
-                  </DialogProvider>
-                </Suspense>
-              }
-            >
-              {width > 850 ? (
-                <>
-                  <Route index element={<Chat socket={socket} />} />
-                  <Route path="/*" element={<Chat socket={socket} />} />
-                </>
-              ) : (
-                <Route index element={<UserList socket={socket} />} />
-              )}
-              {width < 850 ? (
-                <>
-                  <Route
-                    exact
-                    path="/settings"
-                    element={<Settings socket={socket} />}
-                  />
-                  <Route
-                    exact
-                    path="/chat"
-                    element={<ChatArea socket={socket} />}
-                  />
-                </>
-              ) : null}
-            </Route>
-          )}
+          {routes()}
           <Route exact path="/sign-out" element={<SignOut />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

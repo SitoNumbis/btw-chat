@@ -19,6 +19,7 @@ import {
 import { css } from "@emotion/css";
 
 // contexts
+import { useUser } from "../../context/UserProvider";
 import { useLanguage } from "../../context/LanguageProvider";
 import { useNotification } from "../../context/NotificationProvider";
 
@@ -29,7 +30,7 @@ import image from "../../assets/images/250.jpg";
 import styles from "./styles.module.css";
 
 // utils
-import { logUser, userLogged } from "../../utils/auth";
+import { logUser } from "../../utils/auth";
 
 // services
 import { login } from "../../services/auth";
@@ -47,6 +48,8 @@ import PrimaryButton from "../../components/Buttons/Primary";
 Base64.extendString();
 
 function SignIn() {
+  const { setUserState } = useUser();
+
   const { whiteText, mainBG } = Colors();
 
   const { setNotificationState } = useNotification();
@@ -141,6 +144,8 @@ function SignIn() {
           response.data.token
         );
         logUser(remember, data);
+
+        setUserState({ type: "login", user: { ...data } });
         if (data.notifications.length)
           try {
             new Notification("Beyond the World", {
@@ -150,9 +155,6 @@ function SignIn() {
           } catch (err) {
             console.error(err);
           }
-        setTimeout(() => {
-          if (userLogged()) window.location.href = "/";
-        }, 100);
       } catch (err) {
         console.error(err);
         const { response } = err;
@@ -164,7 +166,7 @@ function SignIn() {
         setLoading(false);
       }
     },
-    [inputs, password, user, errors, remember, showNotification]
+    [inputs, password, user, errors, remember, showNotification, languageState]
   );
 
   const toggleShowPassword = useCallback(() => {

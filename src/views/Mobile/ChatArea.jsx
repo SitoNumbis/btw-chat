@@ -13,12 +13,11 @@ import loadable from "@loadable/component";
 import { useNotification } from "../../context/NotificationProvider";
 import { useCanGoBottom } from "../../context/CanGoBottomProvider";
 import { useDialog } from "../../context/DialogProvider";
+import { useUser } from "../../context/UserProvider";
 
 // styles
 import styles from "./chat.module.css";
 import Colors from "../../assets/emotion/color";
-
-import config from "../../config";
 
 // utils
 import { logoutUser } from "../../utils/auth";
@@ -62,6 +61,7 @@ const Messages = loadable(() =>
 function ChatArea({ socket }) {
   const { mainBG } = Colors();
 
+  const { userState, setUserState } = useUser();
   const { dialogState } = useDialog();
   const { canGoBottomState } = useCanGoBottom();
   const { setNotificationState } = useNotification();
@@ -209,49 +209,52 @@ function ChatArea({ socket }) {
 
   const location = useLocation();
 
-  const fetchPerson = async (user) => {
-    //! reading from cache
-    try {
-      if (validation("chats")) {
-        const chatsLocal = JSON.parse(localStorage.getItem("chats"));
+  const fetchPerson = useCallback(
+    async (user) => {
+      //! reading from cache
+      try {
+        if (validation("chats")) {
+          const chatsLocal = JSON.parse(localStorage.getItem("chats"));
 
-        const list = parseChats(chatsLocal);
-        const found = list.find((localChat) => localChat.user === user);
-        if (found) {
-          setSelectedChat(found);
-          return;
+          const list = parseChats(chatsLocal);
+          const found = list.find((localChat) => localChat.user === user);
+          if (found) {
+            setSelectedChat(found);
+            return;
+          }
         }
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.error(err);
-    }
-    try {
-      const response = await fetchChatRemote(user, true);
-      if (response.status !== 200 && response.status !== 204) {
-        if (response.status === 401) {
+      try {
+        const response = await fetchChatRemote(user, true);
+        if (response.status !== 200 && response.status !== 204) {
+          if (response.status === 401) {
+            logoutUser();
+            setUserState({ type: "logout" });
+          }
+          console.error(response.statusText);
+          setError(true);
+        }
+
+        const { data } = response;
+        const list = parseChats(data.list);
+        setSelectedChat(list[0]);
+        setLoading(false);
+        setBigLoading(false);
+      } catch (err) {
+        console.error(err);
+        const { response } = err;
+        if (response && response.status === 401) {
           logoutUser();
-          window.location.reload();
+          setUserState({ type: "logout" });
         }
-        console.error(response.statusText);
         setError(true);
+        setLoading(false);
       }
-
-      const { data } = response;
-      const list = parseChats(data.list);
-      setSelectedChat(list[0]);
-      setLoading(false);
-      setBigLoading(false);
-    } catch (err) {
-      console.error(err);
-      const { response } = err;
-      if (response && response.status === 401) {
-        logoutUser();
-        window.location.reload();
-      }
-      setError(true);
-      setLoading(false);
-    }
-  };
+    },
+    [setUserState]
+  );
 
   useEffect(() => {
     setBigLoading(true);
@@ -261,14 +264,9 @@ function ChatArea({ socket }) {
   }, [location]);
 
   useEffect(() => {
-    if (
-      selectedChat &&
-      selectedChat.user &&
-      validation(config.userCookie) &&
-      !loading
-    )
-      fetchMessages(selectedChat.user, localStorage.getItem(config.userCookie));
-  }, [selectedChat]);
+    if (selectedChat && selectedChat.user && userState.user && !loading)
+      fetchMessages(selectedChat.user, userState.user);
+  }, [selectedChat, userState]);
 
   const onMessageReceived = useCallback(
     (conversation) => {
@@ -280,10 +278,16 @@ function ChatArea({ socket }) {
 
         if (canGoBottomState)
           setNotificationState({ type: "set-badge", count: 1 });
-      } else if (sender.user !== localStorage.getItem(config.userCookie))
+      } else if (sender.user !== userState.user)
         setNotificationState({ type: "set-badge", count: 1 });
     },
-    [selectedChat, fetchMessages, setNotificationState, canGoBottomState]
+    [
+      selectedChat,
+      fetchMessages,
+      setNotificationState,
+      canGoBottomState,
+      userState,
+    ]
   );
 
   const [typing, setTyping] = useState(false);
@@ -346,7 +350,7 @@ function ChatArea({ socket }) {
           date,
           target: selectedChat?.user,
           sender: {
-            user: localStorage.getItem(config.userCookie),
+            user: userState.user,
           },
         };
       else parsedMessage = message;
@@ -361,7 +365,7 @@ function ChatArea({ socket }) {
 
           const response = await sendMessageRemote(
             selectedChat.user,
-            { user: localStorage.getItem(config.userCookie) },
+            { user: userState.user },
             encryptMessage(parsedMessage, selectedChat.key)
           );
           data = response.data;
@@ -372,7 +376,7 @@ function ChatArea({ socket }) {
           });
           const response = await sendMessageRemote(
             selectedChat.user,
-            { user: localStorage.getItem(config.userCookie) },
+            { user: userState.user },
             encryptMessage(parsedMessage, selectedChat.key)
           );
           data = response.data;
@@ -394,7 +398,7 @@ function ChatArea({ socket }) {
         });
       }
     },
-    [selectedChat, playError]
+    [selectedChat, playError, userState]
   );
 
   const [minuteOut, setMinuteOut] = useState(false);

@@ -15,9 +15,6 @@ import PropTypes from "prop-types";
 // css
 import { css } from "@emotion/css";
 
-// config
-import config from "../../config";
-
 // services
 import { fetchChat } from "../../services/chat/post";
 
@@ -31,6 +28,7 @@ import { validation } from "../../utils/validation";
 import { isMyReactAppActive } from "../../utils/services";
 
 // contexts
+import { useUser } from "../../context/UserProvider";
 import { useDialog } from "../../context/DialogProvider";
 import { useCanGoBottom } from "../../context/CanGoBottomProvider.jsx";
 import { useNotification } from "../../context/NotificationProvider";
@@ -51,6 +49,7 @@ function Chat({ socket }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { userState, setUserState } = useUser();
   const { setNotificationState } = useNotification();
 
   const { canGoBottomState } = useCanGoBottom();
@@ -181,7 +180,7 @@ function Chat({ socket }) {
         if (response.status !== 200 && response.status !== 204) {
           if (response.status === 401) {
             logoutUser();
-            window.location.reload();
+            setUserState({ type: "logout" });
           }
           console.error(response.statusText);
           setErrorLoadingPerson(true);
@@ -214,10 +213,7 @@ function Chat({ socket }) {
             const [lastUser] = list;
             const { lastMessage } = lastUser;
             const theMessage = lastMessage.message;
-            if (
-              lastMessage.sender.user !==
-              localStorage.getItem(config.userCookie)
-            ) {
+            if (lastMessage.sender.user !== userState.user) {
               try {
                 new Notification(lastUser.name, {
                   body: theMessage,
@@ -236,13 +232,20 @@ function Chat({ socket }) {
         const { response } = err;
         if (response.status === 401) {
           logoutUser();
-          window.location.reload();
+          setUserState({ type: "logout" });
         }
         setErrorLoadingPerson(true);
         setLoading(false);
       }
     },
-    [setSearchChats, setChats, selectedChat, chats, canGoBottomState]
+    [
+      setSearchChats,
+      setChats,
+      selectedChat,
+      canGoBottomState,
+      userState,
+      setUserState,
+    ]
   );
 
   const selectChat = useCallback(
@@ -259,7 +262,7 @@ function Chat({ socket }) {
         if (response.status !== 200 && response.status !== 204) {
           if (response.status === 401) {
             logoutUser();
-            window.location.reload();
+            setUserState({ type: "logout" });
           }
           console.error(response.statusText);
           setErrorLoadingPerson(true);

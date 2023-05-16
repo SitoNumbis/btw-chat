@@ -9,13 +9,13 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { css } from "@emotion/css";
 
 // contexts
+import { useUser } from "../../context/UserProvider";
 import { useDialog } from "../../context/DialogProvider";
 import { useLanguage } from "../../context/LanguageProvider";
 import { useNotification } from "../../context/NotificationProvider";
 
 // utils
 import { logoutUser } from "../../utils/auth";
-import { validation } from "../../utils/validation";
 
 // services
 import { savePhoto as savePhotoRemote } from "../../services/auth";
@@ -36,6 +36,8 @@ const PhotoDialog = loadable(() =>
 );
 
 function Settings() {
+  const { userState, setUserState } = useUser();
+
   const { whiteText } = Colors();
 
   const { setNotificationState } = useNotification();
@@ -98,7 +100,7 @@ function Settings() {
   }, []);
 
   const printState = useMemo(() => {
-    switch (localStorage.getItem(config.userStateCookie)) {
+    switch (userState.user) {
       case "disconnected":
         return (
           <div className={`flex items-center gap-2 ${whiteText}`}>
@@ -131,20 +133,21 @@ function Settings() {
     async (base64) => {
       try {
         await savePhotoRemote(base64);
+        setUserState({ type: "photo", photo: base64 });
         localStorage.setItem(config.userPhotoCookie, base64);
       } catch (err) {
         console.error(err);
         const { response } = err;
         if (response && response.status === 401) {
           logoutUser();
-          window.location.reload();
+          setUserState({ type: "logout" });
         }
         if (String(err) === "AxiosError: Network Error")
           showNotification("error", errors.notConnected);
         else showNotification("error", String(err));
       }
     },
-    [errors, showNotification]
+    [errors, showNotification, setUserState]
   );
 
   const onFileLoad = useCallback(
@@ -166,16 +169,12 @@ function Settings() {
         FR.readAsDataURL(elem.target.files[0]);
       }
     },
-    [errors, showNotification]
+    [errors, showNotification, savePhoto]
   );
 
   useEffect(() => {
-    setPhoto(
-      validation(config.userPhotoCookie)
-        ? localStorage.getItem(config.userPhotoCookie)
-        : noPhoto
-    );
-  }, []);
+    setPhoto(userState.photo ? userState.photo : noPhoto);
+  }, [userState]);
 
   const emotion = useMemo(() => {
     return css({
@@ -189,14 +188,6 @@ function Settings() {
   const handleDialog = useCallback(() => {
     setShowDialog(!showDialog);
   }, [setShowDialog, showDialog]);
-
-  useEffect(() => {
-    setPhoto(
-      validation(config.userPhotoCookie)
-        ? localStorage.getItem(config.userPhotoCookie)
-        : noPhoto
-    );
-  }, [showDialog]);
 
   return (
     <div
@@ -220,14 +211,12 @@ function Settings() {
         </div>
         <div className="relative flex items-center gap-2 px-5">
           <h2 className={`text-center ${whiteText} text-2xl`}>
-            {localStorage.getItem(config.userNameCookie)}
+            {userState.name}
           </h2>
         </div>
         <div className="flex items-center gap-3">{printState}</div>
         <div className="flex items-center gap-3 px-5">
-          <p className={`text-center ${whiteText}`}>
-            {localStorage.getItem(config.userBioCookie)}
-          </p>
+          <p className={`text-center ${whiteText}`}>{userState.bio}</p>
         </div>
         <button
           onClick={handleEditing}

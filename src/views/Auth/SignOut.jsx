@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 // @emotion/css
 import { css } from "@emotion/css";
 
 // contexts
-// import { useUser } from "../../contexts/UserProvider";
+import { useUser } from "../../context/UserProvider";
 
 // utils
 import { getUserName, logoutUser } from "../../utils/auth.js";
@@ -19,9 +20,11 @@ import Colors from "../../assets/emotion/color.js";
 import Loading from "../../components/Loading/Loading";
 
 export default function SignOut() {
+  const navigate = useNavigate();
+
   const { mainBG } = Colors();
 
-  //   const { setUserState } = useUser();
+  const { setUserState } = useUser();
 
   const logOut = async () => {
     try {
@@ -30,10 +33,8 @@ export default function SignOut() {
       console.error(err);
     }
     logoutUser();
-    // setUserState({ type: "logged-out" });
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 1000);
+    setUserState({ type: "logout" });
+    navigate("/");
   };
 
   useEffect(() => {

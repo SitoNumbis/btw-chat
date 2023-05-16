@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
 
+import { UserProvider } from "./context/UserProvider";
 import { LanguageProvider } from "./context/LanguageProvider";
 import { NotificationProvider } from "./context/NotificationProvider";
 
@@ -22,7 +23,9 @@ import "./assets/animations/agrow.css";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <LanguageProvider>
     <NotificationProvider>
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </NotificationProvider>
   </LanguageProvider>
 );

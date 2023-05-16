@@ -6,6 +6,7 @@ import { useDebounce } from "use-lodash-debounce";
 import PropTypes from "prop-types";
 
 // contexts
+import { useUser } from "../../context/UserProvider";
 import { useLanguage } from "../../context/LanguageProvider";
 
 // font awesome
@@ -36,8 +37,6 @@ import { fetchChat } from "../../services/chat/post";
 import { logoutUser } from "../../utils/auth";
 import { parseChats } from "../../utils/parsers";
 import { validation } from "../../utils/validation";
-
-import config from "../../config";
 
 // components
 import Loading from "../../components/Loading/Loading";
@@ -74,6 +73,8 @@ function compareFn(a, b) {
 }
 
 function UserList({ socket }) {
+  const { userState, setUserState } = useUser();
+
   const { whiteText, mainBG } = Colors();
 
   const [loading, setLoading] = useState(true);
@@ -143,7 +144,7 @@ function UserList({ socket }) {
         if (response.status !== 200 && response.status !== 204) {
           if (response.status === 401) {
             logoutUser();
-            window.location.reload();
+            setUserState({ type: "logout" });
           }
           console.error(response.statusText);
           setError(true);
@@ -163,9 +164,7 @@ function UserList({ socket }) {
           const [lastUser] = list;
           const { lastMessage } = lastUser;
           const theMessage = lastMessage.message;
-          if (
-            lastMessage.sender.user !== localStorage.getItem(config.userCookie)
-          )
+          if (lastMessage.sender.user !== userState.user)
             try {
               new Notification(lastUser.name, {
                 body: theMessage,
@@ -182,24 +181,23 @@ function UserList({ socket }) {
         const { response } = err;
         if (response && response.status === 401) {
           logoutUser();
-          window.location.reload();
+          setUserState({ type: "logout" });
         }
         setError(true);
         setLoading(false);
       }
     },
-    [setSearchChats, setChats]
+    [setSearchChats, setChats, userState, setUserState]
   );
 
   const onMessageReceived = useCallback(
     (conversation) => {
       const { sender, target } = conversation;
       const { user } = sender;
-      if (user !== localStorage.getItem(config.userCookie))
-        fetchPerson(user, true, false);
+      if (user !== userState.user) fetchPerson(user, true, false);
       else fetchPerson(target, true, false);
     },
-    [fetchPerson]
+    [fetchPerson, userState.user]
   );
 
   useEffect(() => {
@@ -298,7 +296,7 @@ function UserList({ socket }) {
   }, [chats, socket]);
 
   const printState = useMemo(() => {
-    switch (localStorage.getItem(config.userStateCookie)) {
+    switch (userState.state) {
       case "disconnected":
         return <span className="w-3 h-3 rounded-full bg-l-error"></span>;
       default:
@@ -343,18 +341,14 @@ function UserList({ socket }) {
         >
           <img
             className="w-10 h-10 rounded-full cursor-pointer"
-            src={
-              validation(config.userPhotoCookie)
-                ? localStorage.getItem(config.userPhotoCookie)
-                : noPhoto
-            }
+            src={userState.photo ? userState.photo : noPhoto}
           />
           <h2
             className={`${css({
               color: localStorage.getItem("chat-text-basic"),
             })} text-md`}
           >
-            {localStorage.getItem(config.userNameCookie)}
+            {userState.name}
           </h2>
           {printState}
         </Link>
