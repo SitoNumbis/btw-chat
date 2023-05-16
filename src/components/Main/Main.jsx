@@ -411,7 +411,7 @@ function Main({
                 onRetry={onRetry}
               />
               <div className={styles.inputContainer}>
-                <Typing typing={typing} main />
+                <Typing typing={!typing} main />
                 <Input
                   onSend={sendMessage}
                   socket={socket}

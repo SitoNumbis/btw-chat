@@ -47,7 +47,7 @@ import PrimaryButton from "../../components/Buttons/Primary";
 Base64.extendString();
 
 function SignIn() {
-  const { whiteText } = Colors();
+  const { whiteText, mainBG } = Colors();
 
   const { setNotificationState } = useNotification();
 
@@ -207,7 +207,9 @@ function SignIn() {
     >
       {loading ? (
         <Loading
-          className={`absolute z-10 w-full h-screen items-center main-backdrop-filter`}
+          className={`absolute z-10 w-full h-screen items-center main-backdrop-filter ${mainBG(
+            88
+          )}`}
         />
       ) : null}
       <div

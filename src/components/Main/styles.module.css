@@ -1,5 +1,5 @@
 .messages {
-  margin-bottom: 25px;
+  margin-bottom: 80px;
   @apply relative flex flex-col gap-5 overflow-auto
     px-10 pt-1 pb-5;
 }
