@@ -26,7 +26,7 @@ function Bubble({ join, loading, sender }) {
       type: "set-value",
       key: "editing",
       value:
-        sender.user === localStorage.getItem(config.userCookie)
+        sender?.user === localStorage.getItem(config.userCookie)
           ? 1
           : sender.user,
     });
@@ -55,12 +55,12 @@ function Bubble({ join, loading, sender }) {
   }, []);
 
   const getPhoto = useMemo(() => {
-    if (sender.user === localStorage.getItem(config.userCookie))
+    if (sender?.user === localStorage.getItem(config.userCookie))
       return validation(config.userPhotoCookie)
         ? localStorage.getItem(config.userPhotoCookie)
         : noPhoto;
     else
-      return validation(`${sender.user}photo`)
+      return validation(`${sender?.user}photo`)
         ? localStorage.getItem(`${sender.user}photo`)
         : noPhoto;
   }, [sender]);

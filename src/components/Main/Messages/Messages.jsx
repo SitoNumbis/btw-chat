@@ -151,7 +151,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                       className={`w-full flex flex-col ${
                         user(sender) ? "items-end" : "items-start"
                       } ${containerEmotion(
-                        sender.user === messages[i + 1].sender.user
+                        sender?.user === messages[i + 1].sender?.user
                       )}`}
                     >
                       <div
@@ -163,7 +163,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                         <Bubble
                           loading={loading}
                           sender={sender}
-                          join={sender.user === messages[i + 1].sender.user}
+                          join={sender?.user === messages[i + 1].sender?.user}
                         />
                       </div>
                       <SentDate
@@ -172,7 +172,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                         loading={loading}
                         date={date}
                         sender={sender}
-                        join={sender.user === messages[i + 1].sender.user}
+                        join={sender?.user === messages[i + 1].sender?.user}
                       />
                     </div>
                   );

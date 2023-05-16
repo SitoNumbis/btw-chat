@@ -32,6 +32,7 @@ import {
 import good from "../../assets/sounds/good.mp3";
 import sound from "../../assets/sounds/message.mp3";
 import error from "../../assets/sounds/error.mp3";
+import { encryptMessage, parseMessages } from "../../utils/parsers";
 
 // components
 const Input = loadable(() => import("./Input/Input"));
@@ -151,16 +152,21 @@ function Main({
       //! reading from cache
       try {
         if (validation("last-date") && validation(`chat-${target}`)) {
-          const response = await fetchChatLastDate(target, sender);
+          const response = await fetchChatLastDate(
+            target,
+            sender,
+            Number(localStorage.getItem("last-date"))
+          );
           const { data } = response;
           if (!data.result) {
             //* should read from cache
             const localConversation = JSON.parse(
               localStorage.getItem(`chat-${target}`)
             );
+            const list = parseMessages(localConversation, selectedChat.key);
             setMessages({
               type: "add",
-              messages: localConversation,
+              messages: list,
             });
             setLoading(false);
             return;
@@ -176,13 +182,8 @@ function Main({
           const { data } = response;
           localStorage.setItem("date", data.date);
           if (data.list) {
-            const list = data.list.map((message) => {
-              const parsedMessage = CryptoJS.AES.decrypt(
-                message,
-                selectedChat.key
-              ).toString(CryptoJS.enc.Utf8);
-              return JSON.parse(parsedMessage);
-            });
+            const list = parseMessages(data.list, selectedChat.key);
+            localStorage.setItem(`chat-${target}`, JSON.stringify(data.list));
             if (list) {
               if (oldChat === target)
                 setMessages({
@@ -308,10 +309,7 @@ function Main({
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: localStorage.getItem(config.userCookie) },
-            CryptoJS.AES.encrypt(
-              JSON.stringify(parsedMessage),
-              selectedChat.key
-            ).toString()
+            encryptMessage(parsedMessage, selectedChat.key)
           );
           data = response.data;
         } else {
@@ -322,10 +320,7 @@ function Main({
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: localStorage.getItem(config.userCookie) },
-            CryptoJS.AES.encrypt(
-              JSON.stringify(parsedMessage),
-              selectedChat.key
-            ).toString()
+            encryptMessage(parsedMessage, selectedChat.key)
           );
           data = response.data;
         }
@@ -411,7 +406,7 @@ function Main({
                 onRetry={onRetry}
               />
               <div className={styles.inputContainer}>
-                <Typing typing={!typing} main />
+                <Typing typing={typing} main />
                 <Input
                   onSend={sendMessage}
                   socket={socket}

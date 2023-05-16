@@ -37,7 +37,7 @@ const MessageMemo = memo((props) => <Message {...props} />, arePropsEqual);
 
 function arePropsEqual(oldProps, newProps) {
   return (
-    oldProps.sender.user === newProps.sender.user &&
+    oldProps.sender?.user === newProps.sender?.user &&
     oldProps.message === newProps.message
   );
 }

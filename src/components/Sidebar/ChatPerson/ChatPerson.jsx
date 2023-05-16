@@ -86,7 +86,7 @@ function ChatPerson(props) {
       <div className="w-full flex items-center justify-between">
         <p className="appear-small">
           {`${
-            lastMessage.sender.user === localStorage.getItem(config.userCookie)
+            lastMessage.sender?.user === localStorage.getItem(config.userCookie)
               ? aux.you
               : ""
           }${

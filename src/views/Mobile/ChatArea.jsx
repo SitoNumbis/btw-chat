@@ -158,7 +158,6 @@ function ChatArea({ socket }) {
             sender,
             Number(localStorage.getItem("last-date"))
           );
-
           const { data } = response;
           if (!data.result) {
             //* should read from cache
@@ -181,12 +180,7 @@ function ChatArea({ socket }) {
       if (!loading) {
         if (loadingL) setLoading(true);
         try {
-          const response = await fetchMessagesRemote(
-            target,
-            sender,
-            messages.length / 100,
-            100
-          );
+          const response = await fetchMessagesRemote(target, sender, page, 100);
           const { data } = response;
           localStorage.setItem("date", data.date);
           if (data.list) {
