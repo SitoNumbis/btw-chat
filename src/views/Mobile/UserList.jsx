@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import loadable from "@loadable/component";
 import { useDebounce } from "use-lodash-debounce";
 
-import CryptoJS from "crypto-js";
-
 import PropTypes from "prop-types";
 
 // contexts
@@ -126,6 +124,7 @@ function UserList({ socket }) {
   const fetchPerson = useCallback(
     async (name, newOne, loading = true) => {
       setError(false);
+      if (loading) setLoading(true);
       //! reading from cache
       try {
         if (validation("need-read", "true") && validation("chats")) {
@@ -133,13 +132,11 @@ function UserList({ socket }) {
           const list = parseChats(chatsLocal);
           setChats({ type: "add", list: list });
           setLoading(false);
-          return;
         }
       } catch (err) {
         console.error(err);
       }
 
-      if (loading) setLoading(true);
       try {
         const response = await fetchChat(name, newOne ? true : false);
 

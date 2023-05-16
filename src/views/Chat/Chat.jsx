@@ -7,7 +7,6 @@ import {
   useMemo,
 } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import CryptoJS from "crypto-js";
 
 import loadable from "@loadable/component";
 
@@ -27,7 +26,7 @@ import styles from "./styles.module.css";
 
 // utils
 import { logoutUser } from "../../utils/auth";
-import { parseQueries } from "../../utils/parsers";
+import { decryptMessage, parseQueries } from "../../utils/parsers";
 import { validation } from "../../utils/validation";
 import { isMyReactAppActive } from "../../utils/services";
 
@@ -192,10 +191,7 @@ function Chat({ socket }) {
           const { key, lastMessage, photo, user } = remoteItem;
           if (photo) localStorage.setItem(`${user}photo`, photo);
           if (lastMessage) {
-            const parsedMessage = CryptoJS.AES.decrypt(
-              lastMessage,
-              key
-            ).toString(CryptoJS.enc.Utf8);
+            const parsedMessage = decryptMessage(lastMessage, key);
             remoteItem.lastMessage = JSON.parse(parsedMessage);
           }
           return remoteItem;
@@ -275,7 +271,7 @@ function Chat({ socket }) {
           if (photo) localStorage.setItem(`${user}photo`, photo);
           if (lastMessage) {
             remoteItem.lastMessage = JSON.parse(
-              CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8)
+              decryptMessage(lastMessage, key)
             );
           }
           return remoteItem;

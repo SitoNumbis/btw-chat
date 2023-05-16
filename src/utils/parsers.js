@@ -57,3 +57,6 @@ export const parseImageKit = (url, quality = "80", width = "", height = "") => {
 export const encryptMessage = (message, key) => {
   return CryptoJS.AES.encrypt(JSON.stringify(message), key).toString();
 };
+
+export const decryptMessage = (lastMessage, key) =>
+  CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8);

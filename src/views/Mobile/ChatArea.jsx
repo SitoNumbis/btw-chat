@@ -153,6 +153,17 @@ function ChatArea({ socket }) {
       //! reading from cache
       try {
         if (validation("last-date") && validation(`chat-${target}`)) {
+          //* should read from cache
+          const localConversation = JSON.parse(
+            localStorage.getItem(`chat-${target}`)
+          );
+          const list = parseMessages(localConversation, selectedChat.key);
+          setMessages({
+            type: "add",
+            messages: list.map((message) => ({ ...message, cached: true })),
+          });
+          setLoading(false);
+          setBigLoading(false);
           const response = await fetchChatLastDate(
             target,
             sender,
@@ -160,17 +171,6 @@ function ChatArea({ socket }) {
           );
           const { data } = response;
           if (!data.result) {
-            //* should read from cache
-            const localConversation = JSON.parse(
-              localStorage.getItem(`chat-${target}`)
-            );
-            const list = parseMessages(localConversation, selectedChat.key);
-            setMessages({
-              type: "add",
-              messages: list,
-            });
-            setLoading(false);
-            setBigLoading(false);
             return;
           }
         }

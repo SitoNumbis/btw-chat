@@ -151,9 +151,18 @@ function Main({
   const fetchMessages = useCallback(
     async (target, sender, loadingL = true) => {
       //! reading from cache
-      console.log("hola");
       try {
         if (validation("last-date") && validation(`chat-${target}`)) {
+          //* should read from cache
+          const localConversation = JSON.parse(
+            localStorage.getItem(`chat-${target}`)
+          );
+          const list = parseMessages(localConversation, selectedChat.key);
+          setMessages({
+            type: "add",
+            messages: list.map((message) => ({ ...message, cached: true })),
+          });
+          setLoading(false);
           const response = await fetchChatLastDate(
             target,
             sender,
@@ -161,16 +170,6 @@ function Main({
           );
           const { data } = response;
           if (!data.result) {
-            //* should read from cache
-            const localConversation = JSON.parse(
-              localStorage.getItem(`chat-${target}`)
-            );
-            const list = parseMessages(localConversation, selectedChat.key);
-            setMessages({
-              type: "add",
-              messages: list,
-            });
-            setLoading(false);
             return;
           }
         }
