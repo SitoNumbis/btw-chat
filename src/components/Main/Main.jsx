@@ -158,7 +158,6 @@ function Main({
             localStorage.getItem(`chat-${target}`)
           );
           const list = parseMessages(localConversation, selectedChat.key);
-
           setMessages({
             type: "init",
             messages: list.map((message) => ({ ...message, cached: true })),
@@ -185,6 +184,7 @@ function Main({
           localStorage.setItem("date", data.date);
           if (data.list) {
             const list = parseMessages(data.list, selectedChat.key);
+
             localStorage.setItem(`chat-${target}`, JSON.stringify(data.list));
             if (list) {
               if (oldChat === target) {
