@@ -159,7 +159,7 @@ function ChatArea({ socket }) {
           );
           const list = parseMessages(localConversation, selectedChat.key);
           setMessages({
-            type: "add",
+            type: "init",
             messages: list.map((message) => ({ ...message, cached: true })),
           });
           setLoading(false);

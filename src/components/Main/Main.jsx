@@ -158,8 +158,9 @@ function Main({
             localStorage.getItem(`chat-${target}`)
           );
           const list = parseMessages(localConversation, selectedChat.key);
+
           setMessages({
-            type: "add",
+            type: "init",
             messages: list.map((message) => ({ ...message, cached: true })),
           });
           setLoading(false);

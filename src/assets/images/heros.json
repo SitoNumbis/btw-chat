@@ -1,7 +1,11 @@
 {
   "heros": {
-    "title": "Héroes",
+    "title": "Generales",
     "heros": {
+      "btw": {
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/Chat/Flat1_hj_ELVvYh.jpg",
+        "label": "BTW"
+      },
       "sito": {
         "label": "Sito",
         "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Sito/SitoO_LcdjAPrEr.jfif"
