@@ -21,6 +21,7 @@ import { CanGoBottomProvider } from "./context/CanGoBottomProvider.jsx";
 
 // utils
 import { logoutUser, userLogged, fromLocal } from "./utils/auth";
+import Colors from "./assets/emotion/color";
 
 // components
 import Loading from "./components/Loading/Loading";
@@ -47,6 +48,8 @@ const Settings = loadable(() => import("./views/Mobile/Settings"));
 const ChatArea = loadable(() => import("./views/Mobile/ChatArea"));
 
 function App() {
+  const { mainBG } = Colors();
+
   const [socket, setSocket] = useState(null);
 
   const { userState, setUserState } = useUser();
@@ -89,6 +92,8 @@ function App() {
         setUserState({ type: "logout" });
       }
     }
+
+    setLoading(false);
   }, [setUserState]);
 
   const [loading, setLoading] = useState(true);
@@ -142,8 +147,7 @@ function App() {
     localStorage.setItem("chat-text-basic", "#ffffff");
 
     if (userLogged()) fetch();
-    // else window.location.href = "/auth";
-    setLoading(false);
+    else setLoading(false);
 
     askUserPermission();
     /* self.addEventListener("push", function (event) {
@@ -232,7 +236,14 @@ function App() {
   return (
     <Suspense>
       <NotificationC />
-
+      {loading ? (
+        <Loading
+          noEntrance
+          className={`w-full h-screen fixed left-0 top-0 z-10 flex items-center justify-center ${mainBG()}`}
+        />
+      ) : (
+        ""
+      )}
       <BrowserRouter>
         <Routes>
           {routes()}

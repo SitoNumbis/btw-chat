@@ -163,7 +163,7 @@ function Main({
             type: "init",
             messages: list.map((message) => ({ ...message, cached: true })),
           });
-          setLoading(false);
+
           const response = await fetchChatLastDate(
             target,
             sender,
