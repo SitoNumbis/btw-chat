@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useReducer } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import CryptoJS from "crypto-js";
+
 import { useDebounce } from "use-lodash-debounce";
 
 import useScreenSize from "use-screen-witdh";
@@ -10,6 +10,7 @@ import loadable from "@loadable/component";
 
 // utils
 import { validation } from "../../utils/validation";
+import { encryptMessage, parseMessages } from "../../utils/parsers";
 
 // contexts
 import { useNotification } from "../../context/NotificationProvider";
@@ -32,7 +33,7 @@ import {
 import good from "../../assets/sounds/good.mp3";
 import sound from "../../assets/sounds/message.mp3";
 import error from "../../assets/sounds/error.mp3";
-import { encryptMessage, parseMessages } from "../../utils/parsers";
+import received from "../../assets/sounds/received.mp3";
 
 // components
 const Input = loadable(() => import("./Input/Input"));
@@ -185,12 +186,13 @@ function Main({
             const list = parseMessages(data.list, selectedChat.key);
             localStorage.setItem(`chat-${target}`, JSON.stringify(data.list));
             if (list) {
-              if (oldChat === target)
+              if (oldChat === target) {
                 setMessages({
                   type: "add",
                   messages: list,
                 });
-              else
+                playReceived();
+              } else
                 setMessages({
                   type: "init",
                   messages: list,
@@ -224,7 +226,6 @@ function Main({
       const senderUser = sender.user;
       if (selectedChat && selectedChat.user === senderUser) {
         fetchMessages(target, senderUser, false);
-
         if (canGoBottomState)
           setNotificationState({ type: "set-badge", count: 1 });
       } else if (sender.user !== localStorage.getItem(config.userCookie))
@@ -266,6 +267,12 @@ function Main({
 
   const play = () => {
     const audio = new Audio(sound);
+    audio.volume = 0.1;
+    audio.play();
+  };
+
+  const playReceived = () => {
+    const audio = new Audio(received);
     audio.volume = 0.1;
     audio.play();
   };
