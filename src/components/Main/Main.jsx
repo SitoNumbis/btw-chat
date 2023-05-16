@@ -151,6 +151,7 @@ function Main({
   const fetchMessages = useCallback(
     async (target, sender, loadingL = true) => {
       //! reading from cache
+      console.log("hola");
       try {
         if (validation("last-date") && validation(`chat-${target}`)) {
           const response = await fetchChatLastDate(

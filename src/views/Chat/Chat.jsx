@@ -165,20 +165,18 @@ function Chat({ socket }) {
   const fetchPerson = useCallback(
     async (name, newOne, loading = true) => {
       setErrorLoadingPerson(false);
-
+      if (loading) setLoading(true);
       //! reading from cache
       try {
-        if (validation("need-read", "true") && validation("chats")) {
+        if (validation("chats")) {
           const chatsLocal = JSON.parse(localStorage.getItem("chats"));
-
           setChats({ type: "add", list: chatsLocal });
           setLoading(false);
-          return;
         }
       } catch (err) {
         console.error(err);
       }
-      if (loading) setLoading(true);
+
       try {
         const response = await fetchChat(name, newOne ? true : false);
         if (response.status !== 200 && response.status !== 204) {
