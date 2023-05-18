@@ -18,7 +18,6 @@ import styles from "../styles.module.css";
 
 // components
 import Loading from "../../../components/Loading/Loading";
-
 const ToBottom = loadable(() => import("../../ToBottom/ToBottom"));
 const Message = loadable(() => import("../Message/Message"));
 const SentDate = loadable(() => import("../Message/SentDate"));

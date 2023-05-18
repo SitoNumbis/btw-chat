@@ -1,0 +1,4 @@
+.popup {
+  z-index: 99;
+  @apply absolute p-5 rounded-sm flex flex-col justify-start items-start gap-5;
+}

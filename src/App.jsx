@@ -87,9 +87,10 @@ function App() {
         setUserState({ type: "logout" });
       } else setUserState({ type: "login", user: fromLocal() });
     } catch (err) {
+      setUserState({ type: "login", user: fromLocal() });
       if (String(err) !== "AxiosError: Network Error") {
-        logoutUser();
-        setUserState({ type: "logout" });
+        /* logoutUser();
+        setUserState({ type: "logout" }); */
       }
     }
 

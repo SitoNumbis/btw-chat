@@ -57,7 +57,10 @@
       "editProfile": "Editar información",
       "save": "Guardar",
       "cancel": "Cancelar",
-      "sen": "Enviar mensaje"
+      "send": "Enviar mensaje",
+      "deleteMessage": "Eliminar mensaje seleccionado",
+      "reply": "Responder al mensaje seleccionado",
+      "forward": "Reenviar mensaje seleccionado"
     },
     "inputs": {
       "name": {
@@ -95,6 +98,9 @@
       "notConnected": "No tienes conexión con el servidor"
     },
     "buttons": {
+      "forward": "Reenviar",
+      "reply": "Responder",
+      "deleteMessage": "Eliminar",
       "signIn": "Iniciar sesión",
       "signUp": "Crear cuenta",
       "signInAsGuest": "Entrar como invitado",

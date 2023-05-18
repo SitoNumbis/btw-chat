@@ -6,6 +6,10 @@
   animation: aShrink 0.5s ease 1;
 }
 
+.aShrink-small {
+  animation: aShrink 0.2s ease 1;
+}
+
 @keyframes aGrow {
   0% {
     opacity: 0;

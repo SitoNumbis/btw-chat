@@ -127,10 +127,12 @@ function Main({
       case "set-as-sent": {
         const { date, theDate } = action;
         const newState = [...state];
-        const found = state.find((item) => item.date === date);
-        found.date = theDate;
-        delete found.loading;
-        delete found.error;
+        const found = state.find((item) => item.id === date);
+        if (found) {
+          found.date = theDate;
+          delete found.loading;
+          delete found.error;
+        }
         return newState;
       }
       case "new-message": {

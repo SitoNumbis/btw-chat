@@ -115,7 +115,7 @@ function ChatArea({ socket }) {
       }
       case "set-as-error": {
         const { date } = action;
-        const found = state.find((localMessage) => localMessage.date === date);
+        const found = state.find((localMessage) => localMessage.id === date);
         if (found) {
           found.error = true;
           delete found.loading;
@@ -125,10 +125,12 @@ function ChatArea({ socket }) {
       case "set-as-sent": {
         const { date, theDate } = action;
         const newState = [...state];
-        const found = state.find((item) => item.date === date);
-        found.date = theDate;
-        delete found.loading;
-        delete found.error;
+        const found = state.find((item) => item.id === date);
+        if (found) {
+          found.date = theDate;
+          delete found.loading;
+          delete found.error;
+        }
         return newState;
       }
       case "new-message": {
@@ -372,7 +374,7 @@ function ChatArea({ socket }) {
         } else {
           setMessages({
             type: "re-sent",
-            message: { ...message, loading: true },
+            message: { ...parsedMessage, loading: true },
           });
           const response = await sendMessageRemote(
             selectedChat.user,
@@ -386,7 +388,7 @@ function ChatArea({ socket }) {
         playGood();
         setMessages({
           type: "set-as-sent",
-          date,
+          date: parsedMessage.id,
           theDate: data.date,
         });
       } catch (err) {
@@ -394,7 +396,7 @@ function ChatArea({ socket }) {
         playError();
         setMessages({
           type: "set-as-error",
-          date: parsedMessage.date,
+          date: parsedMessage.id,
         });
       }
     },
