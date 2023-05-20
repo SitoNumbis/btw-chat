@@ -7,6 +7,7 @@ import { NotificationProvider } from "./context/NotificationProvider";
 // font
 import "@fontsource/roboto";
 import "@fontsource/poppins";
+import "@fontsource/bebas-neue";
 
 // App
 import App from "./App.jsx";

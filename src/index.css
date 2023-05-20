@@ -49,7 +49,12 @@ body {
   }
 }
 
-* {
+h5,
+h6,
+p,
+a,
+button,
+span {
   font-family: "Roboto", sans-serif;
 }
 
@@ -57,5 +62,9 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: "Poppins", sans-serif !important;
+  font-family: "Poppins", sans-serif;
+}
+
+.home {
+  font-family: "Bebas Neue", cursive;
 }

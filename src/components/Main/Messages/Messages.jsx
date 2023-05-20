@@ -1,8 +1,8 @@
 import { useMemo, useRef, useCallback, useEffect } from "react";
+import loadable from "@loadable/component";
 import PropTypes from "prop-types";
 
 import useScreenSize from "use-screen-witdh";
-import loadable from "@loadable/component";
 
 // @emotion/css
 import { css } from "@emotion/css";
@@ -12,6 +12,7 @@ import { isSelf } from "../../../utils/users";
 
 // contexts
 import { useCanGoBottom } from "../../../context/CanGoBottomProvider";
+import { useMessagesOperations } from "../../../context/MessagesOperations";
 
 // styles
 import styles from "../styles.module.css";
@@ -27,6 +28,8 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
   const messagesList = useRef(null);
 
   const { width } = useScreenSize();
+
+  const { setMessagesOperationsState } = useMessagesOperations();
 
   const { canGoBottomState, setCanGoBottomState } = useCanGoBottom();
 
@@ -133,7 +136,39 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                     user(sender) ? "flex-row" : "flex-row-reverse"
                   }`}
                 >
-                  <Message message={message} sender={sender} />
+                  <Message
+                    onReply={(e) => {
+                      setMessagesOperationsState({
+                        type: "reply",
+                        message: {
+                          id,
+                        },
+                      });
+                      e.preventDefault();
+                    }}
+                    onDelete={(e) => {
+                      setMessagesOperationsState({
+                        type: "delete",
+                        id,
+                        sender,
+                        target,
+                      });
+                      e.preventDefault();
+                    }}
+                    onForward={(e) => {
+                      setMessagesOperationsState({
+                        type: "forward",
+                        message: {
+                          sender,
+                          date,
+                          message,
+                        },
+                      });
+                      e.preventDefault();
+                    }}
+                    message={message}
+                    sender={sender}
+                  />
                   <Bubble loading={loading} sender={sender} />
                 </div>
                 <SentDate
@@ -161,7 +196,39 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                       user(sender) ? "flex-row" : "flex-row-reverse"
                     }`}
                   >
-                    <Message message={message} sender={sender} />
+                    <Message
+                      message={message}
+                      sender={sender}
+                      onReply={(e) => {
+                        setMessagesOperationsState({
+                          type: "reply",
+                          message: {
+                            id,
+                          },
+                        });
+                        e.preventDefault();
+                      }}
+                      onDelete={(e) => {
+                        setMessagesOperationsState({
+                          type: "delete",
+                          id,
+                          sender,
+                          target,
+                        });
+                        e.preventDefault();
+                      }}
+                      onForward={(e) => {
+                        setMessagesOperationsState({
+                          type: "forward",
+                          message: {
+                            sender,
+                            date,
+                            message,
+                          },
+                        });
+                        e.preventDefault();
+                      }}
+                    />
                     <Bubble
                       loading={loading}
                       sender={sender}
@@ -191,7 +258,39 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                       user(sender) ? "flex-row" : "flex-row-reverse"
                     }`}
                   >
-                    <Message message={message} sender={sender} />
+                    <Message
+                      message={message}
+                      sender={sender}
+                      onReply={(e) => {
+                        setMessagesOperationsState({
+                          type: "reply",
+                          message: {
+                            id,
+                          },
+                        });
+                        e.preventDefault();
+                      }}
+                      onDelete={(e) => {
+                        setMessagesOperationsState({
+                          type: "delete",
+                          id,
+                          sender,
+                          target,
+                        });
+                        e.preventDefault();
+                      }}
+                      onForward={(e) => {
+                        setMessagesOperationsState({
+                          type: "forward",
+                          message: {
+                            sender,
+                            date,
+                            message,
+                          },
+                        });
+                        e.preventDefault();
+                      }}
+                    />
                     <Bubble loading={loading} sender={sender} />
                   </div>
                   <SentDate

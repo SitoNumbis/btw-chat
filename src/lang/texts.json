@@ -19,7 +19,7 @@
       "new": "¿No tienes cuenta?",
       "alreadyIn": "¿Ya tienes cuenta?",
       "signIn": {
-        "title": "Entrar a BTW"
+        "title": "Iniciar sesión"
       },
       "guest": {
         "start": "Se ha creado la cuenta de invitado correctamente. Esta cuenta solo dura un día. Se eliminará si cierras la sesión",
@@ -43,6 +43,7 @@
       "empty": "No se encontraron usuarios"
     },
     "buttonsArias": {
+      "changeUser": "Retornar para cambiar de usuario",
       "closeDialog": "Cerrar dialogo",
       "closeSidebar": "Cerrar menú lateral",
       "openSidebar": "Abrir menú lateral",
@@ -50,6 +51,7 @@
       "showMultiChats": "Mostrar chats grupales",
       "showSearch": "Buscar usuario",
       "signIn": "Iniciar sesión",
+      "continue": "Continuar a la próxima sección",
       "signUp": "Crear cuenta",
       "signInAsGuest": "Entrar como invitado",
       "begin": "Comenzar a usar BTW Chat",
@@ -73,9 +75,10 @@
         "type": "textarea"
       },
       "user": {
-        "label": "Usuario",
+        "label": "Entrar con usuario o email",
         "type": "text",
-        "notEmpty": "Debes introducir tu usuario",
+        "placeholder": "traveller@email.com",
+        "notEmpty": "Debes introducir tu usuario o correo electrónico",
         "notFound": "No se ha encontrado ese usuario"
       },
       "password": {
@@ -94,10 +97,13 @@
     },
     "errors": {
       "notSent": "Error",
+      "userNotFound": "Usuario o correo electrónico no encontrado",
       "fileToBig": "Fichero muy grande",
       "notConnected": "No tienes conexión con el servidor"
     },
     "buttons": {
+      "changeUser": "Cambiar de usuario",
+      "continue": "Continuar",
       "forward": "Reenviar",
       "reply": "Responder",
       "deleteMessage": "Eliminar",

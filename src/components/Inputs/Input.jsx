@@ -17,6 +17,7 @@ function Input({
   leftIcon,
   rightIcon,
   helperText,
+  placeholder,
   className,
 }) {
   const { whiteText, primaryText } = Colors();
@@ -135,7 +136,7 @@ function Input({
         ) : null}
       </div>
       {helperText && helperText.length ? (
-        <p className="appear bg-error text-white rounded-2xl px-3 py-1">
+        <p className="appear text-l-error rounded-2xl px-3 py-1">
           {helperText}
         </p>
       ) : (

@@ -7,7 +7,7 @@ import { css } from "@emotion/css";
 // styles
 import "./styles.css";
 
-function Secondary({ children, ariaLabel, onClick, type }) {
+function Secondary({ children, ariaLabel, onClick, type, className }) {
   const secondaryEmotion = useMemo(() => {
     return css({
       color: localStorage.getItem("chat-text-basic"),
@@ -25,7 +25,7 @@ function Secondary({ children, ariaLabel, onClick, type }) {
       aria-label={ariaLabel}
       onClick={onClick}
       type={type}
-      className={`button ${secondaryEmotion}`}
+      className={`button ${secondaryEmotion} ${className}`}
     >
       {children}
     </button>
@@ -41,6 +41,7 @@ Secondary.propTypes = {
   children: PropTypes.any,
   ariaLabel: PropTypes.string,
   onClick: PropTypes.func,
+  className: PropTypes.string,
 };
 
 const SecondaryMemo = memo((props) => <Secondary {...props} />, arePropsEqual);
@@ -50,7 +51,8 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.children === newProps.children &&
     oldProps.type === newProps.type &&
     oldProps.ariaLabel === newProps.ariaLabel &&
-    oldProps.onClick === newProps.onClick
+    oldProps.onClick === newProps.onClick &&
+    oldProps.className === newProps.className
   );
 }
 

@@ -32,6 +32,24 @@ export const validateBasicKey = async (type) => {
 /**
  * Takes a user object and sends it to the backend to be authenticated
  * @param {string} user - the user name
+ * @returns The response from the server.
+ */
+export const validateUser = async (user) => {
+  const response = await axios.post(
+    // @ts-ignore
+    `${config.apiUrl}/auth/validate-user`,
+    { user },
+    {
+      headers: getAuth,
+    }
+  );
+  const data = await response.data;
+  return data;
+};
+
+/**
+ * Takes a user object and sends it to the backend to be authenticated
+ * @param {string} user - the user name
  * @param {string} password - the user password
  * @returns The response from the server.
  */

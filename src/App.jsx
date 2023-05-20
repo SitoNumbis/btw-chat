@@ -18,6 +18,7 @@ import { useUser } from "./context/UserProvider";
 import { useLanguage } from "./context/LanguageProvider";
 import { DialogProvider } from "./context/DialogProvider";
 import { CanGoBottomProvider } from "./context/CanGoBottomProvider.jsx";
+import { MessagesOperationsProvider } from "./context/MessagesOperations";
 
 // utils
 import { logoutUser, userLogged, fromLocal } from "./utils/auth";
@@ -141,10 +142,10 @@ function App() {
     } catch (err) {
       console.error(err);
     }
-    localStorage.setItem("chat-main-bg", "#222333");
+    localStorage.setItem("chat-main-bg", "#390535");
     localStorage.setItem("chat-secondary-bg", "#1b1b2b");
     localStorage.setItem("chat-other-bg", "#222222");
-    localStorage.setItem("chat-text-primary", "#Fb2b2b");
+    localStorage.setItem("chat-text-primary", "#0A2C4B");
     localStorage.setItem("chat-text-basic", "#ffffff");
 
     if (userLogged()) fetch();
@@ -206,7 +207,9 @@ function App() {
           <Suspense>
             <DialogProvider>
               <CanGoBottomProvider>
-                <Outlet />
+                <MessagesOperationsProvider>
+                  <Outlet />
+                </MessagesOperationsProvider>
               </CanGoBottomProvider>
             </DialogProvider>
           </Suspense>

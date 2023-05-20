@@ -13,6 +13,7 @@ import { validation } from "../../utils/validation";
 import { encryptMessage, parseMessages } from "../../utils/parsers";
 
 // contexts
+import { useMessagesOperations } from "../../context/MessagesOperations";
 import { useNotification } from "../../context/NotificationProvider";
 import { useCanGoBottom } from "../../context/CanGoBottomProvider";
 
@@ -53,6 +54,8 @@ function Main({
   noSidebarSearching,
 }) {
   const { mainBG } = Colors();
+
+  const { messagesOperationsState } = useMessagesOperations();
 
   const { canGoBottomState } = useCanGoBottom();
   const { setNotificationState } = useNotification();
@@ -391,6 +394,19 @@ function Main({
     },
     [messages, sendMessage]
   );
+
+  const onReplyMessage = useCallback(() => {}, [messagesOperationsState]);
+
+  const onDeleteMessage = useCallback(() => {
+    console.log(messagesOperationsState);
+    
+  }, [messagesOperationsState]);
+
+  useEffect(() => {
+    console.log(messagesOperationsState);
+    if (messagesOperationsState === "reply") onReplyMessage();
+    if (messagesOperationsState === "delete") onDeleteMessage();
+  }, [messagesOperationsState]);
 
   return (
     <div className={`${styles.main} ${mainBG(88)}`}>

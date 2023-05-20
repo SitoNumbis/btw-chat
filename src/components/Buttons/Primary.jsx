@@ -7,7 +7,7 @@ import { css } from "@emotion/css";
 // styles
 import "./styles.css";
 
-function Primary({ children, ariaLabel, onClick, type }) {
+function Primary({ children, ariaLabel, onClick, type, className }) {
   const primaryEmotion = useMemo(() => {
     return css({
       color: localStorage.getItem("chat-text-basic"),
@@ -23,7 +23,7 @@ function Primary({ children, ariaLabel, onClick, type }) {
       aria-label={ariaLabel}
       onClick={onClick}
       type={type}
-      className={`button ${primaryEmotion}`}
+      className={`button ${primaryEmotion} ${className}`}
     >
       {children}
     </button>
@@ -39,6 +39,7 @@ Primary.propTypes = {
   children: PropTypes.any,
   ariaLabel: PropTypes.string,
   onClick: PropTypes.func,
+  className: PropTypes.string,
 };
 
 const PrimaryMemo = memo((props) => <Primary {...props} />, arePropsEqual);
@@ -48,7 +49,8 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.children === newProps.children &&
     oldProps.type === newProps.type &&
     oldProps.ariaLabel === newProps.ariaLabel &&
-    oldProps.onClick === newProps.onClick
+    oldProps.onClick === newProps.onClick &&
+    oldProps.className === newProps.className
   );
 }
 

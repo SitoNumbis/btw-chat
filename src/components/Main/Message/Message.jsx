@@ -17,7 +17,7 @@ import { useLanguage } from "../../../context/LanguageProvider";
 import styles from "./styles.module.css";
 import Colors from "../../../assets/emotion/color";
 
-function Message({ sender, message }) {
+function Message({ sender, message, onReply, onForward, onDelete }) {
   const { languageState } = useLanguage();
 
   const { whiteText } = Colors();
@@ -70,8 +70,11 @@ function Message({ sender, message }) {
   }, []);
 
   return (
-    <button onClick={toggleOperations}>
-      <p className={`aGrow main-transition-ease ${styles.message} ${pEmotion}`}>
+    <div>
+      <p
+        onClick={toggleOperations}
+        className={`aGrow main-transition-ease ${styles.message} ${pEmotion}`}
+      >
         {message}
       </p>
       <div className={`grid main-transition-ease ${gridEmotion}`}>
@@ -102,13 +105,16 @@ function Message({ sender, message }) {
           </button>
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 
 Message.propTypes = {
   sender: PropTypes.object,
   message: PropTypes.string,
+  onReply: PropTypes.func,
+  onForward: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 const MessageMemo = memo((props) => <Message {...props} />, arePropsEqual);
@@ -116,7 +122,10 @@ const MessageMemo = memo((props) => <Message {...props} />, arePropsEqual);
 function arePropsEqual(oldProps, newProps) {
   return (
     oldProps.sender?.user === newProps.sender?.user &&
-    oldProps.message === newProps.message
+    oldProps.message === newProps.message &&
+    oldProps.onReply === newProps.onReply &&
+    oldProps.onForward === newProps.onForward &&
+    oldProps.onDelete === newProps.onDelete
   );
 }
 

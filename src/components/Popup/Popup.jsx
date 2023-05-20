@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { css } from "@emotion/css";
 
 // contexts
-import { usePopup } from "../../context/PopupMenu";
+import { usePopup } from "../../context/MessagesOperations";
 import { useLanguage } from "../../context/LanguageProvider";
 
 // styles
