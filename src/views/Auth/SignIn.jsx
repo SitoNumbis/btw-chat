@@ -121,7 +121,7 @@ function SignIn() {
     try {
       const response = await validateUser(user);
       const data = response.data;
-      if (data) setSeeing(1);
+      if (data.user) setSeeing(1);
       else {
         const userRef = document.getElementById("user");
         userRef?.focus();
@@ -130,9 +130,11 @@ function SignIn() {
     } catch (err) {
       console.error(err);
       const { response } = err;
-      if (response && response.status === 401)
-        showNotification("error", inputs.password.wrong);
-      else if (String(err) === "AxiosError: Network Error")
+      if (response && response.status === 401) {
+        const userRef = document.getElementById("user");
+        userRef?.focus();
+        setUserHelperText(inputs.user.userNotFound);
+      } else if (String(err) === "AxiosError: Network Error")
         showNotification("error", errors.notConnected);
       else showNotification("error", String(err));
       setLoading(false);

@@ -78,6 +78,7 @@
         "label": "Entrar con usuario o email",
         "type": "text",
         "placeholder": "traveller@email.com",
+        "userNotFound": "Usuario o correo electrónico no encontrado",
         "notEmpty": "Debes introducir tu usuario o correo electrónico",
         "notFound": "No se ha encontrado ese usuario"
       },
@@ -97,7 +98,7 @@
     },
     "errors": {
       "notSent": "Error",
-      "userNotFound": "Usuario o correo electrónico no encontrado",
+
       "fileToBig": "Fichero muy grande",
       "notConnected": "No tienes conexión con el servidor"
     },
