@@ -56,25 +56,27 @@ function App() {
   const { userState, setUserState } = useUser();
 
   useEffect(() => {
-    const newSocket = io(config.apiSocketUrl, { transports: ["polling"] });
+    if (userState.user) {
+      const newSocket = io(config.apiSocketUrl, { transports: ["polling"] });
 
-    newSocket.on("connect", () => {
-      console.log("connect", localStorage.getItem(config.userCookie));
-      newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
-    });
-    newSocket.on("user-logged", (options) => {
-      const { date } = options;
-      localStorage.setItem("date", date);
-    });
-    newSocket.on("plus-minute", (date) => {
-      localStorage.setItem("date", date);
-    });
+      newSocket.on("connect", () => {
+        console.info("connect", localStorage.getItem(config.userCookie));
+        newSocket.emit("send-user-id", localStorage.getItem(config.userCookie));
+      });
+      newSocket.on("user-logged", (options) => {
+        const { date } = options;
+        localStorage.setItem("date", date);
+      });
+      newSocket.on("plus-minute", (date) => {
+        localStorage.setItem("date", date);
+      });
 
-    setSocket(newSocket);
-    return () => {
-      newSocket.close();
-    };
-  }, []);
+      setSocket(newSocket);
+      return () => {
+        newSocket.close();
+      };
+    }
+  }, [userState]);
 
   const { setLanguageState } = useLanguage();
 
@@ -124,7 +126,7 @@ function App() {
             userVisibleOnly: true,
           })
           .then(function (subscription) {
-            console.log("User is subscribed:", subscription);
+            console.info("User is subscribed:", subscription);
             // Send the subscription data to your server
           })
           .catch(function (error) {

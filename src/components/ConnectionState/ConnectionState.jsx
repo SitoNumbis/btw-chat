@@ -70,7 +70,7 @@ function ConnectionState({ socket, main, settings, isInNavbar }) {
           setCurrentState("connected");
         });
         socket.off("connect_error", (error) => {
-          console.log(`Connection error: ${error.message}`);
+          console.error(`Connection error: ${error.message}`);
           setCurrentState("disconnected");
         });
         socket.off("reconnect", () => {

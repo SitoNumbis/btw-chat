@@ -88,6 +88,7 @@ function Sidebar({
   const onMessageReceived = useCallback(
     (conversation) => {
       const { sender, target } = conversation;
+
       const { user } = sender;
       if (user !== localStorage.getItem(config.userCookie))
         fetchPerson(user, true, false);

@@ -399,7 +399,6 @@ function Main({
 
   const onDeleteMessage = useCallback(() => {
     console.log(messagesOperationsState);
-    
   }, [messagesOperationsState]);
 
   useEffect(() => {

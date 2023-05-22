@@ -45,7 +45,7 @@ function Popup() {
             behavior: "smooth",
           });
         }
-        console.log(rect, rect.top + target.offsetHeight + 10);
+
         setPosition(
           css({ left: rect.left, top: rect.top + target.offsetHeight + 10 })
         );
