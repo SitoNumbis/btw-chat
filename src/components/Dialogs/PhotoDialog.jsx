@@ -113,7 +113,7 @@ function PhotoDialog({ visible, onClose }) {
       setLoading(true);
       try {
         await savePhotoRemote(base64);
-        setUserState({ type: "photo", photo: url });
+        setUserState({ type: "photo", photo: base64 });
         localStorage.setItem(config.userPhotoCookie, base64);
         setLoading(false);
         onClose();
@@ -145,7 +145,6 @@ function PhotoDialog({ visible, onClose }) {
         const FR = new FileReader();
 
         FR.addEventListener("load", function (evt) {
-          console.log("hola");
           setPhoto(evt.target.result);
           savePhoto(evt.target.result);
         });

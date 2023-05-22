@@ -155,7 +155,7 @@ function Settings() {
     <div
       className={`w-full flex flex-col items-center justify-center ${emotion}`}
     >
-      <PhotoDialog visible={showDialog} onClose={handleDialog} />
+      <PhotoDialog visible={showDialog} onClose={() => setShowDialog(false)} />
       <div className="appear w-full h-full flex flex-col items-center justify-center gap-2">
         <div className={`relative ${imageEmotion} rounded-sm cursor-pointer`}>
           <img
