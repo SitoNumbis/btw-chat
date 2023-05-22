@@ -120,10 +120,12 @@ function SignIn() {
     setLoading(true);
     try {
       const response = await validateUser(user);
+      const userRef = document.getElementById("user");
       const data = response.data;
-      if (data.user) setSeeing(1);
-      else {
-        const userRef = document.getElementById("user");
+      if (data.user) {
+        setSeeing(1);
+        userRef?.blur();
+      } else {
         userRef?.focus();
         setUserHelperText(inputs.user.userNotFound);
       }
@@ -148,9 +150,8 @@ function SignIn() {
       e.preventDefault();
 
       setPasswordHelperText("");
-
+      const passwordRef = document.getElementById("password");
       if (!password.length) {
-        const passwordRef = document.getElementById("password");
         passwordRef?.focus();
         return setPasswordHelperText(inputs.password.notEmpty);
       }
@@ -245,6 +246,12 @@ function SignIn() {
       transform: seeing ? "translateX(-100%)" : "translateX(0)",
     });
   }, [seeing]);
+
+  const goBack = useCallback(() => {
+    setSeeing(0);
+    const passwordRef = document.getElementById("password");
+    passwordRef?.blur();
+  }, []);
 
   return (
     <div
@@ -350,7 +357,7 @@ function SignIn() {
                     {buttons.signIn}
                   </PrimaryButton>
                   <SecondaryButton
-                    onClick={() => setSeeing(0)}
+                    onClick={goBack}
                     type="button"
                     ariaLabel={buttonsArias.changeUser}
                     className="w-full"
