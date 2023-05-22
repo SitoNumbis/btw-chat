@@ -62,7 +62,7 @@ function SignIn() {
 
   const { languageState } = useLanguage();
 
-  const { auth, aux, buttons, buttonsArias, inputs, errors } = useMemo(() => {
+  const { auth, buttons, buttonsArias, inputs, errors } = useMemo(() => {
     return {
       aux: languageState.texts.aux,
       auth: languageState.texts.auth,
@@ -141,7 +141,7 @@ function SignIn() {
     }
 
     setLoading(false);
-  }, [user, inputs]);
+  }, [user, inputs, errors, showNotification]);
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -189,7 +189,16 @@ function SignIn() {
         setLoading(false);
       }
     },
-    [inputs, password, user, errors, remember, showNotification, languageState]
+    [
+      inputs,
+      password,
+      user,
+      errors,
+      remember,
+      showNotification,
+      languageState,
+      setUserState,
+    ]
   );
 
   const toggleShowPassword = useCallback(() => {
@@ -209,14 +218,6 @@ function SignIn() {
       display: !showForm ? "none" : "",
     });
   }, [showForm]);
-
-  const linkEmotion = useMemo(() => {
-    return css({
-      ":hover": {
-        color: localStorage.getItem("chat-text-primary"),
-      },
-    });
-  }, []);
 
   const background = useMemo(() => {
     return css({ backgroundColor: localStorage.getItem("chat-main-bg") });
@@ -328,6 +329,19 @@ function SignIn() {
                     input={inputs.password}
                     helperText={passwordHelperText}
                   />
+                  <div
+                    className={`cursor-pointer flex items-center gap-2 ${whiteText}`}
+                  >
+                    <input
+                      value={remember}
+                      onChange={toggleRemember}
+                      id="remember"
+                      type="checkbox"
+                    />
+                    <label className="cursor-pointer" htmlFor="remember">
+                      {inputs.remember.label}
+                    </label>
+                  </div>
                   <PrimaryButton
                     type="submit"
                     ariaLabel={buttonsArias.signIn}
@@ -347,37 +361,6 @@ function SignIn() {
               </div>
             </div>
           </div>
-
-          {/* <div
-            className={`cursor-pointer flex items-center gap-2 ${whiteText}`}
-          >
-            <input
-              value={remember}
-              onChange={toggleRemember}
-              id="remember"
-              type="checkbox"
-            />
-            <label className="cursor-pointer" htmlFor="remember">
-              {inputs.remember.label}
-            </label>
-          </div> */}
-
-          {/*  <p className={whiteText}>
-            {auth.new}{" "}
-            <Link
-              to="/sign-up"
-              className={`underline transition ${whiteText} ${linkEmotion}`}
-            >
-              {buttons.signUp}
-            </Link>{" "}
-            {aux.or}{" "}
-            <Link
-              to="/sign-in-as-guest"
-              className={`underline transition ${whiteText} ${linkEmotion}`}
-            >
-              {buttons.signInAsGuest}
-            </Link>
-          </p> */}
         </form>
         <h2 className={`${styles.footer} text-placeholder-dark`}>
           COPYRIGHTS © {new Date().getFullYear()} Beyond the World

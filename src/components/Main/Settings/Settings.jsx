@@ -137,28 +137,6 @@ function Settings() {
     [errors, showNotification, setUserState]
   );
 
-  const onFileLoad = useCallback(
-    (elem) => {
-      if (elem.target.files[0].size > 152880) {
-        showNotification("error", errors.fileToBig);
-
-        elem.target.value = "";
-      } else {
-        if (!elem.target.files || !elem.target.files[0]) return;
-
-        const FR = new FileReader();
-
-        FR.addEventListener("load", function (evt) {
-          setPhoto(evt.target.result);
-          savePhoto(evt.target.result);
-        });
-
-        FR.readAsDataURL(elem.target.files[0]);
-      }
-    },
-    [errors, showNotification, savePhoto]
-  );
-
   const emotion = useMemo(() => {
     return css({ height: `${window.innerHeight}px` });
   }, []);
@@ -180,7 +158,6 @@ function Settings() {
       <PhotoDialog visible={showDialog} onClose={handleDialog} />
       <div className="appear w-full h-full flex flex-col items-center justify-center gap-2">
         <div className={`relative ${imageEmotion} rounded-sm cursor-pointer`}>
-          <input type="file" onChange={onFileLoad} />
           <img
             className={`w-full h-full cursor-pointer rounded-full`}
             src={photo}

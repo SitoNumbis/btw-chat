@@ -14,7 +14,6 @@ import { savePhoto as savePhotoRemote } from "../../services/auth";
 
 // utils
 import { logoutUser } from "../../utils/auth";
-import { validation } from "../../utils/validation";
 import { parseImageKit } from "../../utils/parsers";
 
 // styles
@@ -111,9 +110,13 @@ function PhotoDialog({ visible, onClose }) {
 
   const savePhoto = useCallback(
     async (base64) => {
+      setLoading(true);
       try {
         await savePhotoRemote(base64);
+        setUserState({ type: "photo", photo: url });
         localStorage.setItem(config.userPhotoCookie, base64);
+        setLoading(false);
+        onClose();
       } catch (err) {
         console.error(err);
         const { response } = err;
@@ -124,6 +127,7 @@ function PhotoDialog({ visible, onClose }) {
         if (String(err) === "AxiosError: Network Error")
           showNotification("error", errors.notConnected);
         else showNotification("error", String(err));
+        setLoading(false);
       }
     },
     [errors, showNotification, setUserState]
@@ -141,6 +145,7 @@ function PhotoDialog({ visible, onClose }) {
         const FR = new FileReader();
 
         FR.addEventListener("load", function (evt) {
+          console.log("hola");
           setPhoto(evt.target.result);
           savePhoto(evt.target.result);
         });
@@ -164,9 +169,9 @@ function PhotoDialog({ visible, onClose }) {
     }
   }, []);
 
-  const { heros, athensGal, nocheRoja } = useMemo(() => {
-    const { heros, athensGal, nocheRoja } = herosJSON;
-    return { heros, athensGal, nocheRoja };
+  const { extras, heros, athensGal, nocheRoja } = useMemo(() => {
+    const { extras, heros, athensGal, nocheRoja } = herosJSON;
+    return { extras, heros, athensGal, nocheRoja };
   }, []);
 
   const selectPhoto = useCallback(
@@ -195,22 +200,49 @@ function PhotoDialog({ visible, onClose }) {
   );
 
   const printHeros = useCallback(() => {
-    return Object.values(heros.heros).map((hero) => (
-      <button
-        key={hero.label}
-        onClick={() => selectPhoto(hero.url)}
-        className="flex flex-col items-center justify-center gap-2"
-        aria-label={`${buttonsArias.select}-${hero.label}`}
-      >
-        <img
-          className={imageEmotion}
-          src={parseImageKit(hero.url, "99", "100", "100")}
-          alt={hero.label}
-        />
-        <p className={whiteText}>{hero.label}</p>
-      </button>
-    ));
-  }, [heros, buttonsArias, imageEmotion, whiteText, selectPhoto]);
+    return [...Object.values(heros.heros), ...Object.values(extras)].map(
+      (hero) => (
+        <button
+          key={hero.label}
+          onClick={() => {
+            if (hero.random) {
+              const all = [
+                ...Object.values(heros.heros),
+                ...Object.values(athensGal.heros),
+                ...Object.values(nocheRoja.heros),
+              ];
+              const random =
+                Math.floor(Math.random() * (all.length - 0 + 1)) + 0;
+              selectPhoto(all[random].url);
+            } else if (hero.image) {
+              uploadImage();
+            } else {
+              selectPhoto(hero.url);
+            }
+          }}
+          className="flex flex-col items-center justify-center gap-2"
+          aria-label={`${buttonsArias.select}-${hero.label}`}
+        >
+          <img
+            className={imageEmotion}
+            src={parseImageKit(hero.url, "99", "100", "100")}
+            alt={hero.label}
+          />
+          <p className={whiteText}>{hero.label}</p>
+        </button>
+      )
+    );
+  }, [
+    heros,
+    athensGal,
+    nocheRoja,
+    extras,
+    buttonsArias,
+    imageEmotion,
+    whiteText,
+    selectPhoto,
+    uploadImage,
+  ]);
 
   const printAthensGal = useCallback(() => {
     return Object.values(athensGal.heros).map((hero) => (
@@ -255,8 +287,11 @@ function PhotoDialog({ visible, onClose }) {
       } ${mainBG(99)}`}
     >
       <div
-        className={`appear relative rounded-sm ${styles.dialog} ${containerEmotion}`}
+        className={`appear ${loading ? "" : "overflow-auto"} ${
+          styles.dialog
+        } ${containerEmotion}`}
       >
+        <input type="file" onChange={onFileLoad} />
         <button
           onClick={handleClose}
           aria-label={buttonsArias.closeDialog}

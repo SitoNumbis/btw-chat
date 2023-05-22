@@ -6,8 +6,7 @@
 .dialog {
   backdrop-filter: blur(4px);
   max-height: 100vh;
-  overflow: auto;
-  @apply absolute p-5 gap-3 flex flex-col;
+  @apply absolute p-5 gap-3 flex flex-col rounded-sm;
 }
 
 @media (max-width: 850px) {

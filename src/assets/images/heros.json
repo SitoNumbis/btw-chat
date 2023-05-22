@@ -1,4 +1,16 @@
 {
+  "extras": {
+    "random": {
+      "label": "Aleatorio",
+      "random": true,
+      "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Random_qf5jVGiKm.jfif"
+    },
+    "own": {
+      "label": "Mi imagen",
+      "image": true,
+      "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Upload_yMzRU2Wmmm.jpg"
+    }
+  },
   "heros": {
     "title": "Generales",
     "heros": {
@@ -25,6 +37,10 @@
       "ninfa": {
         "label": "Ninfa",
         "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Ninfa/Ninfa_dBX_LJMko.jfif"
+      },
+      "jishin": {
+        "label": "Jishin",
+        "url": "https://ik.imagekit.io/lgqp0wffgtp/Beyon_the_world/MainLine/Heros/Jishin/Jishin_O2o3BsMXQ.jpeg"
       }
     }
   },
