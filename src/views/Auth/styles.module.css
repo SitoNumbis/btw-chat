@@ -4,6 +4,13 @@
   @apply flex flex-col items-start justify-start p-10 rounded-sm gap-3;
 }
 
+.footer {
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  @apply absolute w-full text-center;
+}
+
 .formWidth {
   width: calc(100%);
   min-width: calc(100%);
@@ -26,6 +33,10 @@
   .formWidth {
     width: calc(100vw - 3rem);
     min-width: calc(100vw - 3rem);
+  }
+
+  .linkSpan {
+    display: none;
   }
 }
 

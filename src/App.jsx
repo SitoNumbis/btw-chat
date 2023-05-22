@@ -235,7 +235,7 @@ function App() {
         ) : null}
       </Route>
     );
-  }, [userState]);
+  }, [userState, socket, width]);
 
   return (
     <Suspense>
@@ -243,7 +243,7 @@ function App() {
       {loading ? (
         <Loading
           noEntrance
-          className={`w-full h-screen fixed left-0 top-0 z-10 flex items-center justify-center ${mainBG()}`}
+          className={`w-full h-screen fixed left-0 top-0 z-20 flex items-center justify-center ${mainBG()}`}
         />
       ) : (
         ""

@@ -251,19 +251,24 @@ function SignIn() {
     >
       {loading ? (
         <Loading
-          className={`absolute z-10 w-full h-screen items-center main-backdrop-filter ${mainBG(
+          className={`absolute z-20 w-full h-screen items-center main-backdrop-filter ${mainBG(
             88
           )}`}
         />
       ) : null}
       <div
-        className={`z-10 w-full min-h-screen entrance flex items-center justify-center ${containerEmotion}`}
+        className={`z-10 w-full min-h-screen relative entrance flex items-center justify-center ${containerEmotion}`}
       >
-        <div className="absolute top-5 left-5 w-full">
-          <Link to="/" className={`${whiteText}`}>
-            <h2>Beyond the World</h2>
+        <Link to="/" className={`absolute top-5 left-5 ${whiteText}`}>
+          <h2>Beyond the World</h2>
+        </Link>
+        <p className="text-placeholder-dark absolute top-5 right-5">
+          <span className={styles.linkSpan}>{auth.new} </span>
+          <Link to="/sign-up" className={`ml-1 ${whiteText}`}>
+            {buttons.signUp}
           </Link>
-        </div>
+        </p>
+        <img />
         <form
           onSubmit={handleSubmit}
           className={`${styles.signIn} appear ${formEmotion}`}
@@ -324,7 +329,7 @@ function SignIn() {
                     helperText={passwordHelperText}
                   />
                   <PrimaryButton
-                    type="button"
+                    type="submit"
                     ariaLabel={buttonsArias.signIn}
                     className="w-full"
                   >
@@ -374,6 +379,9 @@ function SignIn() {
             </Link>
           </p> */}
         </form>
+        <h2 className={`${styles.footer} text-placeholder-dark`}>
+          COPYRIGHTS © {new Date().getFullYear()} Beyond the World
+        </h2>
       </div>
     </div>
   );
