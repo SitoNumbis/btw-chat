@@ -1,7 +1,11 @@
 .navbar {
   height: 50px;
   min-width: 100%;
-  @apply flex px-10;
+  @apply flex;
+}
+
+.container {
+  @apply flex gap-3 items-center w-full h-full justify-between px-10;
 }
 
 .closeButton {
@@ -13,10 +17,14 @@
     position: fixed;
     top: 0;
     left: 0;
-    @apply pl-2 pr-2;
   }
 
   .closeButton {
     display: inline;
   }
+
+  .container {
+    @apply px-2
+  }
+
 }

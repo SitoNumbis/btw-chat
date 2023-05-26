@@ -142,10 +142,8 @@ function Navbar({
   }, []);
 
   return (
-    <header
-      className={`${styles.navbar} z-10 flex flex-col px-4 ${navbarEmotion}`}
-    >
-      <div className="flex gap-3 items-center w-full h-full justify-between">
+    <header className={`${styles.navbar} z-10 flex flex-col ${navbarEmotion}`}>
+      <div className={styles.container}>
         <div className="flex gap-3 items-center w-full h-full">
           {width <= 850 ? (
             <Link to="/" className="relative no-underline">

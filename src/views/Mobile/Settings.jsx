@@ -178,7 +178,6 @@ function Settings() {
 
   const emotion = useMemo(() => {
     return css({
-      height: `${window.innerHeight}px`,
       backgroundColor: `${localStorage.getItem("chat-secondary-bg")}`,
     });
   }, []);
@@ -191,7 +190,7 @@ function Settings() {
 
   return (
     <div
-      className={`w-full flex flex-col items-center justify-center ${emotion}`}
+      className={`w-full h-screen flex flex-col items-center justify-center ${emotion}`}
     >
       <Navbar />
       <PhotoDialog visible={showDialog} onClose={handleDialog} />
