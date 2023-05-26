@@ -34,6 +34,9 @@ const Navbar = loadable(() => import("../../components/Main/Navbar/Navbar"));
 const PhotoDialog = loadable(() =>
   import("../../components/Dialogs/PhotoDialog")
 );
+const ProfileInformationDialog = loadable(() =>
+  import("../../components/Dialogs/ProfileInformationDialog")
+);
 
 function Settings() {
   const { userState, setUserState } = useUser();
@@ -188,11 +191,16 @@ function Settings() {
     setShowDialog(!showDialog);
   }, [setShowDialog, showDialog]);
 
+  const { dialogState } = useDialog();
+
   return (
     <div
       className={`w-full h-screen flex flex-col items-center justify-center ${emotion}`}
     >
       <Navbar />
+      {dialogState.editing !== undefined ? (
+        <ProfileInformationDialog editing={dialogState.editing} />
+      ) : null}
       <PhotoDialog visible={showDialog} onClose={handleDialog} />
       <div className="entrance w-full h-full flex flex-col items-center justify-center gap-2">
         <div className={`relative ${imageEmotion} rounded-sm cursor-pointer`}>
