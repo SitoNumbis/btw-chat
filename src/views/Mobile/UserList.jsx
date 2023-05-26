@@ -360,6 +360,7 @@ function UserList({ socket }) {
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
         </Link>
       </div>
+      <hr className={`w-full mx-auto border-dark`} />
       <div className={`${styles.actionButtonRow}`}>
         <ActionButton
           id="search"
@@ -383,6 +384,7 @@ function UserList({ socket }) {
           active={seeing === "multi"}
         />
       </div>
+      <hr className={`w-full mx-auto border-dark`} />
       <ConnectionState socket={socket} />
 
       {error ? (

@@ -310,6 +310,7 @@ function Sidebar({
           <FontAwesomeIcon icon={open ? faArrowLeft : faArrowRight} />
         </button>
       </div>
+      <hr className={`w-full mx-auto border-dark`} />
       <div className={`${styles.actionButtonRow}`}>
         <ActionButton
           id="search"
@@ -333,6 +334,7 @@ function Sidebar({
           active={seeing === "multi"}
         />
       </div>
+      <hr className={`w-full mx-auto border-dark`} />
       {!showOffState ? <ConnectionState socket={socket} /> : null}
       {error ? (
         <div className="flex flex-col px-12 p-5 gap-2 appear items-center justify-start">
