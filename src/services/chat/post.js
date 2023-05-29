@@ -10,11 +10,12 @@ import config from "../../config";
  * @param {string} id
  * @returns
  */
-export const deleteMessage = async (id) => {
+export const deleteMessage = async (id, target) => {
   const response = await axios.post(
     `${config.apiUrl}/delete-message`,
     {
       id,
+      target,
       user: config.userCookie,
     },
     {

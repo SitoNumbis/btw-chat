@@ -77,107 +77,112 @@ function Main({
     else setShowOffState(false);
   }, [width]);
 
-  const messagesReducer = (state, action) => {
-    const { type } = action;
-    switch (type) {
-      case "init": {
-        const { messages } = action;
-        return messages;
-      }
-      case "prepare-delete": {
-        const { id } = action;
-        const found = state.find((message) => message.id === id);
-        if (found) found.deleted = true;
-        return [...state];
-      }
-      case "delete": {
-        const { id } = action;
-        const foundIndex = state.findIndex((message) => message.id === id);
-        if (foundIndex >= 0) {
-          state.splice(foundIndex, 1);
-          deleteMessage(id);
+  const messagesReducer = useCallback(
+    (state, action) => {
+      const { type } = action;
+      switch (type) {
+        case "init": {
+          const { messages } = action;
+          return messages;
         }
-        return [...state];
-      }
-      case "delete-multiple": {
-        const { messages } = action;
-        const newMessages = [];
-        state.forEach((message) => {
-          const found = messages.find(
-            (remoteMessage) => remoteMessage === message.id
-          );
-          if (!found) newMessages.push(messages);
-        });
-        return newMessages;
-      }
-      case "add": {
-        const { messages } = action;
-        const toReturn = [...state];
-        messages.forEach((message) => {
+        case "prepare-delete": {
+          const { id } = action;
+          const found = state.find((message) => message.id === id);
+          if (found) found.deleted = true;
+          return [...state];
+        }
+        case "delete": {
+          const { id } = action;
+          const foundIndex = state.findIndex((message) => message.id === id);
+          if (foundIndex >= 0) {
+            state.splice(foundIndex, 1);
+            deleteMessage(id, selectedChat.user);
+          }
+          return [...state];
+        }
+        case "delete-multiple": {
+          const { messages } = action;
+          const newMessages = [];
+          state.forEach((message) => {
+            const found = messages.find(
+              (remoteMessage) => remoteMessage === message.id
+            );
+            if (!found) newMessages.push(messages);
+          });
+          return newMessages;
+        }
+        case "add": {
+          const { messages } = action;
+          const toReturn = [...state];
+          messages.forEach((message) => {
+            const found = toReturn.find((localMessage) => {
+              return localMessage.id === message.id;
+            });
+            if (!found) toReturn.push(message);
+          });
+
+          return toReturn;
+        }
+        case "add-new": {
+          const { message } = action;
+          const toReturn = [...state];
           const found = toReturn.find((localMessage) => {
             return localMessage.id === message.id;
           });
           if (!found) toReturn.push(message);
-        });
-
-        return toReturn;
-      }
-      case "add-new": {
-        const { message } = action;
-        const toReturn = [...state];
-        const found = toReturn.find((localMessage) => {
-          return localMessage.id === message.id;
-        });
-        if (!found) toReturn.push(message);
-        return toReturn;
-      }
-      case "plus-minute": {
-        const newState = state.map((item) => {
-          const parsedItem = { ...item };
-          parsedItem.tick = item.tick ? 0 : item.tick + 1;
-          return parsedItem;
-        });
-        return newState;
-      }
-      case "re-sent": {
-        const { message } = action;
-        delete message.error;
-        const toReturn = [...state];
-        const findIndex = toReturn.findIndex(
-          (localMessage) => localMessage.id === message.id
-        );
-        if (findIndex >= 0) toReturn.splice(findIndex, 1);
-        toReturn.push(message);
-        return toReturn;
-      }
-      case "set-as-error": {
-        const { date } = action;
-        const found = state.find((localMessage) => localMessage.date === date);
-        if (found) {
-          found.error = true;
-          delete found.loading;
+          return toReturn;
         }
-        return [...state];
-      }
-      case "set-as-sent": {
-        const { date, theDate } = action;
-        const newState = [...state];
-        const found = state.find((item) => item.id === date);
-        if (found) {
-          found.date = theDate;
-          delete found.loading;
-          delete found.error;
+        case "plus-minute": {
+          const newState = state.map((item) => {
+            const parsedItem = { ...item };
+            parsedItem.tick = item.tick ? 0 : item.tick + 1;
+            return parsedItem;
+          });
+          return newState;
         }
-        return newState;
+        case "re-sent": {
+          const { message } = action;
+          delete message.error;
+          const toReturn = [...state];
+          const findIndex = toReturn.findIndex(
+            (localMessage) => localMessage.id === message.id
+          );
+          if (findIndex >= 0) toReturn.splice(findIndex, 1);
+          toReturn.push(message);
+          return toReturn;
+        }
+        case "set-as-error": {
+          const { date } = action;
+          const found = state.find(
+            (localMessage) => localMessage.date === date
+          );
+          if (found) {
+            found.error = true;
+            delete found.loading;
+          }
+          return [...state];
+        }
+        case "set-as-sent": {
+          const { date, theDate } = action;
+          const newState = [...state];
+          const found = state.find((item) => item.id === date);
+          if (found) {
+            found.date = theDate;
+            delete found.loading;
+            delete found.error;
+          }
+          return newState;
+        }
+        case "new-message": {
+          const { message } = action;
+          return [...state, message];
+        }
+        default:
+          return state;
       }
-      case "new-message": {
-        const { message } = action;
-        return [...state, message];
-      }
-      default:
-        return state;
-    }
-  };
+    },
+    [selectedChat]
+  );
 
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useReducer(messagesReducer, []);
