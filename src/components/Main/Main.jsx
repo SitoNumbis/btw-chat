@@ -33,6 +33,7 @@ import {
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
   deleteMessage,
+  fetchDeletedMessage,
 } from "../../services/chat/post";
 
 // sound
@@ -97,6 +98,17 @@ function Main({
           deleteMessage(id);
         }
         return [...state];
+      }
+      case "delete-multiple": {
+        const { messages } = action;
+        const newMessages = [];
+        state.forEach((message) => {
+          const found = messages.find(
+            (remoteMessage) => remoteMessage === message.id
+          );
+          if (!found) newMessages.push(messages);
+        });
+        return newMessages;
       }
       case "add": {
         const { messages } = action;
@@ -279,10 +291,25 @@ function Main({
     [selectedChat, setTyping, typingV, setTypingV]
   );
 
+  const targetDeletedMessage = useCallback(
+    async (target) => {
+      if (selectedChat && selectedChat.user === target)
+        try {
+          const response = await fetchDeletedMessage(target);
+          const { list } = response.data;
+          setMessages({ type: "delete-multiple", messages: list });
+        } catch (err) {
+          console.error(err);
+        }
+    },
+    [selectedChat]
+  );
+
   useEffect(() => {
     if (socket) {
       socket.on("message", onMessageReceived);
       socket.on("typing", targetTyping);
+      socket.on("delete-message", targetDeletedMessage);
       return () => {
         socket.off("message", onMessageReceived);
         socket.off("typing", targetTyping);

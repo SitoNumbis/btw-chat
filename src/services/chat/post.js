@@ -30,6 +30,28 @@ export const deleteMessage = async (id) => {
 /**
  *
  * @param {string} target
+ * @returns
+ */
+export const fetchDeletedMessage = async (target) => {
+  const response = await axios.post(
+    `${config.apiUrl}/fetch-deleted-message`,
+    {
+      user: config.userCookie,
+      target,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
+  return response;
+};
+
+/**
+ *
+ * @param {string} target
  * @param {object} sender
  * @param {string} message
  * @returns
