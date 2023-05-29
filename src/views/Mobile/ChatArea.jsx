@@ -35,6 +35,8 @@ import {
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
   fetchChatLastDate,
+  deleteMessage,
+  fetchDeletedMessage,
 } from "../../services/chat/post";
 
 // sound
@@ -72,6 +74,32 @@ function ChatArea({ socket }) {
       case "init": {
         const { messages } = action;
         return messages;
+      }
+      case "prepare-delete": {
+        const { id } = action;
+        const found = state.find((message) => message.id === id);
+        if (found) found.deleted = true;
+        return [...state];
+      }
+      case "delete": {
+        const { id } = action;
+        const foundIndex = state.findIndex((message) => message.id === id);
+        if (foundIndex >= 0) {
+          state.splice(foundIndex, 1);
+          deleteMessage(id, selectedChat.user);
+        }
+        return [...state];
+      }
+      case "delete-multiple": {
+        const { messages } = action;
+        const newMessages = [];
+        state.forEach((message) => {
+          const found = messages.find(
+            (remoteMessage) => remoteMessage === message.id
+          );
+          if (!found) newMessages.push(messages);
+        });
+        return newMessages;
       }
       case "add": {
         const { messages } = action;
@@ -312,13 +340,29 @@ function ChatArea({ socket }) {
     [setTyping, typingV, setTypingV, selectedChat]
   );
 
+  const targetDeletedMessage = useCallback(
+    async (target) => {
+      if (selectedChat && selectedChat.user === target)
+        try {
+          const response = await fetchDeletedMessage(selectedChat.user);
+          const { list } = response.data;
+          setMessages({ type: "delete-multiple", messages: list });
+        } catch (err) {
+          console.error(err);
+        }
+    },
+    [selectedChat]
+  );
+
   useEffect(() => {
     if (socket) {
       socket.on("message", onMessageReceived);
       socket.on("typing", targetTyping);
+      socket.on("delete-message", targetDeletedMessage);
       return () => {
         socket.off("message", onMessageReceived);
         socket.off("typing", targetTyping);
+        socket.off("delete-message", targetDeletedMessage);
       };
     }
   }, [socket, targetTyping, onMessageReceived]);
