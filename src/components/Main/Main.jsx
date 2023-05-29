@@ -374,7 +374,8 @@ function Main({
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: localStorage.getItem(config.userCookie) },
-            encryptMessage(parsedMessage, selectedChat.key)
+            encryptMessage(parsedMessage, selectedChat.key),
+            date
           );
           data = response.data;
         } else {
@@ -385,7 +386,8 @@ function Main({
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: localStorage.getItem(config.userCookie) },
-            encryptMessage(parsedMessage, selectedChat.key)
+            encryptMessage(parsedMessage, selectedChat.key),
+            parsedMessage.id
           );
           data = response.data;
         }
@@ -394,7 +396,7 @@ function Main({
         playGood();
         setMessages({
           type: "set-as-sent",
-          date,
+          date: parsedMessage.id,
           theDate: data.date,
         });
       } catch (err) {
@@ -402,7 +404,7 @@ function Main({
         playError();
         setMessages({
           type: "set-as-error",
-          date: parsedMessage.date,
+          date: parsedMessage.id,
         });
       }
     },

@@ -365,7 +365,7 @@ function ChatArea({ socket }) {
         socket.off("delete-message", targetDeletedMessage);
       };
     }
-  }, [socket, targetTyping, onMessageReceived]);
+  }, [socket, targetTyping, onMessageReceived, targetDeletedMessage]);
 
   const play = () => {
     const audio = new Audio(sound);
@@ -412,7 +412,8 @@ function ChatArea({ socket }) {
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: userState.user },
-            encryptMessage(parsedMessage, selectedChat.key)
+            encryptMessage(parsedMessage, selectedChat.key),
+            date
           );
           data = response.data;
         } else {
@@ -423,7 +424,8 @@ function ChatArea({ socket }) {
           const response = await sendMessageRemote(
             selectedChat.user,
             { user: userState.user },
-            encryptMessage(parsedMessage, selectedChat.key)
+            encryptMessage(parsedMessage, selectedChat.key),
+            parsedMessage.id
           );
           data = response.data;
         }

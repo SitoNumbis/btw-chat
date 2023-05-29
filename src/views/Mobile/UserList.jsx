@@ -200,11 +200,20 @@ function UserList({ socket }) {
     [fetchPerson, userState.user]
   );
 
+  const targetDeletedMessage = useCallback(
+    async (target) => {
+      fetchPerson(target, true, false);
+    },
+    [fetchPerson]
+  );
+
   useEffect(() => {
     if (socket) {
       socket.on("message", onMessageReceived);
+      socket.on("delete-message", targetDeletedMessage);
       return () => {
         socket.off("message", onMessageReceived);
+        socket.off("delete-message", targetDeletedMessage);
       };
     }
   }, [socket, onMessageReceived]);

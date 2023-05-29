@@ -57,13 +57,15 @@ export const fetchDeletedMessage = async (target) => {
  * @param {string} message
  * @returns
  */
-export const sendMessage = async (target, sender, message) => {
+export const sendMessage = async (target, sender, message, id) => {
+  console.log(id);
   const response = await axios.post(
     `${config.apiUrl}/send-message`,
     {
       target,
       sender,
       message,
+      id,
     },
     {
       headers: {
