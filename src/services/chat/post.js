@@ -16,7 +16,7 @@ export const deleteMessage = async (id, target) => {
     {
       id,
       target,
-      user: config.userCookie,
+      user: localStorage.getItem(config.userCookie),
     },
     {
       headers: {
@@ -37,7 +37,7 @@ export const fetchDeletedMessage = async (target) => {
   const response = await axios.post(
     `${config.apiUrl}/fetch-deleted-message`,
     {
-      user: config.userCookie,
+      user: localStorage.getItem(config.userCookie),
       target,
     },
     {

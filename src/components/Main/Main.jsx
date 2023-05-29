@@ -300,7 +300,7 @@ function Main({
     async (target) => {
       if (selectedChat && selectedChat.user === target)
         try {
-          const response = await fetchDeletedMessage(target);
+          const response = await fetchDeletedMessage(selectedChat.user);
           const { list } = response.data;
           setMessages({ type: "delete-multiple", messages: list });
         } catch (err) {
@@ -318,9 +318,10 @@ function Main({
       return () => {
         socket.off("message", onMessageReceived);
         socket.off("typing", targetTyping);
+        socket.off("delete-message", targetDeletedMessage);
       };
     }
-  }, [socket, targetTyping, onMessageReceived]);
+  }, [socket, targetTyping, onMessageReceived, targetDeletedMessage]);
 
   const play = () => {
     const audio = new Audio(sound);
