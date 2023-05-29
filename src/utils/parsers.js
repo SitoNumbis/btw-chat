@@ -56,9 +56,30 @@ export const parseImageKit = (url, quality = "80", width = "", height = "") => {
   return result;
 };
 
+/**
+ *
+ * @param {string} messages
+ * @param {string} key
+ */
+export const encryptMessages = (messages, key) => {
+  const encrypted = [];
+  messages.forEach((message) => encrypted.push(encryptMessage(message, key)));
+  return encrypted;
+};
+
+/**
+ *
+ * @param {string} message
+ * @param {string} key
+ */
 export const encryptMessage = (message, key) => {
   return CryptoJS.AES.encrypt(JSON.stringify(message), key).toString();
 };
 
-export const decryptMessage = (lastMessage, key) =>
-  CryptoJS.AES.decrypt(lastMessage, key).toString(CryptoJS.enc.Utf8);
+/**
+ *
+ * @param {string} message
+ * @param {string} key
+ */
+export const decryptMessage = (message, key) =>
+  CryptoJS.AES.decrypt(message, key).toString(CryptoJS.enc.Utf8);

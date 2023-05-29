@@ -93,7 +93,7 @@ function Input({ socket, onSend, selectedChat, noSidebarSearching }) {
   const buttonEmotion = useMemo(() => {
     return css({
       ":hover": {
-        color: localStorage.getItem("chat-text-primary"),
+        color: localStorage.getItem("chat-text-basic"),
       },
     });
   }, []);

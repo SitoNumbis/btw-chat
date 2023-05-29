@@ -7,6 +7,28 @@ import config from "../../config";
 
 /**
  *
+ * @param {string} id
+ * @returns
+ */
+export const deleteMessage = async (id) => {
+  const response = await axios.post(
+    `${config.apiUrl}/delete-message`,
+    {
+      id,
+      user: config.userCookie,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.basicKeyCookie)}`,
+      },
+    }
+  );
+  return response;
+};
+
+/**
+ *
  * @param {string} target
  * @param {object} sender
  * @param {string} message

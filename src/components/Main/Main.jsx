@@ -10,7 +10,11 @@ import loadable from "@loadable/component";
 
 // utils
 import { validation } from "../../utils/validation";
-import { encryptMessage, parseMessages } from "../../utils/parsers";
+import {
+  encryptMessage,
+  parseMessages,
+  encryptMessages,
+} from "../../utils/parsers";
 
 // contexts
 import { useMessagesOperations } from "../../context/MessagesOperations";
@@ -28,6 +32,7 @@ import {
   fetchChatLastDate,
   sendMessage as sendMessageRemote,
   fetchMessages as fetchMessagesRemote,
+  deleteMessage,
 } from "../../services/chat/post";
 
 // sound
@@ -77,6 +82,21 @@ function Main({
       case "init": {
         const { messages } = action;
         return messages;
+      }
+      case "prepare-delete": {
+        const { id } = action;
+        const found = state.find((message) => message.id === id);
+        if (found) found.deleted = true;
+        return [...state];
+      }
+      case "delete": {
+        const { id } = action;
+        const foundIndex = state.findIndex((message) => message.id === id);
+        if (foundIndex >= 0) {
+          state.splice(foundIndex, 1);
+          deleteMessage(id);
+        }
+        return [...state];
       }
       case "add": {
         const { messages } = action;
@@ -190,7 +210,6 @@ function Main({
           if (data.list) {
             const list = parseMessages(data.list, selectedChat.key);
 
-            localStorage.setItem(`chat-${target}`, JSON.stringify(data.list));
             if (list) {
               if (oldChat === target) {
                 setMessages({
@@ -395,17 +414,46 @@ function Main({
     [messages, sendMessage]
   );
 
-  const onReplyMessage = useCallback(() => {}, [messagesOperationsState]);
+  const onReplyMessage = useCallback(() => {
+    console.log(messagesOperationsState);
+  }, [messagesOperationsState]);
+
+  const onForwardMessage = useCallback(() => {
+    console.log(messagesOperationsState);
+  }, [messagesOperationsState]);
 
   const onDeleteMessage = useCallback(() => {
-    console.log(messagesOperationsState);
+    setMessages({ type: "prepare-delete", id: messagesOperationsState.id });
+    setTimeout(() => {
+      setMessages({ type: "delete", id: messagesOperationsState.id });
+    }, 450);
   }, [messagesOperationsState]);
 
   useEffect(() => {
-    console.log(messagesOperationsState);
-    if (messagesOperationsState === "reply") onReplyMessage();
-    if (messagesOperationsState === "delete") onDeleteMessage();
+    switch (messagesOperationsState.event) {
+      case "forward":
+        onForwardMessage();
+        break;
+      case "reply":
+        onReplyMessage();
+        break;
+      default: // delete
+        onDeleteMessage();
+        break;
+    }
   }, [messagesOperationsState]);
+
+  const saveChatToCache = useCallback(() => {
+    if (selectedChat)
+      localStorage.setItem(
+        `chat-${selectedChat.user}`,
+        JSON.stringify(encryptMessages(messages, selectedChat.key))
+      );
+  }, [messages, selectedChat]);
+
+  useEffect(() => {
+    saveChatToCache();
+  }, [messages]);
 
   return (
     <div className={`${styles.main} ${mainBG(88)}`}>

@@ -122,7 +122,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
       </p>
 
       {messages.map(
-        ({ id, sender, date, message, loading, error, target }, i) => {
+        ({ id, sender, date, message, loading, error, target, deleted }, i) => {
           if (i === 0 && messages.length === 0)
             return (
               <div
@@ -137,6 +137,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                   }`}
                 >
                   <Message
+                    deleted={deleted}
                     onReply={(e) => {
                       setMessagesOperationsState({
                         type: "reply",
@@ -197,6 +198,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                     }`}
                   >
                     <Message
+                      deleted={deleted}
                       message={message}
                       sender={sender}
                       onReply={(e) => {
@@ -259,6 +261,7 @@ function Messages({ messages, settings, selectedChat, loading, onRetry }) {
                     }`}
                   >
                     <Message
+                      deleted={deleted}
                       message={message}
                       sender={sender}
                       onReply={(e) => {

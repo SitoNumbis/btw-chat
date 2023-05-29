@@ -17,12 +17,12 @@ import { useLanguage } from "../../../context/LanguageProvider";
 import styles from "./styles.module.css";
 import Colors from "../../../assets/emotion/color";
 
-function Message({ sender, message, onReply, onForward, onDelete }) {
+function Message({ sender, message, onReply, onForward, onDelete, deleted }) {
   const { languageState } = useLanguage();
 
   const { whiteText } = Colors();
 
-  const { buttons, buttonsArias } = useMemo(() => {
+  const { buttonsArias } = useMemo(() => {
     return {
       buttons: languageState.texts.buttons,
       buttonsArias: languageState.texts.buttonsArias,
@@ -73,7 +73,9 @@ function Message({ sender, message, onReply, onForward, onDelete }) {
     <div>
       <p
         onClick={toggleOperations}
-        className={`aGrow main-transition-ease ${styles.message} ${pEmotion}`}
+        className={`${deleted ? "aShrink" : "aGrow"} main-transition-ease ${
+          styles.message
+        } ${pEmotion}`}
       >
         {message}
       </p>
@@ -85,7 +87,6 @@ function Message({ sender, message, onReply, onForward, onDelete }) {
             aria-label={buttonsArias.reply}
           >
             <FontAwesomeIcon icon={faComment} />
-            {/* {buttons.reply} */}
           </button>
           <button
             onClick={onForward}
@@ -93,16 +94,16 @@ function Message({ sender, message, onReply, onForward, onDelete }) {
             aria-label={buttonsArias.forward}
           >
             <FontAwesomeIcon icon={faShare} />
-            {/* {buttons.forward} */}
           </button>
-          <button
-            onClick={onDelete}
-            className={`${whiteText} ${buttonEmotion} flex items-center main-transition-ease justify-start gap-2`}
-            aria-label={buttonsArias.deleteMessage}
-          >
-            <FontAwesomeIcon icon={faTrash} />
-            {/* {buttons.deleteMessage} */}
-          </button>
+          {isSelf(sender.user) ? (
+            <button
+              onClick={onDelete}
+              className={`${whiteText} ${buttonEmotion} flex items-center main-transition-ease justify-start gap-2`}
+              aria-label={buttonsArias.deleteMessage}
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          ) : null}
         </div>
       </div>
     </div>
@@ -115,6 +116,7 @@ Message.propTypes = {
   onReply: PropTypes.func,
   onForward: PropTypes.func,
   onDelete: PropTypes.func,
+  deleted: PropTypes.bool,
 };
 
 const MessageMemo = memo((props) => <Message {...props} />, arePropsEqual);
@@ -125,7 +127,8 @@ function arePropsEqual(oldProps, newProps) {
     oldProps.message === newProps.message &&
     oldProps.onReply === newProps.onReply &&
     oldProps.onForward === newProps.onForward &&
-    oldProps.onDelete === newProps.onDelete
+    oldProps.onDelete === newProps.onDelete &&
+    oldProps.deleted === newProps.deleted
   );
 }
 
