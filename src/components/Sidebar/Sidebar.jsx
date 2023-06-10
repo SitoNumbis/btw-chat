@@ -280,7 +280,7 @@ function Sidebar({
           className="flex items-center gap-2 cursor-pointer"
         >
           <img
-            className="w-10 h-10 rounded-full cursor-pointer"
+            className="w-9 h-9 rounded-full cursor-pointer"
             src={
               validation(config.userPhotoCookie)
                 ? localStorage.getItem(config.userPhotoCookie)

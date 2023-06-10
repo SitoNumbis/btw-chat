@@ -9,7 +9,8 @@
 }
 
 .userRow {
-  @apply flex w-full justify-between items-center p-4;
+  height: 49px;
+  @apply flex w-full justify-between items-center p-3;
 }
 
 .list {
